@@ -1,0 +1,180 @@
+﻿#region Copyright and License
+/*
+ * SharpAssembler
+ * Library for .NET that assembles a predetermined list of
+ * instructions into machine code.
+ * 
+ * Copyright (C) 2011 Daniël Pelsmaeker
+ * 
+ * This file is part of SharpAssembler.
+ * 
+ * SharpAssembler is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SharpAssembler is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SharpAssembler.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using SharpAssembler.Core;
+using SharpAssembler.x86.Operands;
+
+namespace SharpAssembler.x86.Instructions
+{
+	/// <summary>
+	/// The LDS (Load Far Pointer) instruction.
+	/// </summary>
+	public class Lds : Instruction
+	{
+		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Lds"/> class.
+		/// </summary>
+		/// <param name="destination">The destination operand.</param>
+		/// <param name="source">The source operand.</param>
+		public Lds(RegisterOperand destination, EffectiveAddress source)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(destination != null);
+			Contract.Requires<ArgumentNullException>(source != null);
+			#endregion
+
+			this.destination = destination;
+			this.source = source;
+		}
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Gets the mnemonic of the instruction.
+		/// </summary>
+		/// <value>The mnemonic of the instruction.</value>
+		public override string Mnemonic
+		{
+			get { return "lds"; }
+		}
+
+		/// <summary>
+		/// Gets whether this instruction is valid in 64-bit mode.
+		/// </summary>
+		/// <value><see langword="true"/> when the instruction is valid in 64-bit mode;
+		/// otherwise, <see langword="false"/>.</value>
+		public override bool ValidIn64BitMode
+		{
+			get { return false; }
+		}
+
+		private RegisterOperand destination;
+		/// <summary>
+		/// Gets the destination register.
+		/// </summary>
+		/// <value>An <see cref="RegisterOperand"/>.</value>
+		public RegisterOperand Destination
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<RegisterOperand>() != null);
+				#endregion
+				return destination;
+			}
+#if OPERAND_SET
+			set
+			{
+				#region Contract
+				Contract.Requires<ArgumentNullException>(value != null);
+				#endregion
+				destination = value;
+			}
+#endif
+		}
+
+		private EffectiveAddress source;
+		/// <summary>
+		/// Gets the source memory operand.
+		/// </summary>
+		/// <value>An <see cref="EffectiveAddress"/>.</value>
+		public EffectiveAddress Source
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<EffectiveAddress>() != null);
+				#endregion
+				return source;
+			}
+#if OPERAND_SET
+			set
+			{
+				#region Contract
+				Contract.Requires<ArgumentNullException>(value != null);
+				#endregion
+				source = value;
+			}
+#endif
+		}
+		#endregion
+
+		#region Methods
+		/// <summary>
+		/// Enumerates an ordered list of operands used by this instruction.
+		/// </summary>
+		/// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Operand"/> objects.</returns>
+		public override IEnumerable<Operand> GetOperands()
+		{
+			// The order is important here!
+			yield return this.destination;
+			yield return this.source;
+		}
+		#endregion
+
+		#region Instruction Variants
+		/// <summary>
+		/// An array of <see cref="SharpAssembler.x86.Instruction.InstructionVariant"/> objects
+		/// describing the possible variants of this instruction.
+		/// </summary>
+		private static InstructionVariant[] variants = new[]{
+			// LDS reg16, mem16:16
+			new InstructionVariant(
+				new byte[] { 0xC5 },
+				new OperandDescriptor(OperandType.RegisterOperand, DataSize.Bit16),
+				new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit16)),
+			// LDS reg32, mem16:32
+			new InstructionVariant(
+				new byte[] { 0xC5 },
+				new OperandDescriptor(OperandType.RegisterOperand, DataSize.Bit32),
+				new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit32)),
+		};
+
+		/// <summary>
+		/// Returns an array containing the <see cref="SharpAssembler.x86.Instruction.InstructionVariant"/>
+		/// objects representing all the possible variants of this instruction.
+		/// </summary>
+		/// <returns>An array of <see cref="SharpAssembler.x86.Instruction.InstructionVariant"/>
+		/// objects.</returns>
+		internal override InstructionVariant[] GetVariantList()
+		{ return variants; }
+		#endregion
+
+		#region Invariant
+		/// <summary>
+		/// Asserts the invariants of this type.
+		/// </summary>
+		[ContractInvariantMethod]
+		private void ObjectInvariant()
+		{
+			Contract.Invariant(this.destination != null);
+			Contract.Invariant(this.source != null);
+		}
+		#endregion
+	}
+}
