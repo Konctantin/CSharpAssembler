@@ -1,3 +1,14 @@
+SharpAssembler is a library that assembles machine instructions (e.g. x86-64) represented as managed .NET objects. It provides an intuitive object model that can be manipulated and emitted to various object file formats (e.g. bin, elf) from C# and other .NET languages.
+
+Current status
+==============
+There is support for:
+* x86-64 general instructions
+* BIN file format
+Soon there will be support for:
+* x86-64 special instructions
+* ELF file format
+
 Installation instructions
 =========================
 Extract the ZIP archive somewhere, and reference the DLL files from your project. You'll need to reference at least the `Core` library (`SharpAssembler Core.dll`), and add anything you may want to use. The following add-on libraries are included:
