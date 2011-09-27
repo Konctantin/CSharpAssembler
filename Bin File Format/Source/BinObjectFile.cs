@@ -146,7 +146,7 @@ namespace SharpAssembler.BinFormat
 		/// <summary>
 		/// Checks whether the object file format supports the specified feature.
 		/// </summary>
-		/// <param name="feature">The <see cref="Feature"/> to test.</param>
+		/// <param name="feature">The <see cref="ObjectFileFeature"/> to test.</param>
 		/// <returns><see langword="true"/> when it is supported; otherwise, <see langword="false"/>.</returns>
 		public override bool SupportsFeature(ObjectFileFeature feature)
 		{
