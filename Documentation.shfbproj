@@ -20,9 +20,19 @@
     <Language>en-US</Language>
     <HelpFileFormat>Website</HelpFileFormat>
     <DocumentationSources>
-      <DocumentationSource sourceFile="SharpAssembler.sln" />
-    </DocumentationSources>
-    <ProjectSummary>SharpAssembler assembles machine instructions %28e.g. x86-64%29 represented as managed .NET objects. It provides an intuitive object model that can be manipulated and emitted to various object file formats %28e.g. bin, elf%29 from C# and other .NET languages.</ProjectSummary>
+      <DocumentationSource sourceFile="Bin File Format\Source\Bin File Format.csproj" />
+<DocumentationSource sourceFile="Core\Source\Core.csproj" />
+<DocumentationSource sourceFile="Elf File Format\Source\Elf File Format.csproj" />
+<DocumentationSource sourceFile="x86-64\Source\x86-64.csproj" /></DocumentationSources>
+    <ProjectSummary>SharpAssembler assembles machine instructions %28e.g. x86-64%29 represented as managed .NET objects. It provides an intuitive object model that can be manipulated and emitted to various object file formats %28e.g. bin, elf%29 from C# and other .NET languages.&amp;lt%3bbr /&amp;gt%3b
+&amp;lt%3bbr /&amp;gt%3b
+The project&amp;#39%3bs summary, source code and support pages can be found here:&amp;lt%3bbr /&amp;gt%3b
+&amp;lt%3ba href=&amp;quot%3bhttps://sourceforge.net/projects/sharpassembler/&amp;quot%3b&amp;gt%3bhttps://sourceforge.net/projects/sharpassembler/&amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr /&amp;gt%3b
+&amp;lt%3bbr /&amp;gt%3b
+You can download this project&amp;#39%3bs files here:&amp;lt%3bbr /&amp;gt%3b
+&amp;lt%3ba href=&amp;quot%3bhttps://sourceforge.net/projects/sharpassembler/files/&amp;quot%3b&amp;gt%3bhttps://sourceforge.net/projects/sharpassembler/files/&amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr /&amp;gt%3b
+
+</ProjectSummary>
     <CopyrightText>Copyright 2011 - Dani&amp;#235%3bl Pelsmaeker</CopyrightText>
     <HelpTitle>SharpAssembler</HelpTitle>
     <NamingMethod>MemberName</NamingMethod>
