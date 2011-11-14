@@ -77,7 +77,7 @@ namespace SharpAssembler.Core.Symbols
 		}
 
 		/// <summary>
-		/// Inserts an element into the <see cref="ConstructableList"/> at the specified index.
+		/// Inserts an element into the <see cref="SymbolTable"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The zero-based index at which
 		/// <paramref name="item"/> should be inserted.</param>

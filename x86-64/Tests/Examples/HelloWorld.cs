@@ -62,8 +62,7 @@ namespace SharpAssembler.x86.Tests.Instructions
 
 			data.Add(new Define("len", (context) =>
 				{
-					Symbol strSymbol;
-					context.SymbolTable.TryGetValue("str", out strSymbol);
+					Symbol strSymbol = context.SymbolTable["str"];
 					return new SimpleExpression(context.Address - strSymbol.Address);
 				}));
 
@@ -111,8 +110,7 @@ namespace SharpAssembler.x86.Tests.Instructions
 
 			data.Add(new Define("len", (context) =>
 			{
-				Symbol strSymbol;
-				context.SymbolTable.TryGetValue("str", out strSymbol);
+				Symbol strSymbol = context.SymbolTable["str"];
 				return new SimpleExpression(context.Address - strSymbol.Address);
 			}));
 

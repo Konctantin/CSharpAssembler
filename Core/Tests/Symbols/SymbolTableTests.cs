@@ -58,8 +58,8 @@ namespace SharpAssembler.Core.Tests.Symbols
 			IAssociatable associatable = associatableMock.Object;
 
 			var symbols = new Symbol[]{
-				new Symbol("id1", associatable, SymbolType.Private),
-				new Symbol("id2", associatable, SymbolType.Public)
+				new Symbol(associatable, SymbolType.Private, "id1"),
+				new Symbol(associatable, SymbolType.Public, "id2")
 			};
 
 			SymbolTable table = new SymbolTable(symbols);
@@ -77,8 +77,8 @@ namespace SharpAssembler.Core.Tests.Symbols
 			IAssociatable associatable = associatableMock.Object;
 
 			var symbols = new Symbol[]{
-				new Symbol("id1", associatable, SymbolType.Private),
-				new Symbol("id2", associatable, SymbolType.Public)
+				new Symbol(associatable, SymbolType.Private, "id1"),
+				new Symbol(associatable, SymbolType.Public, "id2")
 			};
 
 			SymbolTable table = new SymbolTable();

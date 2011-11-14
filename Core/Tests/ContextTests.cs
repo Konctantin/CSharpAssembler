@@ -85,7 +85,7 @@ namespace SharpAssembler.Core.Tests
 			Context context = new Context(objectFile);
 
 			Section section = new Section("Test");
-			var symbol = new Symbol("test", objectFile, SymbolType.Public);
+			var symbol = new Symbol(objectFile, SymbolType.Public, "test");
 			var relocation = new Relocation(symbol, section, 0, 0, RelocationType.Default32);
 
 			context.SymbolTable.Add(symbol);

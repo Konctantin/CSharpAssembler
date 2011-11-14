@@ -75,7 +75,7 @@ namespace SharpAssembler.BinFormat
 			foreach (Section section in this)
 			{
 				string sectionName = String.Format("section.{0}.start", section.Identifier);
-				var symbol = new Symbol(sectionName, section, SymbolType.Private);
+				var symbol = new Symbol(section, SymbolType.Private, sectionName);
 				symbol.Address = context.Address;
 				symbol.DefiningSection = section;
 				symbol.DefiningFile = section.Parent;

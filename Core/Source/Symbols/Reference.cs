@@ -144,12 +144,13 @@ namespace SharpAssembler.Core.Symbols
 			// Do we reference a particular symbol by instance, or by identifier?
 			if (symbol != null)
 				// By instance. Then that symbol instance must be in the symbol table.
-				resolved = context.SymbolTable.Contains(symbol);
+				return context.SymbolTable.Contains(symbol);
 			else
+			{
 				// By identifier. Then a symbol with that identifier must be in the symbol table.
-				resolved = context.SymbolTable.TryGetValue(symbolIdentifier, out symbol);
-
-			return resolved;
+				symbol = context.SymbolTable[symbolIdentifier];
+				return symbol != null;
+			}
 		}
 		#endregion
 

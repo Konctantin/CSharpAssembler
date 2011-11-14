@@ -31,8 +31,8 @@ using System.Collections.Generic;
 namespace SharpAssembler.Core
 {
 	/// <summary>
-	/// An interface for entities which can be contained in a <see cref="Section"/> and can create an
-	/// <see cref="IEmittable"/> representation of themselves.
+	/// An interface for entities which can be contained in a <see cref="Section"/> and can create a
+	/// representation of themselves.
 	/// </summary>
 	[ContractClass(typeof(Contracts.ConstructableContract))]
 	public abstract class Constructable : IAnnotatable, IObjectFileVisitable
