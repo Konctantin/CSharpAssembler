@@ -61,6 +61,8 @@ namespace SharpAssembler.Symbols
 
 			public abstract Symbol AssociatedSymbol { get; }
 			public abstract IFile ParentFile { get; }
+			
+			public abstract void SetAssociatedSymbol(Symbol symbol);
 		}
 	}
 	#endregion

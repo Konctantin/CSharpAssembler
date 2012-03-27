@@ -32,7 +32,7 @@ namespace SharpAssembler.Instructions
 	/// <summary>
 	/// Declares that a symbol is defined elsewhere.
 	/// </summary>
-	public class Extern : Constructable, IIdentifiable
+	public class Extern : Constructable, IAssociatable
 	{
 		#region Constructors
 		/// <summary>
@@ -52,75 +52,55 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="identifier">The identifier of the external symbol.</param>
 		/// <param name="length">The length of the symbol.</param>
-		public Extern(string identifier, Int128 length)
+		public Extern(string identifier, long length)
+			: this(new Symbol(SymbolType.Extern, identifier){Size = length})
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(identifier != null);
 			Contract.Requires<ArgumentOutOfRangeException>(length >= 0);
 			#endregion
+		}
 
-			this.identifier = identifier;
-			this.length = length;
-			this.associatedSymbol = new Symbol(this, SymbolType.Extern);
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Extern"/> class.
+		/// </summary>
+		/// <param name="symbol">The external symbol.</param>
+		/// <remarks>
+		/// Ensure that the symbol has a valid identifiers. Most object file formats do not support anonymous
+		/// external symbols.
+		/// </remarks>
+		public Extern(Symbol symbol)
+		{
+			#region Contract
+			Contract.Requires<ArgumentException>(symbol == null || symbol.IsExtern);
+			#endregion
+
+			this.ExternSymbol = symbol;
 		}
 		#endregion
 
 		#region Properties
-		private string identifier;
+		private Symbol externSymbol;
 		/// <summary>
-		/// Gets the identifier of the extern symbol.
+		/// Gets or sets the symbol that is referenced by this instruction.
 		/// </summary>
-		/// <value>The identifier of the extern symbol.</value>
-		public string Identifier
+		/// <value>The <see cref="Symbol"/> that is referenced by this instruction;
+		/// or <see langword="null"/>.</value>
+		/// <remarks>
+		/// When <see cref="ExternSymbol"/> is <see langword="null"/>, the instruction
+		/// does not have any effect on the generated assembly.
+		/// </remarks>
+		public Symbol ExternSymbol
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<string>() != null);
-				#endregion
-				return identifier;
-			}
+			get { return this.externSymbol; }
+			// NOTE: This property's field is set by the SetAssociatedSymbol() method.
+			set { Symbol.SetAssociation(this, value); }
 		}
 
-		private Symbol associatedSymbol;
-		/// <summary>
-		/// Gets the <see cref="Symbol"/> associated with this block.
-		/// </summary>
-		/// <value>A <see cref="Symbol"/>.</value>
-		public Symbol AssociatedSymbol
+		/// <inheritdoc />
+		Symbol IAssociatable.AssociatedSymbol
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<Symbol>() != null);
-				#endregion
-				return associatedSymbol;
-			}
-		}
-
-		private Int128 length = 0;
-		/// <summary>
-		/// Gets the length of this <see cref="Extern"/>.
-		/// </summary>
-		/// <value>The length, in bytes. The default is 0.</value>
-		public Int128 Length
-		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<Int128>() >= 0);
-				#endregion
-				return length;
-			}
-#if OPERAND_SET
-			set
-			{
-				#region Contract
-				Contract.Requires<ArgumentOutOfRangeException>(value >= 0);
-				#endregion
-				length = value;
-			}
-#endif
+			get { return this.ExternSymbol; }
 		}
 		#endregion
 
@@ -129,9 +109,16 @@ namespace SharpAssembler.Instructions
 		public override IEnumerable<IEmittable> Construct(Context context)
 		{
 			// CONTRACT: Constructable
-			context.SymbolTable.Add(associatedSymbol);
+			if (this.externSymbol != null)
+				this.externSymbol.ReferenceExtern(context);
 
 			yield break;
+		}
+
+		/// <inheritdoc />
+		void IAssociatable.SetAssociatedSymbol(Symbol symbol)
+		{
+			this.externSymbol = symbol;
 		}
 
 		/// <inheritdoc />
@@ -160,9 +147,7 @@ namespace SharpAssembler.Instructions
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.identifier != null);
-			Contract.Invariant(this.length >= 0);
-			Contract.Invariant(this.associatedSymbol != null);
+			
 		}
 		#endregion
 	}

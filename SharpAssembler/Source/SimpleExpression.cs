@@ -111,7 +111,7 @@ namespace SharpAssembler
 
 			Int128 value = this.constant;
 			if (this.reference != null)
-				value += this.reference.Symbol.Address;
+				value += this.reference.Symbol.Value;
 
 			return value;
 		}

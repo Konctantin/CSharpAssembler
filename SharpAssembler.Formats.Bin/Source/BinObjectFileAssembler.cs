@@ -64,12 +64,10 @@ namespace SharpAssembler.Formats.Bin
 			context.Address = 0;		// Addresses relative to file.
 			foreach (Section section in this.ObjectFile.Sections)
 			{
+				context.Section = section;
 				string sectionName = String.Format("section.{0}.start", section.Identifier);
-				var symbol = new Symbol(section, SymbolType.Private, sectionName);
-				symbol.Address = context.Address;
-				symbol.DefiningSection = section;
-				symbol.DefiningFile = section.Parent;
-				context.SymbolTable.Add(symbol);
+				var symbol = new Symbol(SymbolType.Private, sectionName);
+				symbol.Define(context, context.Address);
 
 				section.Construct(context);
 			}

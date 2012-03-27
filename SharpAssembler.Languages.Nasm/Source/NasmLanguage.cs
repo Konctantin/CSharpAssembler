@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using SharpAssembler.Instructions;
+using SharpAssembler.Symbols;
 
 namespace SharpAssembler.Languages.Nasm
 {
@@ -404,45 +405,65 @@ namespace SharpAssembler.Languages.Nasm
 			indentationlevel--;
 			if (indentationlevel < 0) indentationlevel = 0;
 
-			if (label.LabelType == LabelType.Private)
+			string identifier;
+			SymbolType type;
+			if (label.DefinedSymbol != null)
 			{
-				Writer.Write("{0}:", label.Identifier);
-				linelength = label.Identifier.Length + 1;
+				identifier = label.DefinedSymbol.Identifier;
+				if (identifier == null)
+					throw new NotSupportedException("Symbols without identifiers are not supported.");
+				type = label.DefinedSymbol.SymbolType;
 
-				WriteCommentOf(label, linelength);
+				if (label.DefinedSymbol.SymbolType == SymbolType.Private)
+				{
+					// Single line, with comments.
+
+					Writer.Write("{0}:", identifier);
+					linelength = identifier.Length + 1;
+
+					WriteCommentOf(label, linelength);
+				}
+				else
+				{
+					// Two lines, with comments.
+
+					switch (label.DefinedSymbol.SymbolType)
+					{
+						case SymbolType.Public:
+							Writer.Write("global {0}", identifier);
+							linelength = 7 + identifier.Length;
+							break;
+						case SymbolType.Weak:
+							Writer.Write("weak {0}", identifier);
+							linelength = 5 + identifier.Length;
+							break;
+						case SymbolType.Private:
+						default:
+							break;
+					}
+
+					// Write the first part of the comment.
+					if (commentstring != null)
+						commentstart = WriteCommentString(commentstring, linelength, 0, 1);
+					else
+						Writer.WriteLine();
+
+					linelength = 0;
+					Writer.Write("{0}:", identifier);
+					linelength = identifier.Length + 1;
+
+					// Write the rest of the comment.
+					if (commentstring != null)
+						WriteCommentString(commentstring, linelength, commentstart, -1);
+					else
+						Writer.WriteLine();
+				}
 			}
 			else
 			{
-				switch (label.LabelType)
-				{
-					case LabelType.Public:
-						Writer.Write("global {0}", label.Identifier);
-						linelength = 7 + label.Identifier.Length;
-						break;
-					case LabelType.Weak:
-						Writer.Write("weak {0}", label.Identifier);
-						linelength = 5 + label.Identifier.Length;
-						break;
-					case LabelType.Private:
-					default:
-						break;
-				}
+				linelength = WriteCommentString("label <unkown>", -1, 0, -1);
 
-				// Write the first part of the comment.
-				if (commentstring != null)
-					commentstart = WriteCommentString(commentstring, linelength, 0, 1);
-				else
-					Writer.WriteLine();
-
-				linelength = 0;
-				Writer.Write("{0}:", label.Identifier);
-				linelength = label.Identifier.Length + 1;
-
-				// Write the rest of the comment.
-				if (commentstring != null)
-					WriteCommentString(commentstring, linelength, commentstart, -1);
-				else
-					Writer.WriteLine();
+				WriteCommentOf(label, linelength);
 			}
 
 			indentationlevel++;
@@ -455,8 +476,18 @@ namespace SharpAssembler.Languages.Nasm
 			indentationlevel--;
 			if (indentationlevel < 0) indentationlevel = 0;
 
-			Writer.Write("extern {0}", reference.Identifier);
-			linelength = reference.Identifier.Length + 7;
+			if (reference.ExternSymbol != null)
+			{
+				string identifier = reference.ExternSymbol.Identifier;
+				if (identifier == null)
+					throw new NotSupportedException("Symbols without identifiers are not supported.");
+				Writer.Write("extern {0}", reference.ExternSymbol.Identifier);
+				linelength = reference.ExternSymbol.Identifier.Length + 7;
+			}
+			else
+			{
+				linelength = WriteCommentString("extern <unkown>", -1, 0, -1);
+			}
 
 			WriteCommentOf(reference, linelength);
 

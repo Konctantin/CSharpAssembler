@@ -40,11 +40,8 @@ namespace SharpAssembler.Core.Tests.Symbols
 		[Test]
 		public void ResolveTest()
 		{
-			var associatableMock = new Mock<IAssociatable>();
-			IAssociatable associatable = associatableMock.Object;
-
-			var symbol1 = new Symbol(associatable, SymbolType.Private, "id1");
-			var symbol2 = new Symbol(associatable, SymbolType.Private, "id2");
+			var symbol1 = new Symbol(SymbolType.Private, "id1");
+			var symbol2 = new Symbol(SymbolType.Private, "id2");
 
 			Context context = new Context(new ObjectFileMock());
 

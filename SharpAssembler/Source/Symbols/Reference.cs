@@ -126,6 +126,15 @@ namespace SharpAssembler.Symbols
 		{
 			get { return resolved; }
 		}
+
+		/// <summary>
+		/// Gets the object that is referenced.
+		/// </summary>
+		/// <value>The referenced object; or <see langword="null"/> when no specific object is referenced.</value>
+		public IAssociatable Association
+		{
+			get { return this.symbol != null ? this.symbol.Association : null; }
+		}
 		#endregion
 
 		#region Resolving

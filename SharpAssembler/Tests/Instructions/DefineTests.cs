@@ -45,14 +45,14 @@ namespace SharpAssembler.Core.Tests.Instructions
 			Func<Context, SimpleExpression> expression = (context) => new SimpleExpression(context.Address + 3);
 
 			var instr = new Define("test", expression);
-			Assert.AreEqual("test", instr.Identifier);
-			Assert.AreEqual(LabelType.Private, instr.LabelType);
+			Assert.AreEqual("test", instr.DefinedSymbol.Identifier);
+			Assert.AreEqual(LabelType.Private, instr.DefinedSymbol.SymbolType);
 			Assert.AreEqual(expression, instr.Expression);
 
 			Context.Address = 5;
 
 			Assert.IsEmpty(instr.Construct(Context).ToList());
-			Assert.AreEqual((Int128)8, Context.SymbolTable["test"].Address);
+			Assert.AreEqual((Int128)8, Context.SymbolTable["test"].Value);
 		}
 	}
 }

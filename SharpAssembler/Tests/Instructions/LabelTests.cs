@@ -43,15 +43,15 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void AddsSymbol()
 		{
-			var instr = new Label("test", LabelType.Public);
-			Assert.AreEqual("test", instr.Identifier);
-			Assert.AreEqual(LabelType.Public, instr.LabelType);
+			var instr = new Label("test", SymbolType.Public);
+			Assert.AreEqual("test", instr.DefinedSymbol.Identifier);
+			Assert.AreEqual(LabelType.Public, instr.DefinedSymbol.SymbolType);
 
 			Context.Address = 5;
 
 			Assert.IsEmpty(instr.Construct(Context).ToList());
 			Assert.AreEqual(SymbolType.Public, Context.SymbolTable["test"].SymbolType);
-			Assert.AreEqual((Int128)5, Context.SymbolTable["test"].Address);
+			Assert.AreEqual((Int128)5, Context.SymbolTable["test"].Value);
 		}
 	}
 }

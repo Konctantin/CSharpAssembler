@@ -54,12 +54,9 @@ namespace SharpAssembler.Core.Tests.Symbols
 		[Test]
 		public void Constructor_IEnumerable()
 		{
-			var associatableMock = new Mock<IAssociatable>();
-			IAssociatable associatable = associatableMock.Object;
-
 			var symbols = new Symbol[]{
-				new Symbol(associatable, SymbolType.Private, "id1"),
-				new Symbol(associatable, SymbolType.Public, "id2")
+				new Symbol(SymbolType.Private, "id1"),
+				new Symbol(SymbolType.Public, "id2")
 			};
 
 			SymbolTable table = new SymbolTable(symbols);
@@ -73,12 +70,9 @@ namespace SharpAssembler.Core.Tests.Symbols
 		[Test]
 		public void AddRange()
 		{
-			var associatableMock = new Mock<IAssociatable>();
-			IAssociatable associatable = associatableMock.Object;
-
 			var symbols = new Symbol[]{
-				new Symbol(associatable, SymbolType.Private, "id1"),
-				new Symbol(associatable, SymbolType.Public, "id2")
+				new Symbol(SymbolType.Private, "id1"),
+				new Symbol(SymbolType.Public, "id2")
 			};
 
 			SymbolTable table = new SymbolTable();

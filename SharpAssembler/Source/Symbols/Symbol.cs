@@ -41,16 +41,11 @@ namespace SharpAssembler.Symbols
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Symbol"/> class.
 		/// </summary>
-		/// <param name="association">The object to which this symbol is associated.</param>
 		/// <param name="symbolType">The type of symbol.</param>
-		/// <remarks>
-		/// The value of the <see cref="Identifier"/> property reflects the identifier of the associated object.
-		/// </remarks>
-		public Symbol(IAssociatable association, SymbolType symbolType)
-			: this(association, symbolType, null)
+		public Symbol(SymbolType symbolType)
+			: this(symbolType, null)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(association != null);
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(SymbolType), symbolType));
 			#endregion
 		}
@@ -58,25 +53,14 @@ namespace SharpAssembler.Symbols
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Symbol"/> class.
 		/// </summary>
-		/// <param name="association">The object to which this symbol is associated.</param>
 		/// <param name="symbolType">The type of symbol.</param>
 		/// <param name="identifier">The identifier of the symbol; or <see langword="null"/>.</param>
-		/// <remarks>
-		/// When <paramref name="identifier"/> is <see langword="null"/> and <paramref name="association"/> is
-		/// an <see cref="IIdentifiable"/> object, the identifier is set to be the identifier of the
-		/// <paramref name="association"/> object.
-		/// </remarks>
-		public Symbol(IAssociatable association, SymbolType symbolType, string identifier)
+		public Symbol(SymbolType symbolType, string identifier)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(association != null);
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(SymbolType), symbolType));
 			#endregion
 
-			if (identifier == null && association is IIdentifiable)
-				identifier = ((IIdentifiable)association).Identifier;
-
-			this.association = association;
 			this.symbolType = symbolType;
 			this.identifier = identifier;
 		}
@@ -85,28 +69,40 @@ namespace SharpAssembler.Symbols
 		#region Properties
 		private string identifier;
 		/// <summary>
-		/// Gets the identifier of the symbol.
+		/// Gets or sets the identifier of the symbol.
 		/// </summary>
 		/// <value>The identifier of the symbol; or <see langword="null"/> when no identifier was specified.</value>
+		/// <remarks>
+		/// When <see cref="Association"/> is set to an object implementing the <see cref="IIdentifiable"/>
+		/// interface, then this property returns the identifier of that associated <see cref="IIdentifiable"/> object
+		/// when it is set to <see langword="null"/>.
+		/// </remarks>
 		public string Identifier
 		{
-			get { return identifier; }
+			get
+			{
+				var identifiable = this.association as IIdentifiable;
+				if (this.identifier == null && identifiable != null)
+					return identifiable.Identifier;
+				else
+					return this.identifier;
+			}
+			set
+			{
+				this.identifier = value;
+			}
 		}
 
 		private IAssociatable association;
 		/// <summary>
 		/// Gets the label, block, section or file this <see cref="Symbol"/> is associated with.
 		/// </summary>
-		/// <value>An object implementing the <see cref="IAssociatable"/> interface.</value>
+		/// <value>The object that is associated with this symbol; or <see langword="null"/> when no object
+		/// is associated with this symbol.</value>
 		public IAssociatable Association
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<IAssociatable>() != null);
-				#endregion
-				return association;
-			}
+			get { return this.association; }
+			set { SetAssociation(this, value); }
 		}
 
 		private SymbolType symbolType;
@@ -155,7 +151,6 @@ namespace SharpAssembler.Symbols
 		/// <value>The <see cref="Section"/> in which this symbol is defined; or <see langword="null"/> when
 		/// <see cref="IsAbsolute"/> is <see langword="true"/> or when the symbol is not defined in this object file
 		/// (i.e. it is extern, <see cref="IsExtern"/> is <see langword="true"/>).</value>
-		[SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 		public Section DefiningSection
 		{
 			get { return definingSection; }
@@ -166,7 +161,7 @@ namespace SharpAssembler.Symbols
 		/// <summary>
 		/// Gets or sets whether the address of this symbol is an absolute value.
 		/// </summary>
-		/// <value><see langword="true"/> when the symbol is defined and its <see cref="Address"/> is an absolute
+		/// <value><see langword="true"/> when the symbol is defined and its <see cref="Value"/> is an absolute
 		/// address; otherwise, <see langword="false"/>.</value>
 		public bool IsAbsolute
 		{
@@ -184,28 +179,45 @@ namespace SharpAssembler.Symbols
 			get { return definingSection == null && isAbsolute == false; }
 		}
 
-		private Int128 address;
+		private Int128 value;
 		/// <summary>
-		/// Gets or sets the address at which this symbol is defined.
+		/// Gets or sets the value of the symbol.
 		/// </summary>
-		/// <value>An address, relative to the start of the section when <see cref="IsAbsolute"/> is
-		/// <see langword="false"/>; or when <see cref="IsAbsolute"/> is <see langword="true"/>, relative to the start
-		/// of memory. Otherwise, 0 when <see cref="IsExtern"/> is <see langword="true"/>.</value>
-		public Int128 Address
+		/// <value>The value of the symbol, which may be an absolute (when <see cref="IsAbsolute"/> is
+		/// <see langword="true"/>) or relative address, or any other value.
+		/// Otherwise, 0 when <see cref="IsExtern"/> is <see langword="true"/>.</value>
+		public Int128 Value
 		{
-			get { return address; }
-			set { address = value; }
+			get { return this.value; }
+			set { this.value = value; }
+		}
+
+		private long size = 0;
+		/// <summary>
+		/// Gets or sets the size of the symbol's associated object.
+		/// </summary>
+		/// <value>The size of the symbol's associated objct; or 0 to specify no particular size.
+		/// The default is 0.</value>
+		public long Size
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<long>() >= 0);
+				#endregion
+				return this.size;
+			}
+			set
+			{
+				#region Contract
+				Contract.Requires<ArgumentNullException>(value >= 0);
+				#endregion
+				this.size = value;
+			}
 		}
 
 		private IDictionary annotations = new Hashtable();
-		/// <summary>
-		/// Gets a dictionary which may be used to store data specific to
-		/// this object.
-		/// </summary>
-		/// <value>An implementation of the <see cref="IDictionary"/> interface.</value>
-		/// <remarks>
-		/// This property is not serialized or deserialized.
-		/// </remarks>
+		/// <inheritdoc />
 		public IDictionary Annotations
 		{
 			get { return annotations; }
@@ -213,6 +225,77 @@ namespace SharpAssembler.Symbols
 		#endregion
 
 		#region Methods
+		/// <summary>
+		/// Defines the symbol by setting its value and adding it to the symbol table.
+		/// </summary>
+		/// <param name="context">The current <see cref="Context"/>.</param>
+		/// <param name="value">The value of the symbol.</param>
+		public void Define(Context context, Int128 value)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			#endregion
+			this.Value = value;
+			this.DefiningSection = context.Section;
+			this.DefiningFile = context.Section.Parent;
+			context.SymbolTable.Add(this);
+		}
+
+		/// <summary>
+		/// References the symbol by adding it to the symbol table.
+		/// </summary>
+		/// <param name="context">The current <see cref="Context"/>.</param>
+		public void ReferenceExtern(Context context)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			Contract.Requires<InvalidOperationException>(SymbolType == SymbolType.Extern);
+			#endregion
+			context.SymbolTable.Add(this);
+		}
+
+		/// <summary>
+		/// Sets an association between an object and a symbol.
+		/// </summary>
+		/// <param name="associatable">The associated object; or <see langword="null"/>.</param>
+		/// <param name="symbol">The associated symbol; or <see langword="null"/>.</param>
+		public static void SetAssociation(IAssociatable associatable, Symbol symbol)
+		{
+			if (symbol != null && associatable != null)
+			{
+				// Remove the associations between the specified symbol and its associatable,
+				// and the specified associatable and its symbol.
+				SetAssociation(symbol.association, null);
+				SetAssociation(associatable, null);
+
+				symbol.association = associatable;
+				associatable.SetAssociatedSymbol(symbol);
+			}
+			else if (symbol != null)
+			{
+				if (symbol.association != null)
+					symbol.association.SetAssociatedSymbol(null);
+				symbol.association = null;
+			}
+			else if (associatable != null)
+			{
+				if (associatable.AssociatedSymbol != null)
+					associatable.AssociatedSymbol.association = null;
+				associatable.SetAssociatedSymbol(null);
+			}
+			// Else: both are null. We don't have to associate a null object with a null Symbol.
+		}
+
+		/// <summary>
+		/// Sets an association between an object and a symbol.
+		/// </summary>
+		/// <param name="symbol">The associated symbol; or <see langword="null"/>.</param>
+		/// <param name="associatable">The associated object; or <see langword="null"/>.</param>
+		public static void SetAssociation(Symbol symbol, IAssociatable associatable)
+		{
+			SetAssociation(associatable, symbol);
+		}
+
 		/// <summary>
 		/// Returns a <see cref="String"/> that represents the current <see cref="Object"/>.
 		/// </summary>
@@ -235,7 +318,6 @@ namespace SharpAssembler.Symbols
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.association != null);
 			Contract.Invariant(Enum.IsDefined(typeof(SymbolType), this.symbolType));
 		}
 		#endregion

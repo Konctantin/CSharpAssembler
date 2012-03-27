@@ -23,11 +23,12 @@
  */
 #endregion
 using System.Diagnostics.Contracts;
+using System;
 
 namespace SharpAssembler.Symbols
 {
 	/// <summary>
-	/// An interface for classes and structures that have a location in memory.
+	/// Represents a structure that has an associated symbol.
 	/// </summary>
 	[ContractClass(typeof(Contracts.IAssociatableContract))]
 	public interface IAssociatable
@@ -36,6 +37,10 @@ namespace SharpAssembler.Symbols
 		/// Gets the <see cref="Symbol"/> associated with this <see cref="IAssociatable"/>.
 		/// </summary>
 		/// <value>A <see cref="Symbol"/>.</value>
+		/// <remarks>
+		/// If an implementation provides a setter for this property,
+		/// call the static <see cref="Symbol.SetAssociation(IAssociatable, Symbol)"/> method.
+		/// </remarks>
 		Symbol AssociatedSymbol
 		{ get; }
 
@@ -45,6 +50,20 @@ namespace SharpAssembler.Symbols
 		/// <value>A <see cref="IFile"/>.</value>
 		IFile ParentFile
 		{ get; }
+
+		/// <summary>
+		/// Sets the symbol that is associated with this object.
+		/// </summary>
+		/// <param name="symbol">The associated symbol; or <see langword="null"/> when no symbol is associated
+		/// with this object.</param>
+		/// <remarks>
+		/// Implementations should only set the associated symbol in this class.
+		/// This method should be implemented explicitly.
+		/// </remarks>
+		/// <exception cref="System.NotSupportedException">
+		/// The associated symbol cannot be set.
+		/// </exception>
+		void SetAssociatedSymbol(Symbol symbol);
 	}
 
 	#region Contract
@@ -60,9 +79,6 @@ namespace SharpAssembler.Symbols
 			{
 				get
 				{
-					Contract.Ensures(Contract.Result<Symbol>() != null);
-					Contract.Ensures(Contract.Result<Symbol>().Association == this);
-
 					return default(Symbol);
 				}
 			}
@@ -71,10 +87,13 @@ namespace SharpAssembler.Symbols
 			{
 				get
 				{
-					Contract.Ensures(Contract.Result<IFile>() != null);
-
 					return default(IFile);
 				}
+			}
+
+			public void SetAssociatedSymbol(Symbol symbol)
+			{
+
 			}
 		}
 	}

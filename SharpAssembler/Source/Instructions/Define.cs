@@ -37,70 +37,82 @@ namespace SharpAssembler.Instructions
 	/// Whereas a <see cref="Label"/> is a reference to a particular location in the file, a <see cref="Define"/> is
 	/// more like the <c>EQU</c> in NASM and defines a symbol to have a particular value.
 	/// </remarks>
-	public class Define : Constructable, IIdentifiable
+	public class Define : Constructable, IAssociatable
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Define"/> class that defines a private symbol.
+		/// Initializes a new instance of the <see cref="Define"/> class
+		/// that defines a private anonymous symbol.
 		/// </summary>
-		/// <param name="identifier">The identifier of the defined symbol.</param>
 		/// <param name="expression">The expression which returns the value for the symbol.</param>
-		public Define(string identifier, Func<Context, SimpleExpression> expression)
-			: this(identifier, LabelType.Private, expression)
+		/// <remarks>
+		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
+		/// </remarks>
+		public Define(Func<Context, SimpleExpression> expression)
+			: this(null, SymbolType.Private, expression)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(identifier != null);
 			Contract.Requires<ArgumentNullException>(expression != null);
 			#endregion
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Define"/> class.
+		/// Initializes a new instance of the <see cref="Define"/> class
+		/// that defines a private symbol with the specified identifier.
 		/// </summary>
-		/// <param name="identifier">The identifier of the defined symbol.</param>
-		/// <param name="labelType">The type of symbol defined.</param>
+		/// <param name="identifier">The identifier of the defined symbol; or <see langword="null"/>.</param>
 		/// <param name="expression">The expression which returns the value for the symbol.</param>
-		public Define(string identifier, LabelType labelType, Func<Context, SimpleExpression> expression)
+		/// <remarks>
+		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
+		/// </remarks>
+		public Define(string identifier, Func<Context, SimpleExpression> expression)
+			: this(identifier, SymbolType.Private, expression)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(identifier != null);
-			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(LabelType), labelType));
+			Contract.Requires<ArgumentNullException>(expression != null);
+			#endregion
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Define"/> class
+		/// that defines a symbol with the specified type and identifier.
+		/// </summary>
+		/// <param name="identifier">The identifier of the defined symbol.</param>
+		/// <param name="symbolType">The type of symbol defined.</param>
+		/// <param name="expression">The expression which returns the value for the symbol.</param>
+		/// <remarks>
+		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
+		/// </remarks>
+		public Define(string identifier, SymbolType symbolType, Func<Context, SimpleExpression> expression)
+			: this(new Symbol(symbolType, identifier), expression)
+		{
+			#region Contract
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(SymbolType), symbolType));
+			Contract.Requires<ArgumentNullException>(expression != null);
+			#endregion
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Define"/> class
+		/// that defines the specified symbol.
+		/// </summary>
+		/// <param name="symbol">The symbol that is defined.</param>
+		/// <param name="expression">The expression which returns the value for the symbol.</param>
+		/// <remarks>
+		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
+		/// </remarks>
+		public Define(Symbol symbol, Func<Context, SimpleExpression> expression)
+		{
+			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
 			#endregion
 
-			this.identifier = identifier;
-			this.labelType = labelType;
-			this.associatedSymbol = new Symbol(this, labelType.ToSymbolType());
 			this.expression = expression;
+			this.DefinedSymbol = symbol;
 		}
 		#endregion
 
 		#region Properties
-		private string identifier;
-		/// <summary>
-		/// Gets or sets the identifier of the symbol.
-		/// </summary>
-		/// <value>The identifier of the symbol.</value>
-		public string Identifier
-		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<string>() != null);
-				#endregion
-				return identifier;
-			}
-#if OPERAND_SET
-			set
-			{
-				#region Contract
-				Contract.Requires<ArgumentNullException>(value != null);
-				#endregion
-				identifier = value;
-			}
-#endif
-		}
-
 		private Func<Context, SimpleExpression> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluated to result in the symbol's value.
@@ -115,57 +127,29 @@ namespace SharpAssembler.Instructions
 				#endregion
 				return expression;
 			}
-#if OPERAND_SET
-			set
-			{
-				#region Contract
-				Contract.Requires<ArgumentNullException>(value != null);
-				#endregion
-				expression = value;
-			}
-#endif
 		}
 
-		private LabelType labelType;
+		private Symbol definedSymbol;
 		/// <summary>
-		/// Gets or sets the type of symbol which this definition defines.
+		/// Gets or sets the symbol that is defined by this instruction.
 		/// </summary>
-		/// <value>A member of the <see cref="LabelType"/> enumeration.</value>
-		public LabelType LabelType
+		/// <value>The <see cref="Symbol"/> that is defined by this instruction;
+		/// or <see langword="null"/>.</value>
+		/// <remarks>
+		/// When <see cref="DefinedSymbol"/> is <see langword="null"/>, the instruction
+		/// does not have any effect on the generated assembly.
+		/// </remarks>
+		public Symbol DefinedSymbol
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Enum.IsDefined(typeof(LabelType), Contract.Result<LabelType>()));
-				#endregion
-				return labelType;
-			}
-#if OPERAND_SET
-			set
-			{
-				#region Contract
-				Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(LabelType), value));
-				#endregion
-				labelType = value;
-				associatedSymbol.SymbolType = value.ToSymbolType();
-			}
-#endif
+			get { return this.definedSymbol; }
+			// NOTE: This property's field is set by the SetAssociatedSymbol() method.
+			set { Symbol.SetAssociation(this, value); }
 		}
 
-		private Symbol associatedSymbol;
-		/// <summary>
-		/// Gets the <see cref="Symbol"/> associated with this value.
-		/// </summary>
-		/// <value>A <see cref="Symbol"/>.</value>
-		public Symbol AssociatedSymbol
+		/// <inheritdoc />
+		Symbol IAssociatable.AssociatedSymbol
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<Symbol>() != null);
-				#endregion
-				return associatedSymbol;
-			}
+			get { return this.DefinedSymbol; }
 		}
 		#endregion
 
@@ -174,12 +158,16 @@ namespace SharpAssembler.Instructions
 		public override IEnumerable<IEmittable> Construct(Context context)
 		{
 			var result = expression(context).Evaluate(context);
-			associatedSymbol.Address = result;
-			associatedSymbol.DefiningSection = context.Section;
-			associatedSymbol.DefiningFile = context.Section.Parent;
-			context.SymbolTable.Add(associatedSymbol);
+			if (this.definedSymbol != null)
+				this.definedSymbol.Define(context, result);
 
 			yield break;
+		}
+
+		/// <inheritdoc />
+		void IAssociatable.SetAssociatedSymbol(Symbol symbol)
+		{
+			this.definedSymbol = symbol;
 		}
 
 		/// <inheritdoc />
@@ -208,10 +196,7 @@ namespace SharpAssembler.Instructions
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.identifier != null);
 			Contract.Invariant(this.expression != null);
-			Contract.Invariant(Enum.IsDefined(typeof(LabelType), this.labelType));
-			Contract.Invariant(this.associatedSymbol != null);
 		}
 		#endregion
 	}

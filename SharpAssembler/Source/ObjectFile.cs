@@ -39,7 +39,7 @@ namespace SharpAssembler
 	/// An object file, containing sections of code and data.
 	/// </summary>
 	public class ObjectFile
-		: IFile, IIdentifiable, IAnnotatable, IObjectFileVisitable
+		: IFile, IAssociatable, IAnnotatable, IObjectFileVisitable
 	{
 		#region Constructors
 		/// <summary>
@@ -48,7 +48,7 @@ namespace SharpAssembler
 		/// <param name="format">The format of the object file.</param>
 		/// <param name="architecture">The architecture.</param>
 		/// <param name="name">The name of the object file; or <see langword="null"/> to specify no name.</param>
-		protected ObjectFile(IObjectFileFormat format, IArchitecture architecture, string name)
+		public ObjectFile(IObjectFileFormat format, IArchitecture architecture, string name)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(format != null);
@@ -58,14 +58,12 @@ namespace SharpAssembler
 
 			this.format = format;
 			this.architecture = architecture;
-			this.name = name;
 			this.sections = new SectionCollection(this);
-			this.associatedSymbol = new Symbol(this, SymbolType.None);
+			this.AssociatedSymbol = new Symbol(SymbolType.None, name);
 		}
 		#endregion
 
 		#region Properties
-		private string name;
 		/// <summary>
 		/// Gets or sets the name of the object file.
 		/// </summary>
@@ -74,30 +72,18 @@ namespace SharpAssembler
 		/// There are no restrictions on the names which are allowed. Implementations using this property should
 		/// ensure that the name conforms to any restrictions which may apply, such as file naming restrictions.
 		/// </remarks>
-		public virtual string Name
+		public string Name
 		{
-			get { return name; }
-			set { name = value; }
-		}
-
-		/// <summary>
-		/// Gets the identifier of this <see cref="IIdentifiable"/>.
-		/// </summary>
-		/// <value>An identifier.</value>
-		[SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
-		string IIdentifiable.Identifier
-		{
-			get { return name; }
+			get { return this.associatedSymbol.Identifier; }
+			set { this.associatedSymbol.Identifier = value; }
 		}
 
 		private Symbol associatedSymbol;
-		/// <summary>
-		/// Gets the <see cref="Symbol"/> associated with this block.
-		/// </summary>
-		/// <value>A <see cref="Symbol"/>.</value>
+		/// <inheritdoc />
 		public Symbol AssociatedSymbol
 		{
-			get { return associatedSymbol; }
+			get { return this.associatedSymbol; }
+			set { Symbol.SetAssociation(this, value); }
 		}
 
 		private IArchitecture architecture;
@@ -167,13 +153,19 @@ namespace SharpAssembler
 			visitor.VisitObjectFile(this);
 		}
 
+		/// <inheritdoc />
+		void IAssociatable.SetAssociatedSymbol(Symbol symbol)
+		{
+			this.associatedSymbol = symbol;
+		}
+
 		/// <summary>
 		/// Returns a <see cref="String"/> that represents the current <see cref="Object"/>.
 		/// </summary>
 		/// <returns>A <see cref="String"/> that represents the current <see cref="Object"/>.</returns>
 		public override string ToString()
 		{
-			return name ?? base.ToString();
+			return this.associatedSymbol.Identifier ?? base.ToString();
 		}
 		#endregion
 

@@ -97,7 +97,7 @@ namespace SharpAssembler
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(path != null);
-			Contract.Requires<ArgumentException>(String.IsNullOrWhiteSpace(path));
+			Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(path));
 			#endregion
 
 			// THROWS: UnauthorizedAccessException

@@ -76,13 +76,8 @@ namespace SharpAssembler.Symbols
 			}
 		}
 
-		/// <summary>
-		/// Inserts an element into the <see cref="SymbolTable"/> at the specified index.
-		/// </summary>
-		/// <param name="index">The zero-based index at which
-		/// <paramref name="item"/> should be inserted.</param>
-		/// <param name="item">The object to insert.</param>
-		protected sealed override void InsertItem(int index, Symbol item)
+		/// <inheritdoc />
+		protected override void InsertItem(int index, Symbol item)
 		{
 			#region Contract
 			// CONTRACT: Collection<T>
@@ -93,12 +88,8 @@ namespace SharpAssembler.Symbols
 			base.InsertItem(index, item);
 		}
 
-		/// <summary>
-		/// Replaces the element at the specified index.
-		/// </summary>
-		/// <param name="index">The zero-based index of the element to replace.</param>
-		/// <param name="item">The new value for the element at the specified index.</param>
-		protected sealed override void SetItem(int index, Symbol item)
+		/// <inheritdoc />
+		protected override void SetItem(int index, Symbol item)
 		{
 			#region Contract
 			// CONTRACT: Collection<T>
@@ -151,6 +142,7 @@ namespace SharpAssembler.Symbols
 			}
 			return -1;
 		}
+
 
 		/// <summary>
 		/// Gets the first symbol with the specified identifier.

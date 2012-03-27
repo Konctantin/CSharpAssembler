@@ -43,7 +43,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 		public void AddsSymbol()
 		{
 			var instr = new Extern("test");
-			Assert.AreEqual("test", instr.Identifier);
+			Assert.AreEqual("test", instr.ExternSymbol.Identifier);
 
 			Assert.IsEmpty(instr.Construct(Context).ToList());
 			Assert.IsTrue(Context.SymbolTable["test"].IsExtern);

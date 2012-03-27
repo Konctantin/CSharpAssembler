@@ -77,7 +77,7 @@ namespace SharpAssembler
 			#endregion
 
 			this.identifier = identifier;
-			this.associatedSymbol = new Symbol(this, SymbolType.None);
+			this.AssociatedSymbol = new Symbol(SymbolType.None);
 		}
 		#endregion
 
@@ -107,19 +107,11 @@ namespace SharpAssembler
 		}
 
 		private Symbol associatedSymbol;
-		/// <summary>
-		/// Gets the <see cref="Symbol"/> associated with this block.
-		/// </summary>
-		/// <value>A <see cref="Symbol"/>.</value>
+		/// <inheritdoc />
 		public Symbol AssociatedSymbol
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<Symbol>() != null);
-				#endregion
-				return associatedSymbol;
-			}
+			get { return this.associatedSymbol; }
+			set { Symbol.SetAssociation(this, value); }
 		}
 
 		private SectionFlags flags;
@@ -430,6 +422,12 @@ namespace SharpAssembler
 		{
 			emittables = null;
 			emittableLength = 0;
+		}
+
+		/// <inheritdoc />
+		void IAssociatable.SetAssociatedSymbol(Symbol symbol)
+		{
+			this.associatedSymbol = symbol;
 		}
 
 		/// <summary>
