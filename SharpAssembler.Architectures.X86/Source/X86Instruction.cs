@@ -64,6 +64,13 @@ namespace SharpAssembler.Architectures.X86
 		#endregion
 
 		#region Properties
+		private X86Opcode opcode;
+		/// <inheritdoc />
+		public X86Opcode Opcode
+		{
+			get { return this.opcode; }
+		}
+
 		/// <summary>
 		/// Gets the mnemonic of the instruction.
 		/// </summary>

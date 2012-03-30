@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DCE63BFB-2FFE-4396-97AB-95EE3685BE4C}</ProjectGuid>
+    <ProjectGuid>{63E0DAC0-75A1-467B-84E5-5BEC7CEFDD6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpAssembler</RootNamespace>
-    <AssemblyName>SharpAssembler</AssemblyName>
+    <RootNamespace>SharpAssembler.Architectures.ARM</RootNamespace>
+    <AssemblyName>SharpAssembler.Architectures.ARM</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -33,8 +33,16 @@
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
     <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
     <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
     <CodeContractsCustomRewriterAssembly />
@@ -43,11 +51,10 @@
     <CodeContractsExtraRewriteOptions />
     <CodeContractsExtraAnalysisOptions />
     <CodeContractsBaseLineFile />
-    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Debug\SharpAssembler.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,7 +64,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
-    <CodeContractsRuntimeOnlyPublicSurface>True</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
@@ -67,21 +74,6 @@
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
-    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
-    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
-    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
-    <CodeContractsCustomRewriterAssembly />
-    <CodeContractsCustomRewriterClass />
-    <CodeContractsLibPaths />
-    <CodeContractsExtraRewriteOptions />
-    <CodeContractsExtraAnalysisOptions />
-    <CodeContractsBaseLineFile />
-    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
-    <CodeContractsRuntimeCheckingLevel>Pre and Post</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
-    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Release\SharpAssembler.xml</DocumentationFile>
     <CodeContractsInferRequires>False</CodeContractsInferRequires>
     <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
     <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
@@ -90,6 +82,21 @@
     <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
     <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
     <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Pre and Post</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>bin\Release\SharpAssembler.Architectures.ARM.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -101,67 +108,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblerException.cs" />
-    <Compile Include="Constructable.cs" />
-    <Compile Include="ConstructableCollection.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="Extra\BinaryWriterExtensions.cs" />
-    <Compile Include="Extra\CollectionExtensions.cs" />
-    <Compile Include="Extra\NonClosingStreamWrapper.cs" />
-    <Compile Include="IInstruction.cs" />
-    <Compile Include="Instructions\CustomConstructable.cs" />
-    <Compile Include="Instructions\Group.cs" />
-    <Compile Include="Instructions\Define.cs" />
-    <Compile Include="Instructions\DeclareString.cs" />
-    <Compile Include="Instructions\Instruction.cs" />
-    <Compile Include="Int128.cs" />
-    <Compile Include="Extra\MathExt.cs" />
-    <Compile Include="Instructions\Align.cs" />
-    <Compile Include="Instructions\Comment.cs" />
-    <Compile Include="Instructions\DeclareData.cs" />
-    <Compile Include="Instructions\DeclareData`1.cs" />
-    <Compile Include="Instructions\ExpressionEmittable.cs" />
-    <Compile Include="Instructions\Extern.cs" />
-    <Compile Include="Instructions\Label.cs" />
-    <Compile Include="Instructions\LabelType.cs" />
-    <Compile Include="Instructions\RawEmittable.cs" />
-    <Compile Include="DataSize.cs" />
-    <Compile Include="IAnnotatable.cs" />
-    <Compile Include="IArchitecture.cs" />
-    <Compile Include="IEmittable.cs" />
-    <Compile Include="IFile.cs" />
-    <Compile Include="IObjectFileAssembler.cs" />
-    <Compile Include="IObjectFileVisitable.cs" />
-    <Compile Include="IObjectFileVisitor.cs" />
-    <Compile Include="IOpcode.cs" />
-    <Compile Include="IOperand.cs" />
-    <Compile Include="Languages\ILanguage.cs" />
-    <Compile Include="Languages\IIndented.cs" />
-    <Compile Include="Languages\Language.cs" />
-    <Compile Include="Languages\LanguageException.cs" />
-    <Compile Include="ObjectFile.cs" />
-    <Compile Include="ObjectFileFeature.cs" />
-    <Compile Include="IObjectFileFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SectionCollection.cs" />
-    <Compile Include="SectionFactory.cs" />
-    <Compile Include="SimpleExpression.cs" />
-    <Compile Include="Symbols\Reference.cs" />
-    <Compile Include="Section.cs" />
-    <Compile Include="SectionFlags.cs" />
-    <Compile Include="SectionType.cs" />
-    <Compile Include="Symbols\IAssociatable.cs" />
-    <Compile Include="Symbols\IIdentifiable.cs" />
-    <Compile Include="Symbols\Relocation.cs" />
-    <Compile Include="Symbols\RelocationType.cs" />
-    <Compile Include="Symbols\Symbol.cs" />
-    <Compile Include="Symbols\SymbolTable.cs" />
-    <Compile Include="Symbols\SymbolType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Changes.txt" />
-    <Content Include="Copyright.txt" />
-    <Content Include="License.txt" />
+    <ProjectReference Include="..\..\SharpAssembler\Source\SharpAssembler.csproj">
+      <Project>{DCE63BFB-2FFE-4396-97AB-95EE3685BE4C}</Project>
+      <Name>SharpAssembler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

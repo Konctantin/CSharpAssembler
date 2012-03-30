@@ -100,6 +100,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="X86Opcode.cs" />
+    <Compile Include="X86OpcodeVariant.cs" />
+    <Compile Include="OperandDescriptor.cs" />
+    <Compile Include="OperandEncoding.cs" />
+    <Compile Include="OperandType.cs" />
     <Compile Include="X86Architecture.cs" />
     <Compile Include="CpuFeatures.cs" />
     <Compile Include="CpuType.cs" />
