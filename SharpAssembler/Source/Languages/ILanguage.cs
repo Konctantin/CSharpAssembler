@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -74,10 +74,10 @@ namespace SharpAssembler.Languages
 		{ get; set; }
 
 		/// <summary>
-		/// Gets the <see cref="StreamWriter"/> used to write the assembler code to.
+		/// Gets the <see cref="TextWriter"/> used to write the assembler code to.
 		/// </summary>
-		/// <value>A <see cref="StreamWriter"/> object.</value>
-		StreamWriter Writer
+		/// <value>A <see cref="TextWriter"/> object.</value>
+		TextWriter Writer
 		{ get; }
 	}
 
@@ -131,12 +131,12 @@ namespace SharpAssembler.Languages
 				}
 			}
 
-			public StreamWriter Writer
+			public TextWriter Writer
 			{
 				get
 				{
-					Contract.Ensures(Contract.Result<StreamWriter>() != null);
-					return default(StreamWriter);
+					Contract.Ensures(Contract.Result<TextWriter>() != null);
+					return default(TextWriter);
 				}
 			}
 

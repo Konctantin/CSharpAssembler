@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -265,279 +265,279 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of each possible
 		/// condition of this instruction.
 		/// </summary>
-		private static InstructionVariant[][] variants = new InstructionVariant[][] {
+		private static X86OpcodeVariant[][] variants = new X86OpcodeVariant[][] {
 		   new[] {
 				// CMOVO reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x0) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVO reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x0) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVO reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x0) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVNO reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x1) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVNO reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x1) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVNO reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x1) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVB reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x2) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVB reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x2) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVB reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x2) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVAE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x3) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVAE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x3) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVAE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x3) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x4) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x4) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x4) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVNE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x5) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVNE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x5) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVNE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x5) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVBE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x6) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVBE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x6) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVBE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x6) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVA reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x7) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVA reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x7) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVA reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x7) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVS reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x8) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVS reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x8) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVS reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x8) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVNS reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x9) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVNS reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x9) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVNS reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0x9) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVPE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xA) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVPE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xA) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVPE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xA) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVPO reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xB) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVPO reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xB) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVPO reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xB) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVL reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xC) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVL reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xC) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVL reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xC) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVGE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xD) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVGE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xD) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVGE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xD) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVLE reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xE) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVLE reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xE) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVLE reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xE) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			},
 			new[] {
 				// CMOVG reg/mem16, reg16
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xF) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 				// CMOVG reg/mem32, reg32
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xF) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 				// CMOVG reg/mem64, reg64
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x40 | 0xF) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
@@ -545,12 +545,12 @@ namespace SharpAssembler.Architectures.X86.Instructions
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{
 			return variants[((int)condition) & 0xFF];
 		}

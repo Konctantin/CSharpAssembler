@@ -9,9 +9,9 @@ using System.Globalization;
 namespace SharpAssembler.Architectures.X86
 {
 	/// <summary>
-	/// Descibes a single operand.
+	/// Describes a single operand.
 	/// </summary>
-	internal struct OperandDescriptor : IEquatable<OperandDescriptor>
+	public struct OperandDescriptor : IEquatable<OperandDescriptor>
 	{
 		#region Constructors
 		/// <summary>
@@ -211,7 +211,7 @@ namespace SharpAssembler.Architectures.X86
 		/// of the operand does not matter.</value>
 		/// <remarks>
 		/// This property returns the size of <see cref="FixedRegister"/> when <see cref="OperandType"/> equals
-		/// <see cref="SharpAssembler.Architectures.X86.X86Instruction.OperandType.FixedRegister"/>.
+		/// <see cref="SharpAssembler.Architectures.X86.OperandType.FixedRegister"/>.
 		/// </remarks>
 		public DataSize Size
 		{
@@ -227,7 +227,7 @@ namespace SharpAssembler.Architectures.X86
 		private Register fixedRegister;
 		/// <summary>
 		/// Gets the <see cref="Register"/> which must be set when <see cref="OperandType"/> equals
-		/// <see cref="SharpAssembler.Architectures.X86.X86Instruction.OperandType.FixedRegister"/>.
+		/// <see cref="SharpAssembler.Architectures.X86.OperandType.FixedRegister"/>.
 		/// </summary>
 		/// <value>A <see cref="Register"/>; or <see cref="Register.None"/> when it does not apply.</value>
 		public Register FixedRegister

@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -272,162 +272,162 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// MOV AL, moffset8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA0 },
 				new OperandDescriptor(Register.AL),
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit8)),
 			// MOV AX, moffset16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA1 },
 				new OperandDescriptor(Register.AX),
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit16)),
 			// MOV EAX, moffset32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA1 },
 				new OperandDescriptor(Register.EAX),
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit32)),
 			// MOV RAX, moffset64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA1 },
 				new OperandDescriptor(Register.RAX),
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit64)),
 
 
 			// MOV moffset8, AL
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA2 },
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit8),
 				new OperandDescriptor(Register.AL)),
 			// MOV moffset16, AX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA3 },
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit16),
 				new OperandDescriptor(Register.AX)),
 			// MOV moffset32, EAX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA3 },
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit32),
 				new OperandDescriptor(Register.EAX)),
 			// MOV moffset64, RAX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA3 },
 				new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit64),
 				new OperandDescriptor(Register.RAX)),
 
 
 			// MOV reg8, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xB0 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// MOV reg16, imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xB8 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// MOV reg32, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xB8 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// MOV reg64, imm64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xB8 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit64)),
 
 
 			// MOV reg/mem8, reg8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x88 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit)),
 			// MOV reg/mem16, reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x89 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 			// MOV reg/mem32, reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x89 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 			// MOV reg/mem64, reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x89 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 
 
 			// MOV reg8, reg/mem8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8A },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			// MOV reg16, reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// MOV reg32, reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// MOV reg64, reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 
 			// MOV reg16/32/64/mem16, segReg
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC6 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit | RegisterType.GeneralPurpose32Bit | RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Segment)),
 
 			// MOV segReg, reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC6 }, 0,
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Segment),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 
 
 			// MOV reg/mem8, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC6 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// MOV reg/mem16, imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// MOV reg/mem32, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// MOV reg/mem64, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xC7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

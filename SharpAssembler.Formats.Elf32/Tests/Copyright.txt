@@ -2,7 +2,7 @@
 Library for .NET that assembles a predetermined list of
 instructions into machine code.
 
-Copyright (C) 2011 Daniël Pelsmaeker
+Copyright (C) 2011-2012 Daniël Pelsmaeker
 
 SharpAssembler is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

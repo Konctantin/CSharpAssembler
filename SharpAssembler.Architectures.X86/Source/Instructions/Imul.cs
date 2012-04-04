@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -241,34 +241,34 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// 0: -
 			// 1: -
 			// 2: Multiplier (reg/mem)
 
 			// IMUL reg/mem8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF6 }, 5,
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			// IMUL reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 5,
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// IMUL reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 5,
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// IMUL reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 5,
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.None, DataSize.None),
@@ -279,19 +279,19 @@ namespace SharpAssembler.Architectures.X86.Instructions
 			// 2: Multiplier (reg/mem)
 
 			// IMUL reg16,reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xAF },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// IMUL reg32,reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xAF },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.None, DataSize.None),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// IMUL reg64,reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xAF },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.None, DataSize.None),
@@ -302,38 +302,38 @@ namespace SharpAssembler.Architectures.X86.Instructions
 			// 2: Multiplier (imm)
 
 			// IMUL reg16,reg/mem16,imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x6B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// IMUL reg32,reg/mem32,imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x6B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// IMUL reg64,reg/mem64,imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x6B },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 
 			// IMUL reg16,reg/mem16,imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x69 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// IMUL reg32,reg/mem32,imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x69 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// IMUL reg64,reg/mem64,imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x69 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
@@ -341,12 +341,12 @@ namespace SharpAssembler.Architectures.X86.Instructions
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

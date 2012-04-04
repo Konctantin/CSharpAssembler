@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -188,28 +188,28 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// MOVD xmm, reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x66, 0x0F, 0x6E },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd128Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// MOVD xmm, reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x66, 0x0F, 0x6E },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd128Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 			// MOVD reg/mem32, xmm
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x66, 0x0F, 0x7E },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd128Bit)),
 			// MOVD reg/mem64, xmm
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x66, 0x0F, 0x7E },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd128Bit)),
@@ -217,35 +217,35 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 
 			// MOVD mmx, reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0x6E },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// MOVD mmx, reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0x6E },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 			// MOVD reg/mem32, mmx
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0x7E },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd64Bit)),
 			// MOVD reg/mem64, mmx
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0x7E },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.Simd64Bit)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

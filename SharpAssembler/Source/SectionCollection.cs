@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -32,12 +32,57 @@ namespace SharpAssembler
 	/// <summary>
 	/// A collection of <see cref="Section"/> objects.
 	/// </summary>
-	public sealed class SectionCollection : KeyedCollection<String, Section>
+	public class SectionCollection : KeyedCollection<String, Section>
 	{
 		/// <summary>
 		/// The owner of the collection.
 		/// </summary>
 		private readonly ObjectFile owner;
+
+		/// <summary>
+		/// Gets the program code section.
+		/// </summary>
+		/// <value>The <see cref="Section"/> with the identifier <c>.text</c>;
+		/// or <see langword="null"/> when there is no such section.</value>
+		public Section Text
+		{
+			get
+			{
+				Section section;
+				TryGetValue(".text", out section);
+				return section;
+			}
+		}
+
+		/// <summary>
+		/// Gets the initialized data section.
+		/// </summary>
+		/// <value>The <see cref="Section"/> with the identifier <c>.data</c>;
+		/// or <see langword="null"/> when there is no such section.</value>
+		public Section Data
+		{
+			get
+			{
+				Section section;
+				TryGetValue(".data", out section);
+				return section;
+			}
+		}
+
+		/// <summary>
+		/// Gets the uninitialized data section.
+		/// </summary>
+		/// <value>The <see cref="Section"/> with the identifier <c>.bss</c>;
+		/// or <see langword="null"/> when there is no such section.</value>
+		public Section Bss
+		{
+			get
+			{
+				Section section;
+				TryGetValue(".bss", out section);
+				return section;
+			}
+		}
 
 		#region Constructors
 		/// <summary>
@@ -104,6 +149,25 @@ namespace SharpAssembler
 			this.Add(section);
 
 			return section;
+		}
+
+		/// <summary>
+		/// Attempts to return the <see cref="Section"/> with the specified identifier.
+		/// </summary>
+		/// <param name="identifier">The identifier of the section.</param>
+		/// <param name="value">The <see cref="Section"/>, if found; otherwise, <see langword="null"/>.</param>
+		/// <returns><see langword="true"/> when the section with the specified identifier was found;
+		/// otherwise, <see langword="false"/>.</returns>
+		public bool TryGetValue(string identifier, out Section value)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(identifier != null);
+			#endregion
+			value = null;
+			if (!this.Contains(identifier))
+				return false;
+			value = this[identifier];
+			return true;
 		}
 
 		/// <inhertidoc />

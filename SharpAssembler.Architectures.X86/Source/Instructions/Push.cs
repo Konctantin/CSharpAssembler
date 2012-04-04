@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -150,88 +150,88 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// PUSH reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 6,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// PUSH reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 6,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// PUSH reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 6,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 			// PUSH reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x50 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd)),
 			// PUSH reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x50 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd)),
 			// PUSH reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x50 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd)),
 
 			// PUSH imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x6A },
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// PUSH imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x68 },
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// PUSH imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x68 },
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// PUSH imm64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x68 },
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit64)),
 
 			// TODO: These three are not valid in 64-bit mode:
 			// PUSH CS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0E },
 				new OperandDescriptor(Register.CS)),
 			// PUSH SS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x16 },
 				new OperandDescriptor(Register.SS)),
 			// PUSH DS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x1E },
 				new OperandDescriptor(Register.DS)),
 			// PUSH ES
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x06 },
 				new OperandDescriptor(Register.ES)),
 
 			// PUSH FS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xA0 },
 				new OperandDescriptor(Register.FS)),
 			// PUSH GS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xA8 },
 				new OperandDescriptor(Register.GS)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

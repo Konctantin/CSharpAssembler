@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -204,82 +204,82 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// TEST AL, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA8 },
 				new OperandDescriptor(Register.AL),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// TEST AX, imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA9 },
 				new OperandDescriptor(Register.AX),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// TEST EAX, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA9 },
 				new OperandDescriptor(Register.EAX),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// TEST RAX, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xA9 },
 				new OperandDescriptor(Register.RAX),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 
 			// TEST reg/mem8, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF6 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// TEST reg/mem16, imm16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit16)),
 			// TEST reg/mem32, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 			// TEST reg/mem64, imm32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xF7 }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit32)),
 
 			
 			// TEST reg/mem8, reg8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x84 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit)),
 			// TEST reg/mem16, reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x85 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 			// TEST reg/mem32, reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x85 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 			// TEST reg/mem64, reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x85 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

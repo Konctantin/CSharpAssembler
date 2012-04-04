@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -30,53 +30,37 @@ using System.Globalization;
 using System.Linq;
 using SharpAssembler;
 using SharpAssembler.Architectures.X86.Operands;
+using System.Collections.ObjectModel;
 
 namespace SharpAssembler.Architectures.X86
 {
 	/// <summary>
 	/// An x86-64 instruction.
 	/// </summary>
-	public abstract partial class X86Instruction : Constructable
+	public partial class X86Instruction : Constructable, IInstruction
 	{
-		#region Constructors
+		private readonly X86Opcode opcode;
 		/// <summary>
-		/// Initializes a new instance of the <see cref="X86Instruction"/> class.
+		/// Gets the opcode of the instruction.
 		/// </summary>
-		protected X86Instruction()
-			: base()
-		{ /* Nothing to do. */ }
-
-#if false
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Instruction"/> class.
-		/// </summary>
-		/// <param name="operandCount">The number of operands for this instruction.</param>
-		protected Instruction(int operandCount)
-			: base()
-		{
-			#region Contract
-			if (operandCount < 0) throw new ArgumentOutOfRangeException("operandCount");
-			#endregion
-
-			operands = new FixedSizeList<Operand>(operandCount);
-		}
-#endif
-		#endregion
-
-		#region Properties
-		private X86Opcode opcode;
-		/// <inheritdoc />
+		/// <value>The <see cref="IOpcode"/> of the instruction,
+		/// which describes the semantics of the instruction.</value>
 		public X86Opcode Opcode
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<X86Opcode>() != null);
+				#endregion
+				return this.opcode;
+			}
+		}
+
+		/// <inheritdoc />
+		IOpcode IInstruction.Opcode
 		{
 			get { return this.opcode; }
 		}
-
-		/// <summary>
-		/// Gets the mnemonic of the instruction.
-		/// </summary>
-		/// <value>The mnemonic of the instruction.</value>
-		public abstract string Mnemonic
-		{ get; }
 
 		private DataSize operandSize = DataSize.None;
 		/// <summary>
@@ -97,11 +81,7 @@ namespace SharpAssembler.Architectures.X86
 				#endregion
 				return operandSize;
 			}
-#if OPERAND_SET
-			set
-#else
 			protected set
-#endif
 			{
 				#region Contract
 				Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), value));
@@ -110,87 +90,151 @@ namespace SharpAssembler.Architectures.X86
 			}
 		}
 
+		#region Constructors
 		/// <summary>
-		/// Gets whether this instruction is valid in 64-bit mode.
+		/// Initializes a new instance of the <see cref="X86Instruction"/> class.
 		/// </summary>
-		/// <value><see langword="true"/> when the instruction is valid in 64-bit mode;
-		/// otherwise, <see langword="false"/>.</value>
-		public virtual bool ValidIn64BitMode
+		/// <param name="opcode">The opcode of this instruction.</param>
+		/// <param name="operands">The operands to the instruction.</param>
+		public X86Instruction(X86Opcode opcode, params Operand[] operands)
+			: this(opcode, (IList<Operand>)operands)
 		{
-			get { return true; }
+			#region Contract
+			Contract.Requires<ArgumentNullException>(opcode != null);
+			Contract.Requires<ArgumentNullException>(operands != null);
+			Contract.Requires<ArgumentException>(operands.Length == opcode.OperandCount);
+			#endregion
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="X86Instruction"/> class.
+		/// </summary>
+		/// <param name="opcode">The opcode of this instruction.</param>
+		/// <param name="operands">The operands to the instruction.</param>
+		public X86Instruction(X86Opcode opcode, IList<Operand> operands)
+			: base()
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(opcode != null);
+			Contract.Requires<ArgumentNullException>(operands != null);
+			Contract.Requires<ArgumentException>(operands.Count == opcode.OperandCount);
+			#endregion
+			this.opcode = opcode;
+			this.operands = operands.ToArray();
+			Contract.Assert(this.operands.Length == opcode.OperandCount);
+		}
+		#endregion
+
+		#region Operands
+		private Operand[] operands;
+		/// <inheritdoc />
+		ReadOnlyCollection<IOperand> IInstruction.GetOperands()
+		{
+			return new ReadOnlyCollection<IOperand>((IOperand[])operands);
+		}
+
+		/// <summary>
+		/// Returns the operands to the instruction.
+		/// </summary>
+		/// <returns>An ordered list of operands.</returns>
+		public ReadOnlyCollection<Operand> GetOperands()
+		{
+			#region Contract
+			Contract.Ensures(Contract.Result<ReadOnlyCollection<Operand>>() != null);
+			#endregion
+			return new ReadOnlyCollection<Operand>(operands);
 		}
 		#endregion
 
 		#region Methods
-		/// <summary>
-		/// Enumerates an ordered list of operands used by this instruction.
-		/// </summary>
-		/// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Operand"/> objects.</returns>
-		public abstract IEnumerable<Operand> GetOperands();
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			return String.Format(CultureInfo.InvariantCulture, "{0}({1})",
+				this.opcode.Mnemonic,
+				String.Join(", ", GetOperands()));
+		}
+		#endregion
 
+		#region Construction
 		/// <inheritdoc />
 		public override IEnumerable<IEmittable> Construct(Context context)
 		{
 			// CONTRACT: Constructable
 
-			var arch = context.Representation.Architecture;
-			if (!ValidIn64BitMode && (arch.AddressSize == DataSize.Bit64 || arch.OperandSize == DataSize.Bit64 || OperandSize == DataSize.Bit64))
-				throw new AssemblerException("The instruction is not valid in 64-bit mode.");
-			if (ValidIn64BitMode && OperandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
-				throw new AssemblerException("The instruction variant is only valid in 64-bit mode.");
+			// THROWS: AssemblerException
+			AssertValidForContext(context);
 
 			// Get the most efficient instruction variant.
-			InstructionVariant variant = GetVariant(context);
+			X86OpcodeVariant variant = GetVariant(context);
 			if (variant == null)
 				throw new AssemblerException("No matching instruction variant was found.");
 
-			// Lock prefix?
-			bool lockprefix = false;
-			ILockInstruction lockinstr = this as ILockInstruction;
-			if (lockinstr != null)
-				lockprefix = lockinstr.Lock;
-
 			// Construct the chosen variant.
-			EncodedInstruction instr = variant.Construct(context, GetOperands(), lockprefix);
+			EncodedInstruction instr = variant.Construct(context, GetOperands(), GetLockPrefix());
 
-			yield return instr;
+			return new IEmittable[] { instr };
 		}
 
 		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents this instance.
+		/// Gets whether a lock prefix is used for this instruction.
 		/// </summary>
-		/// <returns>
-		/// A <see cref="System.String"/> that represents this instance.
-		/// </returns>
-		public override string ToString()
+		/// <returns><see langword="true"/> to use a lock prefix;
+		/// otherwise, <see langword="false"/>.</returns>
+		protected virtual bool GetLockPrefix()
 		{
-			return String.Format(CultureInfo.InvariantCulture, "{0}({1})",
-				this.Mnemonic,
-				String.Join(", ", GetOperands()));
+			return false;
 		}
-		#endregion
 
-		#region Instruction Variants
 		/// <summary>
-		/// Returns an array containing the <see cref="X86Instruction.InstructionVariant"/> objects representing all the possible
-		/// variants of the instruction.
+		/// Checks whether this instruction with the set operand and address size is valid
+		/// in the provided context.
 		/// </summary>
-		/// <returns>An array of <see cref="X86Instruction.InstructionVariant"/> objects.</returns>
-		internal abstract InstructionVariant[] GetVariantList();
+		private void AssertValidForContext(Context context)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			#endregion
+			var arch = context.Representation.Architecture;
+			if (!this.opcode.IsValidIn64BitMode &&
+						 (arch.AddressSize == DataSize.Bit64 ||
+						 arch.OperandSize == DataSize.Bit64 ||
+						 OperandSize == DataSize.Bit64))
+				throw new AssemblerException("The instruction is not valid in 64-bit mode.");
+			else if (this.opcode.IsValidIn64BitMode &&
+				OperandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
+				throw new AssemblerException("The instruction is only valid in 64-bit mode.");
+		}
 
 		/// <summary>
 		/// Finds the most efficient variant for the instruction with the current operands.
 		/// </summary>
 		/// <param name="context">The <see cref="Context"/>.</param>
-		/// <returns>The most efficient <see cref="X86Instruction.InstructionVariant"/>; or <see langword="null"/> when none was
-		/// found.</returns>
-		private InstructionVariant GetVariant(Context context)
+		/// <returns>The most efficient <see cref="X86OpcodeVariant"/>;
+		/// or <see langword="null"/> when none was found.</returns>
+		private X86OpcodeVariant GetVariant(Context context)
 		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			#endregion
 			var variants =
-				from variant in GetVariantList()
+				from variant in this.opcode.Variants
 				where variant.Match(operandSize, GetOperands().ToList())
 				select variant;
 			return variants.FirstOrDefault();
+		}
+		#endregion
+
+		#region Invariant
+		/// <summary>
+		/// Asserts the invariants of this type.
+		/// </summary>
+		[ContractInvariantMethod]
+		private void ObjectInvariant()
+		{
+			Contract.Invariant(this.opcode != null);
+			Contract.Invariant(this.operands != null);
+			Contract.Invariant(this.operands.Length == this.opcode.OperandCount);
 		}
 		#endregion
 	}

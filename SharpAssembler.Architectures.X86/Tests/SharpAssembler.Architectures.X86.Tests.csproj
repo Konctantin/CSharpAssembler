@@ -91,7 +91,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\..\Libraries\Moq.dll</HintPath>
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,15 +109,17 @@
     <Compile Include="ArchitectureTests.cs" />
     <Compile Include="ExampleBase.cs" />
     <Compile Include="InstructionConditionExtensionsTests.cs" />
-    <Compile Include="Examples\HelloWorld.cs" />
-    <Compile Include="Instructions\AndTest.cs" />
-    <Compile Include="Instructions\AaaTest.cs" />
-    <Compile Include="Instructions\AadTest.cs" />
-    <Compile Include="Instructions\AamTest.cs" />
-    <Compile Include="Instructions\AasTest.cs" />
-    <Compile Include="Instructions\AdcTest.cs" />
-    <Compile Include="Instructions\CmpsTest.cs" />
-    <Compile Include="Instructions\InstructionTestBase.cs" />
+    <None Include="Examples\HelloWorld.cs" />
+    <None Include="Instructions\AndTest.cs" />
+    <None Include="Instructions\AaaTest.cs" />
+    <None Include="Instructions\AadTest.cs" />
+    <None Include="Instructions\AamTest.cs" />
+    <None Include="Instructions\AasTest.cs" />
+    <None Include="Instructions\AdcTest.cs" />
+    <None Include="Instructions\CmpsTest.cs" />
+    <None Include="Instructions\InstructionTestBase.cs" />
+    <Compile Include="Opcodes\AdcTests.cs" />
+    <Compile Include="Opcodes\OpcodeTestBase.cs" />
     <Compile Include="RegisterTypeExtensionsTests.cs" />
     <Compile Include="EncodedInstruction.SibByteTests.cs" />
     <Compile Include="EncodedInstruction.ModRMByteTests.cs" />
@@ -144,6 +146,9 @@
     <Content Include="Copyright.txt" />
     <Content Include="Examples\HelloWorld.asm" />
     <Content Include="License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

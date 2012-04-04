@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -114,6 +114,28 @@ namespace SharpAssembler
 				value += this.reference.Symbol.Value;
 
 			return value;
+		}
+		#endregion
+
+		#region Conversions
+		/// <summary>
+		/// Converts the specified <see cref="Reference"/> to a simple expression.
+		/// </summary>
+		/// <param name="reference">The reference.</param>
+		/// <returns>The <see cref="SimpleExpression"/>.</returns>
+		public static implicit operator SimpleExpression(Reference reference)
+		{
+			return new SimpleExpression(reference);
+		}
+
+		/// <summary>
+		/// Converts the specified constant to a simple expression.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The <see cref="SimpleExpression"/>.</returns>
+		public static implicit operator SimpleExpression(long value)
+		{
+			return new SimpleExpression(value);
 		}
 		#endregion
 	}

@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -35,22 +35,6 @@ namespace SharpAssembler.Languages
 	/// </summary>
 	public abstract class Language : ILanguage
 	{
-		#region Constructors
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Language"/> class.
-		/// </summary>
-		/// <param name="writer">The <see cref="StreamWriter"/> used to write the assembler code to.</param>
-		protected Language(StreamWriter writer)
-		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(writer != null);
-			#endregion
-
-			this.writer = writer;
-		}
-		#endregion
-
-		#region Properties
 		/// <summary>
 		/// Gets the name of the language.
 		/// </summary>
@@ -101,20 +85,54 @@ namespace SharpAssembler.Languages
 			set { maximumLineLength = value; }
 		}
 
-		private readonly StreamWriter writer;
+		private readonly TextWriter writer;
 		/// <summary>
-		/// Gets the <see cref="StreamWriter"/> used to write the assembler code to.
+		/// Gets the <see cref="TextWriter"/> used to write the assembler code to.
 		/// </summary>
-		/// <value>A <see cref="StreamWriter"/> object.</value>
-		public StreamWriter Writer
+		/// <value>A <see cref="TextWriter"/> object.</value>
+		public TextWriter Writer
 		{
 			get { return writer; }
 		}
+
+		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Language"/> class.
+		/// </summary>
+		/// <param name="writer">The <see cref="TextWriter"/> used to write the assembler code to.</param>
+		protected Language(TextWriter writer)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(writer != null);
+			#endregion
+
+			this.writer = writer;
+		}
 		#endregion
+
+		/// <summary>
+		/// Write the contents of the specified object file to the text writer .
+		/// </summary>
+		/// <param name="objectFile">The <see cref="ObjectFile"/> to write.</param>
+		/// <remarks>
+		/// The text writer is automatically flushed after writing the object file to it.
+		/// </remarks>
+		public void Write(ObjectFile objectFile)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(objectFile != null);
+			#endregion
+			VisitObjectFile(objectFile);
+			writer.Flush();
+		}
 
 		#region Methods
 		/// <inheritdoc />
-		public virtual void VisitObjectFile(ObjectFile objectFile)
+		void IObjectFileVisitor.VisitObjectFile(ObjectFile objectFile)
+		{ VisitObjectFile(objectFile); }
+
+		/// <inheritdoc />
+		protected virtual void VisitObjectFile(ObjectFile objectFile)
 		{
 			foreach (var section in objectFile.Sections)
 			{
@@ -123,7 +141,11 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <inheritdoc />
-		public virtual void VisitSection(Section section)
+		void IObjectFileVisitor.VisitSection(Section section)
+		{ VisitSection(section); }
+
+		/// <inheritdoc />
+		protected virtual void VisitSection(Section section)
 		{
 			foreach (var constructable in section.Contents)
 			{
@@ -132,49 +154,93 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <inheritdoc />
-		public virtual void VisitConstructable(Constructable constructable)
+		void IObjectFileVisitor.VisitConstructable(Constructable constructable)
+		{ VisitConstructable(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitConstructable(Constructable constructable)
 		{ /* No implementation. */ }
 
 		#region Specialized
 		/// <inheritdoc />
-		public virtual void VisitCustomConstructable(CustomConstructable constructable)
+		void IObjectFileVisitor.VisitCustomConstructable(CustomConstructable constructable)
+		{ VisitCustomConstructable(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitCustomConstructable(CustomConstructable constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitInstruction(Instruction constructable)
+		void IObjectFileVisitor.VisitInstruction(Instruction constructable)
+		{ VisitInstruction(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitInstruction(Instruction constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitAlign(Align constructable)
+		void IObjectFileVisitor.VisitAlign(Align constructable)
+		{ VisitAlign(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitAlign(Align constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitComment(Comment constructable)
+		void IObjectFileVisitor.VisitComment(Comment constructable)
+		{ VisitComment(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitComment(Comment constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitDeclareData(DeclareData constructable)
+		void IObjectFileVisitor.VisitDeclareData(DeclareData constructable)
+		{ VisitDeclareData(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitDeclareData(DeclareData constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitDeclareData<T>(DeclareData<T> constructable)
+		void IObjectFileVisitor.VisitDeclareData<T>(DeclareData<T> constructable)
+		{ VisitDeclareData<T>(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitDeclareData<T>(DeclareData<T> constructable)
 			where T : struct
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitDeclareString(DeclareString constructable)
+		void IObjectFileVisitor.VisitDeclareString(DeclareString constructable)
+		{ VisitDeclareString(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitDeclareString(DeclareString constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitDefine(Define constructable)
+		void IObjectFileVisitor.VisitDefine(Define constructable)
+		{ VisitDefine(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitDefine(Define constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitExtern(Extern constructable)
+		void IObjectFileVisitor.VisitExtern(Extern constructable)
+		{ VisitExtern(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitExtern(Extern constructable)
 		{ /* No implementation. */ }
 
 		/// <inheritdoc />
-		public virtual void VisitGroup(Group constructable)
+		void IObjectFileVisitor.VisitGroup(Group constructable)
+		{ VisitGroup(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitGroup(Group constructable)
 		{
 			foreach (var subconstructable in constructable.Content)
 			{
@@ -183,7 +249,11 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <inheritdoc />
-		public virtual void VisitLabel(Label constructable)
+		void IObjectFileVisitor.VisitLabel(Label constructable)
+		{ VisitLabel(constructable); }
+
+		/// <inheritdoc />
+		protected virtual void VisitLabel(Label constructable)
 		{ /* No implementation. */ }
 		#endregion
 

@@ -14,7 +14,7 @@ namespace SharpAssembler.Architectures.X86
 	/// <summary>
 	/// A single variant of an opcode. Most opcodes have multiple possible variants.
 	/// </summary>
-	internal sealed class X86OpcodeVariant
+	public sealed class X86OpcodeVariant
 	{
 		private byte[] opcodeBytes;
 		/// <summary>
@@ -132,7 +132,7 @@ namespace SharpAssembler.Architectures.X86
 			}
 		}
 
-		private Collection<OperandDescriptor> descriptors;
+		private Collection<OperandDescriptor> descriptors = new Collection<OperandDescriptor>();
 		/// <summary>
 		/// Gets a collection of operand descriptors.
 		/// </summary>
@@ -238,6 +238,7 @@ namespace SharpAssembler.Architectures.X86
 		}
 		#endregion
 
+		#region Construction
 		/// <summary>
 		/// Constructs the representation of this instruction variant using the specified operands.
 		/// </summary>
@@ -304,47 +305,15 @@ namespace SharpAssembler.Architectures.X86
 			return instr;
 		}
 
-#if false
-		/// <summary>
-		/// Encodes this instruction variant into its binary representation
-		/// using the specified operands.
-		/// </summary>
-		/// <param name="context">The <see cref="Context"/> used.</param>
-		/// <param name="operands">The <see cref="Operand"/> objects to
-		/// encode.</param>
-		/// <remarks>This method assumes that a call to <see
-		/// cref="Match(IList{Operand})"/>
-		/// with <paramref name="operands"/> would return
-		/// <see langword="true"/>. Otherwise, exceptions may be thrown or
-		/// the results may yield unexpected values.</remarks>
-		internal void Encode(Context context, IList<Operand> operands)
-		{
-			InstructionEncoder encoder = context.Encoder;
-
-			encoder.Opcode = opcode;
-			encoder.Reg = fixedReg;
-
-			for (int i = 0; i < operands.Count; i++)
-			{
-				if (descriptors[i].OperandType != OperandType.None &&
-					descriptors[i].OperandType != OperandType.FixedRegister)
-				{
-					descriptors[i].Adjust(operands[i]);
-					operands[i].Encode(context);
-				}
-			}
-		}
-#endif
-
 		/// <summary>
 		/// Checks whether the specified array of operands would provide a match to this
-		/// <see cref="X86Instruction.InstructionVariant"/>.
+		/// <see cref="X86Instruction.X86OpcodeVariant"/>.
 		/// </summary>
 		/// <param name="operandSize">The explicitly provided operand size of the instruction to be matched,
 		/// or <see cref="DataSize.None"/>.</param>
 		/// <param name="operands">The array of <see cref="Operand"/> objects to test.</param>
 		/// <returns><see langword="true"/> when the operands match this
-		/// <see cref="X86Instruction.InstructionVariant"/>; otherwise, <see langword="false"/>.</returns>
+		/// <see cref="X86Instruction.X86OpcodeVariant"/>; otherwise, <see langword="false"/>.</returns>
 		public bool Match(DataSize operandSize, IList<Operand> operands)
 		{
 			DataSize variantOperandSize = DataSize.None;
@@ -399,6 +368,7 @@ namespace SharpAssembler.Architectures.X86
 			// All tests passed. It's a match.
 			return true;
 		}
+		#endregion
 
 		/// <summary>
 		/// Checks whether the instruction variant is supported in the specified architecture (depending 64-bit

@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -405,19 +405,19 @@ namespace SharpAssembler.Architectures.X86.Operands
 		}
 
 		/// <summary>
-		/// Determines whether the specified <see cref="X86Instruction.OperandDescriptor"/> matches this
+		/// Determines whether the specified <see cref="OperandDescriptor"/> matches this
 		/// <see cref="Operand"/>.
 		/// </summary>
-		/// <param name="descriptor">The <see cref="X86Instruction.OperandDescriptor"/> to match.</param>
+		/// <param name="descriptor">The <see cref="OperandDescriptor"/> to match.</param>
 		/// <returns><see langword="true"/> when the specified descriptor matches this operand;
 		/// otherwise, <see langword="false"/>.</returns>
-		internal override bool IsMatch(X86Instruction.OperandDescriptor descriptor)
+		internal override bool IsMatch(OperandDescriptor descriptor)
 		{
 			switch (descriptor.OperandType)
 			{
-				case X86Instruction.OperandType.RegisterOrMemoryOperand:
+				case OperandType.RegisterOrMemoryOperand:
 					return this.Size == descriptor.RegisterType.GetSize();
-				case X86Instruction.OperandType.MemoryOperand:
+				case OperandType.MemoryOperand:
 					return this.Size == descriptor.Size;
 				default:
 					return false;
@@ -426,15 +426,15 @@ namespace SharpAssembler.Architectures.X86.Operands
 
 		/// <summary>
 		/// Adjusts this <see cref="Operand"/> based on the specified
-		/// <see cref="X86Instruction.OperandDescriptor"/>.
+		/// <see cref="OperandDescriptor"/>.
 		/// </summary>
-		/// <param name="descriptor">The <see cref="X86Instruction.OperandDescriptor"/> used to
+		/// <param name="descriptor">The <see cref="OperandDescriptor"/> used to
 		/// adjust.</param>
 		/// <remarks>
-		/// Only <see cref="X86Instruction.OperandDescriptor"/> instances for which <see cref="IsMatch"/>
+		/// Only <see cref="OperandDescriptor"/> instances for which <see cref="IsMatch"/>
 		/// returns <see langword="true"/> may be used as a parameter to this method.
 		/// </remarks>
-		internal override void Adjust(X86Instruction.OperandDescriptor descriptor)
+		internal override void Adjust(OperandDescriptor descriptor)
 		{
 			// Nothing to do.
 		}

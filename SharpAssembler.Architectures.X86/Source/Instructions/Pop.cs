@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -134,67 +134,67 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// POP reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8F }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// POP reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8F }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// POP reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x8F }, 0,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 			// POP reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x58 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd)),
 			// POP reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x58 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd)),
 			// POP reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x58 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd)),
 
 			// TODO: These three are not valid in 64-bit mode:
 			// POP DS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x1F },
 				new OperandDescriptor(Register.DS)),
 			// POP ES
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x07 },
 				new OperandDescriptor(Register.ES)),
 			// POP SS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x17 },
 				new OperandDescriptor(Register.SS)),
 
 			// POP FS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xA1 },
 				new OperandDescriptor(Register.FS)),
 			// POP GS
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xA9 },
 				new OperandDescriptor(Register.GS)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 		

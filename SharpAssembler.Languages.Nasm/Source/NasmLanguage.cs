@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -33,7 +33,7 @@ namespace SharpAssembler.Languages.Nasm
 	/// <summary>
 	/// 
 	/// </summary>
-	public class NasmLanguage : Language, IIndented
+	public class NasmLanguage : Language, IIndented, INasmLanguageControl
 	{
 		#region Fields
 		/// <summary>
@@ -46,8 +46,8 @@ namespace SharpAssembler.Languages.Nasm
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NasmLanguage"/> class.
 		/// </summary>
-		/// <param name="writer">The <see cref="StreamWriter"/> used to write the assembler code to.</param>
-		public NasmLanguage(StreamWriter writer)
+		/// <param name="writer">The <see cref="TextWriter"/> used to write the assembly code to.</param>
+		public NasmLanguage(TextWriter writer)
 			: base(writer)
 		{
 			#region Contract
@@ -95,7 +95,7 @@ namespace SharpAssembler.Languages.Nasm
 		#region Methods
 		#region ObjectFile
 		/// <inheritdoc />
-		public override void VisitObjectFile(ObjectFile objectFile)
+		protected override void VisitObjectFile(ObjectFile objectFile)
 		{
 			switch (objectFile.Architecture.AddressSize)
 			{
@@ -120,23 +120,13 @@ namespace SharpAssembler.Languages.Nasm
 
 		#region Section
 		/// <inheritdoc />
-		public override void VisitSection(Section section)
+		protected override void VisitSection(Section section)
 		{
 			if (InsertNewlines)
 				Writer.WriteLine();
 
 			PopIndent();
-
-			// TODO: Support BIN and ELF
-#if false
-			if (section.Parent is BinObjectFile)
-				WriteSectionStart_Bin(section);
-			else if (section.Parent is Elf32ObjectFile)
-				WriteSectionStart_Elf32(section);
-			else
-#endif
-			Writer.WriteLine("SECTION {0}", section.Identifier);
-
+			WriteSectionStart(section);
 			PushIndent();
 
 			// Visit the constructables.
@@ -146,193 +136,28 @@ namespace SharpAssembler.Languages.Nasm
 				Writer.WriteLine();
 		}
 
-#if false
 		/// <summary>
-		/// Writes the section start for the BIN format.
+		/// Writes the object file format specific section start.
 		/// </summary>
-		/// <param name="section">The <see cref="Section"/> containing the constructable.</param>
-		/// <exception cref="ArgumentNullException">
-		/// <paramref name="section"/> is <see langword="null"/>.
-		/// </exception>
-		private void WriteSectionStart_Bin(Section section)
+		/// <param name="section">The section.</param>
+		protected virtual void WriteSectionStart(Section section)
 		{
 			#region Contract
-			if (section == null) throw new ArgumentNullException("section");
+			Contract.Requires<ArgumentNullException>(section != null);
 			#endregion
-
-			Writer.Write("SECTION {0}", section.Identifier);
-
-			// Only write 'progbits' or 'nobits' when it is not the default.
-			if (section.NoBits && section.Identifier != ".bss")
-				Writer.Write(" nobits");
-			else if (!section.NoBits && section.Identifier == ".bss")
-				Writer.Write(" progbits");
-
-			// Alignment, when it is not the default
-			if (section.Alignment != 4)
-				Writer.Write(" align={0}", section.Alignment);
-			// TODO: Support Start, Follows, VFollows, ORG
-			if (section.Address != null)
-				Writer.Write(" vstart={0}", section.Address.Value);
-
-			Writer.WriteLine();
+			Writer.WriteLine("SECTION {0}", section.Identifier);
 		}
-
-		/// <summary>
-		/// Writes the section start for the BIN format.
-		/// </summary>
-		/// <param name="section">The <see cref="Section"/> containing the constructable.</param>
-		/// <exception cref="ArgumentNullException">
-		/// <paramref name="section"/> is <see langword="null"/>.
-		/// </exception>
-		private void WriteSectionStart_Elf32(Section section)
-		{
-			#region Contract
-			if (section == null) throw new ArgumentNullException("section");
-			#endregion
-
-			Writer.Write("SECTION {0}", section.Identifier);
-
-			#region Defaults
-			bool defaultProgbits;
-			bool defaultAlloc;
-			bool defaultExec;
-			bool defaultWrite;
-			int defaultAlign;
-			bool defaultThreadLocalVariables;
-			switch (section.Identifier)
-			{
-				case ".text":
-					defaultProgbits = true;
-					defaultAlloc = true;
-					defaultExec = true;
-					defaultWrite = false;
-					defaultAlign = 16;
-					defaultThreadLocalVariables = false;
-					break;
-				case ".rodata":
-				case ".lrodata":
-					defaultProgbits = true;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = false;
-					defaultAlign = 4;
-					defaultThreadLocalVariables = false;
-					break;
-				case ".data":
-				case ".ldata":
-					defaultProgbits = true;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = true;
-					defaultAlign = 4;
-					defaultThreadLocalVariables = false;
-					break;
-				case ".bss":
-				case ".lbss":
-					defaultProgbits = false;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = true;
-					defaultAlign = 4;
-					defaultThreadLocalVariables = false;
-					break;
-				case ".tdata":
-					defaultProgbits = true;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = true;
-					defaultAlign = 4;
-					defaultThreadLocalVariables = true;
-					break;
-				case ".tbss":
-					defaultProgbits = false;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = true;
-					defaultAlign = 4;
-					defaultThreadLocalVariables = true;
-					break;
-				case ".comment":
-					defaultProgbits = true;
-					defaultAlloc = false;
-					defaultExec = false;
-					defaultWrite = false;
-					defaultAlign = 1;
-					defaultThreadLocalVariables = false;
-					break;
-				default:
-					defaultProgbits = true;
-					defaultAlloc = true;
-					defaultExec = false;
-					defaultWrite = false;
-					defaultAlign = 1;
-					defaultThreadLocalVariables = false;
-					break;
-			}
-			#endregion
-
-			// Only write 'progbits' or 'nobits' when it is not the default.
-			if (section.NoBits != !defaultProgbits)
-			{
-				if (section.NoBits)
-					Writer.Write(" nobits");
-				else
-					Writer.Write(" progbits");
-			}
-
-			// Only write 'alloc' or 'noalloc' when it is not the default.
-			if (section.Allocate != defaultAlloc)
-			{
-				if (section.Allocate)
-					Writer.Write(" alloc");
-				else
-					Writer.Write(" noalloc");
-			}
-
-			// Only write 'exec' or 'noexec' when it is not the default.
-			if (section.Executable != defaultExec)
-			{
-				if (section.Executable)
-					Writer.Write(" exec");
-				else
-					Writer.Write(" noexec");
-			}
-
-			// Only write 'write' or 'nowrite' when it is not the default.
-			if (section.Writable != defaultWrite)
-			{
-				if (section.Writable)
-					Writer.Write(" write");
-				else
-					Writer.Write(" nowrite");
-			}
-
-			// Only write the alignment when it is not the default
-			if (section.Alignment != defaultAlign)
-				Writer.Write(" align={0}", section.Alignment);
-
-			// TODO: Support TLS.
-#if false
-			// Only write 'tls' when it is not the default.
-			if (section.TLS && section.TLS != defaultThreadLocalVariables)
-				Writer.Write(" tls");
-#endif
-
-			Writer.WriteLine();
-		}
-#endif
 		#endregion
 
 		#region Constructable
 		/// <inheritdoc />
-		public override void VisitConstructable(Constructable constructable)
+		protected override void VisitConstructable(Constructable constructable)
 		{
 			throw new LanguageException("The constructable is not known or supported.");
 		}
 
 		/// <inheritdoc />
-		public override void VisitInstruction(Instruction instruction)
+		protected override void VisitInstruction(Instruction instruction)
 		{
 			throw new NotImplementedException();
 			// TODO: Implement a platform-specific translation
@@ -394,7 +219,7 @@ namespace SharpAssembler.Languages.Nasm
 		}
 
 		/// <inheritdoc />
-		public override void VisitLabel(Label label)
+		protected override void VisitLabel(Label label)
 		{
 			int commentstart = 0;
 			string commentstring = null;
@@ -470,7 +295,7 @@ namespace SharpAssembler.Languages.Nasm
 		}
 
 		/// <inheritdoc />
-		public override void VisitExtern(Extern reference)
+		protected override void VisitExtern(Extern reference)
 		{
 			int linelength;
 			indentationlevel--;
@@ -495,7 +320,7 @@ namespace SharpAssembler.Languages.Nasm
 		}
 
 		/// <inheritdoc />
-		public override void VisitAlign(Align align)
+		protected override void VisitAlign(Align align)
 		{
 			int linelength = 0;
 			linelength = WriteIndent(indentationlevel);
@@ -512,7 +337,7 @@ namespace SharpAssembler.Languages.Nasm
 		}
 
 		/// <inheritdoc />
-		public override void VisitDeclareData(DeclareData declaration)
+		protected override void VisitDeclareData(DeclareData declaration)
 		{
 			int linelength = 0;
 			linelength = WriteIndent(indentationlevel);
@@ -549,20 +374,30 @@ namespace SharpAssembler.Languages.Nasm
 		}
 
 		/// <inheritdoc />
-		public override void VisitComment(Comment comment)
+		protected override void VisitComment(Comment comment)
 		{
 			WriteCommentString(comment.Text, -1, 0, -1);
 		}
 		#endregion
 
 		#region Comment
+		/// <inheritdoc />
+		void INasmLanguageControl.WriteCommentOf(Constructable constructable, int linelength)
+		{
+			WriteCommentOf(constructable, linelength);
+		}
+
 		/// <summary>
 		/// Writes the comment associated with the specified constructable.
 		/// </summary>
 		/// <param name="constructable">The <see cref="Constructable"/> to write the comment of.</param>
 		/// <param name="linelength">The number of written characters on this line.</param>
-		private void WriteCommentOf(Constructable constructable, int linelength)
+		protected void WriteCommentOf(Constructable constructable, int linelength)
 		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(constructable != null);
+			Contract.Requires<ArgumentOutOfRangeException>(linelength > 0);
+			#endregion
 			// We don't write comments associated with comments.
 			if (constructable is Comment)
 				return;
@@ -571,6 +406,12 @@ namespace SharpAssembler.Languages.Nasm
 				WriteCommentString(constructable.Comment.Text, linelength, 0, -1);
 			else
 				Writer.WriteLine();
+		}
+
+		/// <inheritdoc />
+		int INasmLanguageControl.WriteCommentString(string comment, int column, int startindex, int lineCount)
+		{
+			return WriteCommentString(comment, column, startindex, lineCount);
 		}
 
 		/// <summary>
@@ -585,9 +426,12 @@ namespace SharpAssembler.Languages.Nasm
 		/// The index of the last character written; or -1 when all have been written. Use this
 		/// as the <paramref name="startindex"/> for the next call.
 		/// </returns>
-		private int WriteCommentString(string comment, int column, int startindex, int lineCount)
+		protected int WriteCommentString(string comment, int column, int startindex, int lineCount)
 		{
 			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(column >= 0);
+			Contract.Requires<ArgumentOutOfRangeException>(lineCount >= 0);
+			Contract.Ensures(Contract.Result<int>() >= -1);
 			if (comment == null || startindex < 0) return -1;
 			#endregion
 
@@ -1196,21 +1040,39 @@ namespace SharpAssembler.Languages.Nasm
 			set { this.indent = value; }
 		}
 
+		/// <inheritdoc />
+		void INasmLanguageControl.PopIndent()
+		{
+			PopIndent();
+		}
+
 		/// <summary>
 		/// Removes an indentation level.
 		/// </summary>
-		private void PopIndent()
+		protected void PopIndent()
 		{
 			indentationlevel--;
 			if (indentationlevel < 0) indentationlevel = 0;
 		}
 
+		/// <inheritdoc />
+		void INasmLanguageControl.PushIndent()
+		{
+			PushIndent();
+		}
+
 		/// <summary>
 		/// Adds an indentation level.
 		/// </summary>
-		private void PushIndent()
+		protected void PushIndent()
 		{
 			indentationlevel++;
+		}
+
+		/// <inheritdoc />
+		int INasmLanguageControl.WriteIndent(int level)
+		{
+			return WriteIndent(level);
 		}
 
 		/// <summary>
@@ -1218,8 +1080,12 @@ namespace SharpAssembler.Languages.Nasm
 		/// </summary>
 		/// <param name="level">The indent level.</param>
 		/// <returns>The number of written characters.</returns>
-		private int WriteIndent(int level)
+		protected int WriteIndent(int level)
 		{
+			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(level >= 0);
+			Contract.Ensures(Contract.Result<int>() >= 0);
+			#endregion
 			if (!Indent) return 0;
 			int length = 0;
 			for (int i = 0; i < level; i++)

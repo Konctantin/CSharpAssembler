@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -231,122 +231,122 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of each possible
 		/// condition of this instruction.
 		/// </summary>
-		private static InstructionVariant[][] variants = new InstructionVariant[][]{
+		private static X86OpcodeVariant[][] variants = new X86OpcodeVariant[][]{
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x0) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x1) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x2) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x3) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x4) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x5) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x6) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x7) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x8) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x9) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0x0) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xA) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xB) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xC) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xD) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xE) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 			new []{
 				// SETxx reg/mem8
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x90 | 0xF) },
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			},
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{
 			return variants[((int)condition) & 0xF];
 		}

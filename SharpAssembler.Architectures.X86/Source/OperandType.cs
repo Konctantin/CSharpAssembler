@@ -9,7 +9,7 @@ namespace SharpAssembler.Architectures.X86
 	/// Specifies the type of operand.
 	/// </summary>
 	[Flags]
-	internal enum OperandType
+	public enum OperandType
 	{
 		/// <summary>
 		/// No operand.

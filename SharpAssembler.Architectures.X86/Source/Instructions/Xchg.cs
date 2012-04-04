@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -183,96 +183,96 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// XCHG AX, reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(Register.AX),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd)),
 			// XCHG reg16, AX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(Register.AX)),
 			
 			// XCHG EAX, reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(Register.EAX),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd)),
 			// XCHG reg32, EAX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(Register.EAX)),
 			
 			// XCHG RAX, reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(Register.RAX),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd)),
 			// XCHG reg64, RAX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x90 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd),
 				new OperandDescriptor(Register.RAX)),
 
 
 			// XCHG reg/mem8, reg8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x86 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit)),
 			// XCHG reg8, reg/mem8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x86 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose8Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit)),
 			
 			// XCHG reg/mem16, reg16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit)),
 			// XCHG reg16, reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			
 			// XCHG reg/mem32, reg32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit)),
 			// XCHG reg32, reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 
 			// XCHG reg/mem64, reg64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit)),
 			// XCHG reg64, reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x87 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

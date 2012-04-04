@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -194,244 +194,244 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of each possible
 		/// condition of this instruction.
 		/// </summary>
-		private static InstructionVariant[][] variants = new InstructionVariant[][]{
+		private static X86OpcodeVariant[][] variants = new X86OpcodeVariant[][]{
 			new [] {
 				// JO rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x0) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JO rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x0) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JO rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x0) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JNO rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x1) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JNO rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x1) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JNO rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x1) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JB rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x2) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JB rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x2) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JB rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x2) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JAE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x3) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JAE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x3) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JAE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x3) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x4) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x4) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x4) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JNE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x5) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JNE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x5) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JNE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x5) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JBE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x6) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JBE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x6) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JBE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x6) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JA rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x7) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JA rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x7) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JA rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x7) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JS rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x8) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JS rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x8) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JS rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x8) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JNS rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0x9) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JNS rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x9) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JNS rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0x9) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JPE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xA) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JPE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xA) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JPE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xA) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JPO rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xB) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JPO rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xB) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JPO rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xB) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JL rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xC) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JL rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xC) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JL rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xC) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JGE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xD) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JGE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xD) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JGE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xD) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JLE rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xE) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JLE rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xE) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JLE rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xE) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 			new [] {
 				// JG rel8off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { (byte)(0x70 | 0xF) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit8)),
 				// JG rel16off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xF) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 				// JG rel32off
-				new InstructionVariant(
+				new X86OpcodeVariant(
 					new byte[] { 0x0F, (byte)(0x80 | 0xF) },
 					new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 			},
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{
 			return variants[((int)condition) & 0xF];
 		}

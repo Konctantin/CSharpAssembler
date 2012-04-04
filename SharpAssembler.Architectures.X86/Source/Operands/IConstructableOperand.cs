@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -33,7 +33,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 	/// An operand for an instruction.
 	/// </summary>
 	[ContractClass(typeof(Contracts.IConstructableOperandContract))]
-	internal interface IConstructableOperand : IOperand
+	public interface IConstructableOperand : IOperand
 	{
 		/// <summary>
 		/// Constructs the operand's representation.
@@ -43,24 +43,23 @@ namespace SharpAssembler.Architectures.X86.Operands
 		void Construct(Context context, EncodedInstruction instruction);
 
 		/// <summary>
-		/// Determines whether the specified <see cref="X86Instruction.OperandDescriptor"/> matches this
-		/// <see cref="Operand"/>.
+		/// Determines whether the specified <see cref="OperandDescriptor"/> matches this <see cref="Operand"/>.
 		/// </summary>
-		/// <param name="descriptor">The <see cref="X86Instruction.OperandDescriptor"/> to match.</param>
+		/// <param name="descriptor">The <see cref="OperandDescriptor"/> to match.</param>
 		/// <returns><see langword="true"/> when the specified descriptor matches this operand;
 		/// otherwise, <see langword="false"/>.</returns>
 		[Pure]
-		bool IsMatch(X86Instruction.OperandDescriptor descriptor);
+		bool IsMatch(OperandDescriptor descriptor);
 
 		/// <summary>
-		/// Adjusts this <see cref="Operand"/> based on the specified <see cref="X86Instruction.OperandDescriptor"/>.
+		/// Adjusts this <see cref="Operand"/> based on the specified <see cref="OperandDescriptor"/>.
 		/// </summary>
-		/// <param name="descriptor">The <see cref="X86Instruction.OperandDescriptor"/> used to adjust.</param>
+		/// <param name="descriptor">The <see cref="OperandDescriptor"/> used to adjust.</param>
 		/// <remarks>
-		/// Only <see cref="X86Instruction.OperandDescriptor"/> instances for which <see cref="IsMatch"/> returns
+		/// Only <see cref="OperandDescriptor"/> instances for which <see cref="IsMatch"/> returns
 		/// <see langword="true"/> may be used as a parameter to this method.
 		/// </remarks>
-		void Adjust(X86Instruction.OperandDescriptor descriptor);
+		void Adjust(OperandDescriptor descriptor);
 	}
 
 	#region Contract
@@ -78,14 +77,14 @@ namespace SharpAssembler.Architectures.X86.Operands
 				Contract.Requires<ArgumentNullException>(instruction != null);
 			}
 
-			public bool IsMatch(X86Instruction.OperandDescriptor descriptor)
+			public bool IsMatch(OperandDescriptor descriptor)
 			{
 				Contract.Requires<ArgumentNullException>(descriptor != null);
 
 				return default(bool);
 			}
 
-			public void Adjust(X86Instruction.OperandDescriptor descriptor)
+			public void Adjust(OperandDescriptor descriptor)
 			{
 				Contract.Requires<ArgumentNullException>(descriptor != null);
 				Contract.Requires<ArgumentException>(IsMatch(descriptor));

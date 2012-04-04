@@ -98,6 +98,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -107,7 +108,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelloWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharpAssembler.Architectures.X86\Source\SharpAssembler.Architectures.X86.csproj">
+      <Project>{C1E95A1C-A19D-4D8A-88D7-0B19467150E4}</Project>
+      <Name>SharpAssembler.Architectures.X86</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpAssembler.Formats.Bin\Source\SharpAssembler.Formats.Bin.csproj">
+      <Project>{2C1163FE-1548-4410-B704-7A1D986FB14A}</Project>
+      <Name>SharpAssembler.Formats.Bin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpAssembler\Source\SharpAssembler.csproj">
+      <Project>{DCE63BFB-2FFE-4396-97AB-95EE3685BE4C}</Project>
+      <Name>SharpAssembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Source\SharpAssembler.Languages.Nasm.csproj">
+      <Project>{3AE7E79C-E35A-40B3-834F-C6E678FF3BCA}</Project>
+      <Name>SharpAssembler.Languages.Nasm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -166,18 +166,18 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants;
+		private static X86OpcodeVariant[] variants;
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 
 		/// <summary>
@@ -186,32 +186,32 @@ namespace SharpAssembler.Architectures.X86.Instructions
 		[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
 		static Movzx()
 		{
-			variants = new InstructionVariant[5];
+			variants = new X86OpcodeVariant[5];
 			int index = 0;
 
 			// MOVZX reg16, reg/mem8
-			variants[index++] = new InstructionVariant(
+			variants[index++] = new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xB6 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit));
 			// MOVZX reg32, reg/mem8
-			variants[index++] = new InstructionVariant(
+			variants[index++] = new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xB6 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit));
 			// MOVZX reg64, reg/mem8
-			variants[index++] = new InstructionVariant(
+			variants[index++] = new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xB6 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose8Bit));
 
 			// MOVZX reg32, reg/mem16
-			variants[index++] = new InstructionVariant(
+			variants[index++] = new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xB7 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit));
 			// MOVZX reg64, reg/mem16
-			variants[index++] = new InstructionVariant(
+			variants[index++] = new X86OpcodeVariant(
 				new byte[] { 0x0F, 0xB7 },
 				new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit));

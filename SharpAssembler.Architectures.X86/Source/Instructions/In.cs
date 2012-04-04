@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -133,50 +133,50 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// IN AL, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xE4 },
 				new OperandDescriptor(Register.AL),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// IN AX, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xE5 },
 				new OperandDescriptor(Register.AX),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 			// IN EAX, imm8
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xE5 },
 				new OperandDescriptor(Register.EAX),
 				new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
 
 			// IN AL, DX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xEC },
 				new OperandDescriptor(Register.AL),
 				new OperandDescriptor(Register.DX)),
 			// IN AX, DX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xED },
 				new OperandDescriptor(Register.AX),
 				new OperandDescriptor(Register.DX)),
 			// IN EAX, DX
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xED },
 				new OperandDescriptor(Register.EAX),
 				new OperandDescriptor(Register.DX)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 

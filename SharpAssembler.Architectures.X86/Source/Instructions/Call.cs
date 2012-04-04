@@ -4,7 +4,7 @@
  * Library for .NET that assembles a predetermined list of
  * instructions into machine code.
  * 
- * Copyright (C) 2011 Daniël Pelsmaeker
+ * Copyright (C) 2011-2012 Daniël Pelsmaeker
  * 
  * This file is part of SharpAssembler.
  * 
@@ -164,62 +164,62 @@ namespace SharpAssembler.Architectures.X86.Instructions
 
 		#region Instruction Variants
 		/// <summary>
-		/// An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/> objects
+		/// An array of <see cref="X86OpcodeVariant"/> objects
 		/// describing the possible variants of this instruction.
 		/// </summary>
-		private static InstructionVariant[] variants = new[]{
+		private static X86OpcodeVariant[] variants = new[]{
 			// CALL rel16off
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xE8 },
 				new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit16)),
 			// CALL rel32off
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xE8 },
 				new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit32)),
 
 			// CALL reg/mem16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 2,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
 			// CALL reg/mem32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 2,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
 			// CALL reg/mem64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 2,
 				new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 
 			// CALL pntr16:16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x9A },
 				new OperandDescriptor(OperandType.FarPointer, DataSize.Bit16)),
 			// CALL pntr16:32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0x9A },
 				new OperandDescriptor(OperandType.FarPointer, DataSize.Bit32)),
 
 			// CALL mem16:16
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 3,
 				new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit16)),
 			// CALL mem16:32
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 3,
 				new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit32)),
 			// CALL mem16:64
-			new InstructionVariant(
+			new X86OpcodeVariant(
 				new byte[] { 0xFF }, 3,
 				new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit64)),
 		};
 
 		/// <summary>
-		/// Returns an array containing the <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// Returns an array containing the <see cref="X86OpcodeVariant"/>
 		/// objects representing all the possible variants of this instruction.
 		/// </summary>
-		/// <returns>An array of <see cref="SharpAssembler.Architectures.X86.X86Instruction.InstructionVariant"/>
+		/// <returns>An array of <see cref="X86OpcodeVariant"/>
 		/// objects.</returns>
-		internal override InstructionVariant[] GetVariantList()
+		internal override X86OpcodeVariant[] GetVariantList()
 		{ return variants; }
 		#endregion
 	}

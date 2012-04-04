@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.Collections.ObjectModel;
 
 namespace SharpAssembler
 {
@@ -23,8 +24,8 @@ namespace SharpAssembler
 		/// <summary>
 		/// Returns the operands to the instruction.
 		/// </summary>
-		/// <returns>An ordered enumerable of operands.</returns>
-		IEnumerable<IOperand> GetOperands();
+		/// <returns>An ordered list of operands.</returns>
+		ReadOnlyCollection<IOperand> GetOperands();
 	}
 
 	#region Contract
@@ -40,6 +41,12 @@ namespace SharpAssembler
 					Contract.Ensures(Contract.Result<IOpcode>() != null);
 					return default(IOpcode);
 				}
+			}
+
+			public ReadOnlyCollection<IOperand> GetOperands()
+			{
+				Contract.Ensures(Contract.Result<ReadOnlyCollection<IOperand>>() != null);
+				return default(ReadOnlyCollection<IOperand>);
 			}
 		}
 	}
