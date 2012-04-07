@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using SharpAssembler;
 using SharpAssembler.Symbols;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Architectures.X86.Operands
 {
@@ -96,7 +97,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// Initializes a new instance of the <see cref="Immediate"/> class.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
-		public Immediate(Func<Context, SimpleExpression> expression)
+		public Immediate(Expression<Func<Context, SimpleExpression>> expression)
 			: this(expression, DataSize.None)
 		{
 			#region Contract
@@ -109,7 +110,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <param name="size">The size of the resulting value.</param>
-		public Immediate(Func<Context, SimpleExpression> expression, DataSize size)
+		public Immediate(Expression<Func<Context, SimpleExpression>> expression, DataSize size)
 			: base(size)
 		{
 			#region Contract
@@ -122,17 +123,17 @@ namespace SharpAssembler.Architectures.X86.Operands
 		#endregion
 
 		#region Properties
-		private Func<Context, SimpleExpression> expression;
+		private Expression<Func<Context, SimpleExpression>> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluating to the immediate value.
 		/// </summary>
 		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Expression
+		public Expression<Func<Context, SimpleExpression>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return expression;
 			}
@@ -157,7 +158,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			// CONTRACT: Operand
 
 			// Let's evaluate the expression.
-			SimpleExpression result = expression(context);
+			SimpleExpression result = expression.Compile()(context);
 
 			// Determine the size of the immediate operand.
 			DataSize size = PreferredSize;

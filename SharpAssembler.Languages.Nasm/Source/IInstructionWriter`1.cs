@@ -24,8 +24,9 @@ namespace SharpAssembler.Languages.Nasm
 	#region Contract
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IInstructionWriter))]
+		[ContractClassFor(typeof(IInstructionWriter<>))]
 		abstract class IInstructionWriterContract<T> : IInstructionWriter<T>
+			where T : class, IInstruction
 		{
 			public void WriteInstruction(T instruction)
 			{

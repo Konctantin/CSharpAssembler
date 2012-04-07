@@ -26,6 +26,7 @@ using SharpAssembler.Instructions;
 using NUnit.Framework;
 using System.Linq;
 using System;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Core.Tests.Instructions
 {
@@ -41,7 +42,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void EmitsData()
 		{
-			Func<Context, SimpleExpression> expression = (context) => new SimpleExpression(context.Address);
+			Expression<Func<Context, SimpleExpression>> expression = (context) => new SimpleExpression(context.Address);
 			var size = DataSize.Bit32;
 			var instr = new DeclareData(expression, size);
 			Assert.AreEqual(expression, instr.Expression);

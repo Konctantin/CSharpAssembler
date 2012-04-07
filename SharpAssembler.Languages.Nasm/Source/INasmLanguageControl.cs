@@ -27,13 +27,14 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using SharpAssembler.Instructions;
 using SharpAssembler.Symbols;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Languages.Nasm
 {
 	/// <summary>
 	/// Interface for the NASM language internal workings.
 	/// </summary>
-	[ContractClassFor(typeof(Contracts.INasmLanguageControlContract))]
+	[ContractClass(typeof(Contracts.INasmLanguageControlContract))]
 	public interface INasmLanguageControl
 	{
 		/// <summary>
@@ -71,10 +72,25 @@ namespace SharpAssembler.Languages.Nasm
 		/// <summary>
 		/// Writes the indent.
 		/// </summary>
-		/// <param name="level">The indent level.</param>
 		/// <returns>The number of written characters.</returns>
-		int WriteIndent(int level);
+		int WriteIndent();
+
+		/// <summary>
+		/// Writes the indent.
+		/// </summary>
+		/// <param name="levelAdjustment">The indent level adjustment, which is added to the current
+		/// indent level, with a minimum of zero.</param>
+		/// <returns>The number of written characters.</returns>
+		int WriteIndent(int levelAdjustment);
+
+		/// <summary>
+		/// Writes the specified expression.
+		/// </summary>
+		/// <param name="expression">The expression.</param>
+		/// <returns>The number of written characters.</returns>
+		int WriteExpression(Expression<Func<Context, SimpleExpression>> expression);
 	}
+
 
 	#region Contract
 	namespace Contracts
@@ -98,17 +114,30 @@ namespace SharpAssembler.Languages.Nasm
 
 			public void PopIndent()
 			{
-				
+
 			}
 
 			public void PushIndent()
 			{
 			}
 
-			public int WriteIndent(int level)
+			public int WriteIndent()
 			{
-				Contract.Requires<ArgumentOutOfRangeException>(level >= 0);
 				Contract.Ensures(Contract.Result<int>() >= 0);
+				return default(int);
+			}
+
+			public int WriteIndent(int levelAdjustment)
+			{
+				Contract.Ensures(Contract.Result<int>() >= 0);
+				return default(int);
+			}
+
+			public int WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+			{
+				Contract.Requires<ArgumentNullException>(expression != null);
+				Contract.Ensures(Contract.Result<int>() >= 0);
+
 				return default(int);
 			}
 		}

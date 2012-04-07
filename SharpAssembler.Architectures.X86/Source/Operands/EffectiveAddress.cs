@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using SharpAssembler;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Architectures.X86.Operands
 {
@@ -53,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		public EffectiveAddress(
 			DataSize operandSize,
 			DataSize addressSize,
-			Func<Context, SimpleExpression> displacement)
+			Expression<Func<Context, SimpleExpression>> displacement)
 			: this(operandSize, Register.None, Register.None, 0, displacement)
 		{
 			#region Contract
@@ -77,7 +78,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			Register baseRegister,
 			Register indexRegister,
 			int scale,
-			Func<Context, SimpleExpression> displacement)
+			Expression<Func<Context, SimpleExpression>> displacement)
 			: base(operandSize)
 		{
 			#region Contract
@@ -167,13 +168,13 @@ namespace SharpAssembler.Architectures.X86.Operands
 			}
 		}
 
-		private Func<Context, SimpleExpression> displacement;
+		private Expression<Func<Context, SimpleExpression>> displacement;
 		/// <summary>
 		/// Gets or sets the expression specifying the displacement of the effective address.
 		/// </summary>
 		/// <value>The displacement <see cref="Func{Context, SimpleExpression}"/>; or <see langword="null"/> to specify
 		/// no displacement.</value>
-		public Func<Context, SimpleExpression> Displacement
+		public Expression<Func<Context, SimpleExpression>> Displacement
 		{
 			get { return displacement; }
 			set { displacement = value; }
@@ -350,7 +351,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			if (displacement != null)
 			{
 				// Let's evaluate the displacement expression.
-				displacementExpression = displacement(context);
+				displacementExpression = displacement.Compile()(context);
 
 				// Determine the size of the displacement.
 				displacementSize = addressSize;

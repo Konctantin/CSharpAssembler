@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using SharpAssembler.Symbols;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Instructions
 {
@@ -48,7 +49,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(Func<Context, SimpleExpression> expression)
+		public Define(Expression<Func<Context, SimpleExpression>> expression)
 			: this(null, SymbolType.Private, expression)
 		{
 			#region Contract
@@ -65,7 +66,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(string identifier, Func<Context, SimpleExpression> expression)
+		public Define(string identifier, Expression<Func<Context, SimpleExpression>> expression)
 			: this(identifier, SymbolType.Private, expression)
 		{
 			#region Contract
@@ -83,7 +84,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(string identifier, SymbolType symbolType, Func<Context, SimpleExpression> expression)
+		public Define(string identifier, SymbolType symbolType, Expression<Func<Context, SimpleExpression>> expression)
 			: this(new Symbol(symbolType, identifier), expression)
 		{
 			#region Contract
@@ -101,7 +102,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(Symbol symbol, Func<Context, SimpleExpression> expression)
+		public Define(Symbol symbol, Expression<Func<Context, SimpleExpression>> expression)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
@@ -113,17 +114,17 @@ namespace SharpAssembler.Instructions
 		#endregion
 
 		#region Properties
-		private Func<Context, SimpleExpression> expression;
+		private Expression<Func<Context, SimpleExpression>> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluated to result in the symbol's value.
 		/// </summary>
 		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Expression
+		public Expression<Func<Context, SimpleExpression>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return expression;
 			}
@@ -157,7 +158,7 @@ namespace SharpAssembler.Instructions
 		/// <inheritdoc />
 		public override IEnumerable<IEmittable> Construct(Context context)
 		{
-			var result = expression(context).Evaluate(context);
+			var result = expression.Compile()(context).Evaluate(context);
 			if (this.definedSymbol != null)
 				this.definedSymbol.Define(context, result);
 

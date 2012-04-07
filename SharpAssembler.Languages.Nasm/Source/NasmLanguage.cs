@@ -27,6 +27,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using SharpAssembler.Instructions;
 using SharpAssembler.Symbols;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Languages.Nasm
 {
@@ -366,9 +367,7 @@ namespace SharpAssembler.Languages.Nasm
 					throw new LanguageException("Declared data's size is not supported.");
 			}
 
-			// TODO: Write the expression
-			throw new NotImplementedException();
-			//linelength += WriteExpression(declaration.Expression);
+			linelength += WriteExpression(declaration.Expression);
 
 			WriteCommentOf(declaration, linelength);
 		}
@@ -392,7 +391,7 @@ namespace SharpAssembler.Languages.Nasm
 		/// </summary>
 		/// <param name="constructable">The <see cref="Constructable"/> to write the comment of.</param>
 		/// <param name="linelength">The number of written characters on this line.</param>
-		protected void WriteCommentOf(Constructable constructable, int linelength)
+		protected internal void WriteCommentOf(Constructable constructable, int linelength)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(constructable != null);
@@ -426,7 +425,7 @@ namespace SharpAssembler.Languages.Nasm
 		/// The index of the last character written; or -1 when all have been written. Use this
 		/// as the <paramref name="startindex"/> for the next call.
 		/// </returns>
-		protected int WriteCommentString(string comment, int column, int startindex, int lineCount)
+		protected internal int WriteCommentString(string comment, int column, int startindex, int lineCount)
 		{
 			#region Contract
 			Contract.Requires<ArgumentOutOfRangeException>(column >= 0);
@@ -498,6 +497,26 @@ namespace SharpAssembler.Languages.Nasm
 			return commentstart;
 		}
 		#endregion
+
+		/// <inheritdoc />
+		int INasmLanguageControl.WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+		{
+			return WriteExpression(expression);
+		}
+
+		/// <summary>
+		/// Writes the specified expression.
+		/// </summary>
+		/// <param name="expression">The expression.</param>
+		/// <returns>The number of written characters.</returns>
+		protected internal int WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(expression != null);
+			Contract.Ensures(Contract.Result<int>() >= 0);
+			#endregion
+			throw new NotImplementedException();
+		}
 
 		// TODO: Implement operands
 #if false
@@ -1049,7 +1068,7 @@ namespace SharpAssembler.Languages.Nasm
 		/// <summary>
 		/// Removes an indentation level.
 		/// </summary>
-		protected void PopIndent()
+		protected internal void PopIndent()
 		{
 			indentationlevel--;
 			if (indentationlevel < 0) indentationlevel = 0;
@@ -1064,28 +1083,48 @@ namespace SharpAssembler.Languages.Nasm
 		/// <summary>
 		/// Adds an indentation level.
 		/// </summary>
-		protected void PushIndent()
+		protected internal void PushIndent()
 		{
 			indentationlevel++;
 		}
 
 		/// <inheritdoc />
-		int INasmLanguageControl.WriteIndent(int level)
+		int INasmLanguageControl.WriteIndent()
 		{
-			return WriteIndent(level);
+			return WriteIndent(0);
+		}
+
+		/// <inheritdoc />
+		int INasmLanguageControl.WriteIndent(int levelAdjustment)
+		{
+			return WriteIndent(levelAdjustment);
 		}
 
 		/// <summary>
 		/// Writes the indent.
 		/// </summary>
-		/// <param name="level">The indent level.</param>
 		/// <returns>The number of written characters.</returns>
-		protected int WriteIndent(int level)
+		protected internal int WriteIndent()
 		{
 			#region Contract
-			Contract.Requires<ArgumentOutOfRangeException>(level >= 0);
 			Contract.Ensures(Contract.Result<int>() >= 0);
 			#endregion
+			return WriteIndent(0);
+		}
+
+		/// <summary>
+		/// Writes the indent.
+		/// </summary>
+		/// <param name="levelAdjustment">The indent level adjustment, which is added to the current
+		/// indent level, with a minimum of zero.</param>
+		/// <returns>The number of written characters.</returns>
+		protected internal int WriteIndent(int levelAdjustment)
+		{
+			#region Contract
+			Contract.Ensures(Contract.Result<int>() >= 0);
+			#endregion
+			int level = this.indentationlevel + levelAdjustment;
+
 			if (!Indent) return 0;
 			int length = 0;
 			for (int i = 0; i < level; i++)

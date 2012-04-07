@@ -108,14 +108,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinX86NasmLanguage.cs" />
     <Compile Include="BinNasmLanguage.cs" />
     <Compile Include="INasmLanguageControl.cs" />
     <Compile Include="IInstructionWriter`1.cs" />
-    <Compile Include="ElfNasmLanguage.cs" />
     <Compile Include="NasmLanguage.cs" />
     <Compile Include="IInstructionWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeSwitch.cs" />
     <Compile Include="X86NasmInstructionWriter.cs" />
   </ItemGroup>
   <ItemGroup>

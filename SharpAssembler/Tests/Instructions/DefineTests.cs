@@ -27,6 +27,7 @@ using NUnit.Framework;
 using System;
 using System.Text;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Core.Tests.Instructions
 {
@@ -42,7 +43,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void AddsSymbol()
 		{
-			Func<Context, SimpleExpression> expression = (context) => new SimpleExpression(context.Address + 3);
+			Expression<Func<Context, SimpleExpression>> expression = (context) => new SimpleExpression(context.Address + 3);
 
 			var instr = new Define("test", expression);
 			Assert.AreEqual("test", instr.DefinedSymbol.Identifier);

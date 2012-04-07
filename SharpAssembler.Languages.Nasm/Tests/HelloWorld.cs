@@ -50,7 +50,7 @@ namespace SharpAssembler.Languages.Nasm.Tests
 			string code;
 			using (var writer = new StringWriter())
 			{
-				var language = new BinX86NasmLanguage(writer);
+				var language = new BinNasmLanguage(writer);
 				language.Write(objectFile);
 				code = writer.ToString();
 			}

@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 using SharpAssembler.Symbols;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Instructions
 {
@@ -41,7 +42,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="expression">The expression of the value.</param>
 		/// <param name="size">The size of the result.</param>
-		public DeclareData(Func<Context, SimpleExpression> expression, DataSize size)
+		public DeclareData(Expression<Func<Context, SimpleExpression>> expression, DataSize size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
@@ -149,17 +150,17 @@ namespace SharpAssembler.Instructions
 		#endregion
 
 		#region Properties
-		private Func<Context, SimpleExpression> expression;
+		private Expression<Func<Context, SimpleExpression>> expression;
 		/// <summary>
 		/// Gets or sets the expression that will be declared.
 		/// </summary>
 		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Expression
+		public Expression<Func<Context, SimpleExpression>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return expression;
 			}
@@ -207,7 +208,7 @@ namespace SharpAssembler.Instructions
 		public override IEnumerable<IEmittable> Construct(Context context)
 		{
 			// CONTRACT: Constructable
-			yield return new ExpressionEmittable(expression(context), size);
+			yield return new ExpressionEmittable(expression.Compile()(context), size);
 		}
 
 		/// <inheritdoc />

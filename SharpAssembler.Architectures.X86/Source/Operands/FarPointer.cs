@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using SharpAssembler;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Architectures.X86.Operands
 {
@@ -47,8 +48,8 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// <param name="offset">The offset expression.</param>
 		/// <param name="size">The size of the offset; or <see cref="DataSize.None"/> to specify no size.</param>
 		public FarPointer(
-			Func<Context, SimpleExpression> selector,
-			Func<Context, SimpleExpression> offset,
+			Expression<Func<Context, SimpleExpression>> selector,
+			Expression<Func<Context, SimpleExpression>> offset,
 			DataSize size)
 			: base(size)
 		{
@@ -65,17 +66,17 @@ namespace SharpAssembler.Architectures.X86.Operands
 		#endregion
 
 		#region Properties
-		private Func<Context, SimpleExpression> selector;
+		private Expression<Func<Context, SimpleExpression>> selector;
 		/// <summary>
 		/// Gets or sets the expression evaluating to the 16-bit selector.
 		/// </summary>
 		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Selector
+		public Expression<Func<Context, SimpleExpression>> Selector
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return selector;
 			}
@@ -88,17 +89,17 @@ namespace SharpAssembler.Architectures.X86.Operands
 			}
 		}
 
-		private Func<Context, SimpleExpression> offset;
+		private Expression<Func<Context, SimpleExpression>> offset;
 		/// <summary>
 		/// Gets or sets the expression evaluating to the offset.
 		/// </summary>
 		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Offset
+		public Expression<Func<Context, SimpleExpression>> Offset
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return offset;
 			}
@@ -122,8 +123,8 @@ namespace SharpAssembler.Architectures.X86.Operands
 		{
 			// CONTRACT: Operand
 
-			SimpleExpression offsetResult = offset(context);
-			SimpleExpression selectorResult = selector(context);
+			SimpleExpression offsetResult = offset.Compile()(context);
+			SimpleExpression selectorResult = selector.Compile()(context);
 
 			// Determine the size of the immediate operand.
 			DataSize size = PreferredSize;

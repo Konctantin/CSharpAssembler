@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using SharpAssembler;
+using System.Linq.Expressions;
 
 namespace SharpAssembler.Architectures.X86.Operands
 {
@@ -41,7 +42,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// Initializes a new instance of the <see cref="RelativeOffset"/> class.
 		/// </summary>
 		/// <param name="value">The expression describing the jump target.</param>
-		public RelativeOffset(Func<Context, SimpleExpression> value)
+		public RelativeOffset(Expression<Func<Context, SimpleExpression>> value)
 			: this(value, DataSize.None)
 		{
 			#region Contract
@@ -54,7 +55,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// </summary>
 		/// <param name="value">The expression describing the jump target.</param>
 		/// <param name="size">The size of the offset; or <see cref="DataSize.None"/> to specify no size.</param>
-		public RelativeOffset(Func<Context, SimpleExpression> value, DataSize size)
+		public RelativeOffset(Expression<Func<Context, SimpleExpression>> value, DataSize size)
 			: base(size)
 		{
 			#region Contract
@@ -66,17 +67,17 @@ namespace SharpAssembler.Architectures.X86.Operands
 		#endregion
 
 		#region Properties
-		private Func<Context, SimpleExpression> expression;
+		private Expression<Func<Context, SimpleExpression>> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluating to the jump target.
 		/// </summary>
 		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Func<Context, SimpleExpression> Expression
+		public Expression<Func<Context, SimpleExpression>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Func<Context, SimpleExpression>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
 				#endregion
 				return expression;
 			}
@@ -111,7 +112,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			// CONTRACT: Operand
 
 			// Let's evaluate the expression.
-			SimpleExpression result = expression(context);
+			SimpleExpression result = expression.Compile()(context);
 			result = new SimpleExpression(result.Reference, result.Constant - (context.Address + instr.GetLength()));
 
 			// Determine the size of the immediate operand.
