@@ -42,13 +42,13 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void EmitsData()
 		{
-			Expression<Func<Context, SimpleExpression>> expression = (context) => new SimpleExpression(context.Address);
+			Expression<Func<Context, ReferenceOffset>> expression = (context) => new ReferenceOffset((Int128)context.Address);
 			var size = DataSize.Bit32;
 			var instr = new DeclareData(expression, size);
 			Assert.AreEqual(expression, instr.Expression);
 			Assert.AreEqual(size, instr.Size);
 
-			Int128 value = 0xDEADBEEF;
+			UInt128 value = 0xDEADBEEF;
 			Context.Address = value;
 
 			var emittable = instr.Construct(Context).First() as ExpressionEmittable;

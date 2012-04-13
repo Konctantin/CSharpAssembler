@@ -43,7 +43,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void AddsSymbol()
 		{
-			Expression<Func<Context, SimpleExpression>> expression = (context) => new SimpleExpression(context.Address + 3);
+			Expression<Func<Context, ReferenceOffset>> expression = (context) => new ReferenceOffset((Int128)context.Address + 3);
 
 			var instr = new Define("test", expression);
 			Assert.AreEqual("test", instr.DefinedSymbol.Identifier);

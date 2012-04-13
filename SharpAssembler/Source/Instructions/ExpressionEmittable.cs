@@ -40,7 +40,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="expression">The expression of the value.</param>
 		/// <param name="size">The size of the result.</param>
-		public ExpressionEmittable(SimpleExpression expression, DataSize size)
+		public ExpressionEmittable(ReferenceOffset expression, DataSize size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
@@ -54,17 +54,17 @@ namespace SharpAssembler.Instructions
 		#endregion
 
 		#region Properties
-		private SimpleExpression expression;
+		private ReferenceOffset expression;
 		/// <summary>
 		/// Gets or sets the expression result to emit.
 		/// </summary>
-		/// <value>A <see cref="SimpleExpression"/>.</value>
-		public SimpleExpression Expression
+		/// <value>A <see cref="ReferenceOffset"/>.</value>
+		public ReferenceOffset Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<SimpleExpression>() != null);
+				Contract.Ensures(Contract.Result<ReferenceOffset>() != null);
 				#endregion
 				return expression;
 			}

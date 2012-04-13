@@ -135,6 +135,23 @@ namespace SharpAssembler
 			return Align(value, boundary) - value;
 		}
 
+		/// <summary>
+		/// Calculates the padding from the specified value to the next boundary.
+		/// </summary>
+		/// <param name="value">The value from which to calculate the padding.</param>
+		/// <param name="boundary">The boundary, which is a power of two.</param>
+		/// <returns>The padding from the value to the next boundary.</returns>
+		[Pure]
+		public static UInt128 CalculatePadding(UInt128 value, int boundary)
+		{
+			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(boundary >= 1);
+			Contract.Requires<ArgumentException>(IsPowerOfTwo(boundary));
+			Contract.Ensures(Contract.Result<UInt128>() >= 0);
+			#endregion
+			return Align(value, boundary) - value;
+		}
+
 		#region CalculatePadding()
 		/// <summary>
 		/// Calculates the padding from the specified value to the next boundary.
@@ -220,6 +237,23 @@ namespace SharpAssembler
 			Contract.Requires<ArgumentOutOfRangeException>(boundary >= 1);
 			Contract.Requires<ArgumentException>(IsPowerOfTwo(boundary));
 			Contract.Ensures(Contract.Result<Int128>() >= value);
+			#endregion
+			return (boundary + ((value - 1) & ~(boundary - 1)));
+		}
+
+		/// <summary>
+		/// Aligns the value to the next specified boundary.
+		/// </summary>
+		/// <param name="value">The value to align.</param>
+		/// <param name="boundary">The boundary, which is a power of two.</param>
+		/// <returns>The aligned value.</returns>
+		[Pure]
+		public static UInt128 Align(UInt128 value, int boundary)
+		{
+			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(boundary >= 1);
+			Contract.Requires<ArgumentException>(IsPowerOfTwo(boundary));
+			Contract.Ensures(Contract.Result<UInt128>() >= value);
 			#endregion
 			return (boundary + ((value - 1) & ~(boundary - 1)));
 		}

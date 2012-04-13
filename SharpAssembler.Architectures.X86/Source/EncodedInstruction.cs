@@ -302,13 +302,13 @@ namespace SharpAssembler.Architectures.X86
 			set { use64BitOperands = value; }
 		}
 
-		private SimpleExpression displacement = null;
+		private ReferenceOffset displacement = null;
 		/// <summary>
 		/// Gets or sets the displacement value.
 		/// </summary>
-		/// <value>An <see cref="SimpleExpression"/> specifying the displacement value or symbol;
+		/// <value>An <see cref="ReferenceOffset"/> specifying the displacement value or symbol;
 		/// or <see langword="null"/> to use no displacement. The default is <see langword="null"/>.</value>
-		public SimpleExpression Displacement
+		public ReferenceOffset Displacement
 		{
 			get { return displacement; }
 			set { displacement = value; }
@@ -339,16 +339,16 @@ namespace SharpAssembler.Architectures.X86
 		}
 
 		// FIXME: Where do AMD 3DNow! bytes go in here?
-		private SimpleExpression immediate = null;
+		private ReferenceOffset immediate = null;
 		/// <summary>
 		/// Gets or sets the immediate value.
 		/// </summary>
-		/// <value>An <see cref="SimpleExpression"/> specifying the immediate value or symbol;
+		/// <value>An <see cref="ReferenceOffset"/> specifying the immediate value or symbol;
 		/// or <see langword="null"/> to use no immediate. The default is <see langword="null"/>.</value>
 		/// <remarks>
 		/// The immediate value may be used as third opcode byte for AMD 3DNow! instructions.
 		/// </remarks>
-		public SimpleExpression Immediate
+		public ReferenceOffset Immediate
 		{
 			get { return immediate; }
 			set { immediate = value; }
@@ -378,13 +378,13 @@ namespace SharpAssembler.Architectures.X86
 			}
 		}
 
-		private SimpleExpression extraImmediate = null;
+		private ReferenceOffset extraImmediate = null;
 		/// <summary>
 		/// Gets or sets the immediate extra value.
 		/// </summary>
-		/// <value>An <see cref="SimpleExpression"/> specifying the extra immediate value or symbol;
+		/// <value>An <see cref="ReferenceOffset"/> specifying the extra immediate value or symbol;
 		/// or <see langword="null"/> to use no extra immediate. The default is <see langword="null"/>.</value>
-		public SimpleExpression ExtraImmediate
+		public ReferenceOffset ExtraImmediate
 		{
 			get { return extraImmediate; }
 			set { extraImmediate = value; }
@@ -492,9 +492,9 @@ namespace SharpAssembler.Architectures.X86
 			EmitModRMByte(writer);
 			EmitSIBByte(writer);
 
-			EmitSimpleExpression(writer, instructionOffset, context, this.displacement, this.displacementSize);
-			EmitSimpleExpression(writer, instructionOffset, context, this.immediate, this.immediateSize);
-			EmitSimpleExpression(writer, instructionOffset, context, this.extraImmediate, this.extraImmediateSize);
+			EmitReferenceOffset(writer, instructionOffset, context, this.displacement, this.displacementSize);
+			EmitReferenceOffset(writer, instructionOffset, context, this.immediate, this.immediateSize);
+			EmitReferenceOffset(writer, instructionOffset, context, this.extraImmediate, this.extraImmediateSize);
 
 			return checked((int)(writer.BaseStream.Position - instructionOffset));
 		}
@@ -640,9 +640,9 @@ namespace SharpAssembler.Architectures.X86
 		/// <param name="instructionOffset">The offset of the instruction in the stream underlying
 		/// <paramref name="writer"/>.</param>
 		/// <param name="context">The <see cref="Context"/> of the instruction.</param>
-		/// <param name="expression">The <see cref="SimpleExpression"/> to emit.</param>
+		/// <param name="expression">The <see cref="ReferenceOffset"/> to emit.</param>
 		/// <param name="size">The size of the value to emit.</param>
-		private void EmitSimpleExpression(BinaryWriter writer, long instructionOffset, Context context, SimpleExpression expression, DataSize size)
+		private void EmitReferenceOffset(BinaryWriter writer, long instructionOffset, Context context, ReferenceOffset expression, DataSize size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(writer != null);
@@ -663,7 +663,7 @@ namespace SharpAssembler.Architectures.X86
 				relocation = new Relocation(
 					expression.Reference.Symbol,
 					context.Section,
-					context.Address,
+					(Int128)context.Address,
 					actualValue,
 					RelocationType.Default32);
 			}

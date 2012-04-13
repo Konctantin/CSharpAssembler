@@ -109,7 +109,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc BYTE [1234], 123";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(123));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -125,7 +125,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc WORD [1234], WORD 12345";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(12345, DataSize.Bit16));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -140,7 +140,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		public void Adc_regmem32_imm32()
 		{
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(12345, DataSize.Bit32));
 
 			Assert16BitInstruction(instruction,
@@ -158,7 +158,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		public void Adc_regmem64_imm32()
 		{
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(12345, DataSize.Bit32));
 
 			Assert16BitInstructionFails(instruction);
@@ -175,7 +175,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc WORD [1234], 123";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(123));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -191,7 +191,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc DWORD [1234], 123";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(123));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -207,7 +207,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc QWORD [1234], 123";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)),
 				new Immediate(123));
 
 			Assert16BitInstructionFails(instruction);
@@ -223,7 +223,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc BYTE [1234], CL";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(1234)),
 				new RegisterOperand(Register.CL));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -239,7 +239,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc WORD [1234], CX";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(1234)),
 				new RegisterOperand(Register.CX));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -255,7 +255,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc DWORD [1234], ECX";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(1234)),
 				new RegisterOperand(Register.ECX));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
@@ -271,7 +271,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instrString = "adc QWORD [1234], RCX";
 			var instruction = new Adc(
-				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new SimpleExpression(1234)),
+				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)),
 				new RegisterOperand(Register.RCX));
 
 			Assert16BitInstructionFails(instruction);
@@ -288,7 +288,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 			var instrString = "adc CL, BYTE [1234]";
 			var instruction = new Adc(
 				new RegisterOperand(Register.CL),
-				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new SimpleExpression(1234)));
+				new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(1234)));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
 			AssertInstruction(instruction, instrString, DataSize.Bit32);
@@ -304,7 +304,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 			var instrString = "adc CX, WORD [1234]";
 			var instruction = new Adc(
 				new RegisterOperand(Register.CX),
-				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new SimpleExpression(1234)));
+				new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(1234)));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
 			AssertInstruction(instruction, instrString, DataSize.Bit32);
@@ -320,7 +320,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 			var instrString = "adc ECX, DWORD [1234]";
 			var instruction = new Adc(
 				new RegisterOperand(Register.ECX),
-				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new SimpleExpression(1234)));
+				new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(1234)));
 
 			AssertInstruction(instruction, instrString, DataSize.Bit16);
 			AssertInstruction(instruction, instrString, DataSize.Bit32);
@@ -335,7 +335,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 		{
 			var instruction = new Adc(
 				new RegisterOperand(Register.RCX),
-				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new SimpleExpression(1234)));
+				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)));
 			
 			Assert16BitInstructionFails(instruction);
 			Assert32BitInstructionFails(instruction);

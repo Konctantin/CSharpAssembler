@@ -49,7 +49,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(Expression<Func<Context, SimpleExpression>> expression)
+		public Define(Expression<Func<Context, ReferenceOffset>> expression)
 			: this(null, SymbolType.Private, expression)
 		{
 			#region Contract
@@ -66,7 +66,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(string identifier, Expression<Func<Context, SimpleExpression>> expression)
+		public Define(string identifier, Expression<Func<Context, ReferenceOffset>> expression)
 			: this(identifier, SymbolType.Private, expression)
 		{
 			#region Contract
@@ -84,7 +84,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(string identifier, SymbolType symbolType, Expression<Func<Context, SimpleExpression>> expression)
+		public Define(string identifier, SymbolType symbolType, Expression<Func<Context, ReferenceOffset>> expression)
 			: this(new Symbol(symbolType, identifier), expression)
 		{
 			#region Contract
@@ -102,7 +102,7 @@ namespace SharpAssembler.Instructions
 		/// <remarks>
 		/// The <see cref="DefinedSymbol"/> property holds the symbol that is defined.
 		/// </remarks>
-		public Define(Symbol symbol, Expression<Func<Context, SimpleExpression>> expression)
+		public Define(Symbol symbol, Expression<Func<Context, ReferenceOffset>> expression)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
@@ -114,17 +114,17 @@ namespace SharpAssembler.Instructions
 		#endregion
 
 		#region Properties
-		private Expression<Func<Context, SimpleExpression>> expression;
+		private Expression<Func<Context, ReferenceOffset>> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluated to result in the symbol's value.
 		/// </summary>
-		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Expression<Func<Context, SimpleExpression>> Expression
+		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="ReferenceOffset"/>.</value>
+		public Expression<Func<Context, ReferenceOffset>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, ReferenceOffset>>>() != null);
 				#endregion
 				return expression;
 			}

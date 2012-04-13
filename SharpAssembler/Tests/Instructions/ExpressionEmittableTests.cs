@@ -40,7 +40,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 		[Test]
 		public void ExpressionEmittableTest()
 		{
-			var expression = new SimpleExpression(0xFEDCBA98);
+			var expression = new ReferenceOffset(0xFEDCBA98);
 			var size = DataSize.Bit32;
 
 			var emittable = new ExpressionEmittable(expression, size);

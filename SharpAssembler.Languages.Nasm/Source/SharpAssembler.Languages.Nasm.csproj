@@ -111,6 +111,7 @@
     <Compile Include="BinNasmLanguage.cs" />
     <Compile Include="INasmLanguageControl.cs" />
     <Compile Include="IInstructionWriter`1.cs" />
+    <Compile Include="NasmExpressionWriter.cs" />
     <Compile Include="NasmLanguage.cs" />
     <Compile Include="IInstructionWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

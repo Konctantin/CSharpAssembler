@@ -67,7 +67,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 			data.Add(new Define("len", (context) =>
 				{
 					Symbol strSymbol = context.SymbolTable["str"];
-					return new SimpleExpression(context.Address - strSymbol.Value);
+					return new ReferenceOffset(context.Address - strSymbol.Value);
 				}));
 
 			byte[] result = Assemble(objectFile);
@@ -118,7 +118,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Instructions
 			data.Add(new Define("len", (context) =>
 			{
 				Symbol strSymbol = context.SymbolTable["str"];
-				return new SimpleExpression(context.Address - strSymbol.Value);
+				return new ReferenceOffset(context.Address - strSymbol.Value);
 			}));
 
 			using (FileStream fs = File.Create("helloworld.bin"))

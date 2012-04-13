@@ -171,5 +171,17 @@ namespace SharpAssembler.Symbols
 		{
 			return symbolIdentifier;
 		}
+
+		#region Operations
+		public static ReferenceOffset operator +(long left, Reference right)
+		{
+			return new ReferenceOffset(right, left);
+		}
+
+		public static ReferenceOffset operator +(Reference left, long right)
+		{
+			return new ReferenceOffset(left, right);
+		}
+		#endregion
 	}
 }

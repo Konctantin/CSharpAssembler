@@ -47,7 +47,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 				// Only 32-bit displacements can be encoded without a base and index register.
 				instr.DisplacementSize = DataSize.Bit32;
 				if (instr.Displacement == null)
-					instr.Displacement = new SimpleExpression(0);
+					instr.Displacement = new ReferenceOffset(0);
 			}
 			else if (baseRegister != Register.ESP && indexRegister == Register.None)
 			{
@@ -59,7 +59,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 				{
 					// [EBP] will be represented as [EBP+disp8].
 					instr.DisplacementSize = DataSize.Bit8;
-					instr.Displacement = new SimpleExpression(0);
+					instr.Displacement = new ReferenceOffset(0);
 				}
 
 				// Mod
@@ -83,7 +83,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 				{
 					// [EBP+REG*s] will be represented as [EBP+REG*s+disp8].
 					instr.DisplacementSize = DataSize.Bit8;
-					instr.Displacement = new SimpleExpression(0);
+					instr.Displacement = new ReferenceOffset(0);
 				}
 
 				// Mod

@@ -276,7 +276,7 @@ namespace SharpAssembler
 		}
 #endif
 
-		private Int128? address;
+		private UInt128? address;
 		/// <summary>
 		/// Gets or sets the virtual address where this section starts.
 		/// </summary>
@@ -287,7 +287,7 @@ namespace SharpAssembler
 		/// <see langword="null"/>.</para>
 		/// <para>This member is similar to the 'vstart' NASM section attribute.</para>
 		/// </remarks>
-		public Int128? Address
+		public UInt128? Address
 		{
 			get { return address; }
 			set { address = value; }

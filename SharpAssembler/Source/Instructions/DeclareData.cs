@@ -42,7 +42,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="expression">The expression of the value.</param>
 		/// <param name="size">The size of the result.</param>
-		public DeclareData(Expression<Func<Context, SimpleExpression>> expression, DataSize size)
+		public DeclareData(Expression<Func<Context, ReferenceOffset>> expression, DataSize size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);
@@ -60,7 +60,7 @@ namespace SharpAssembler.Instructions
 		/// <param name="reference">A symbol reference.</param>
 		/// <param name="size">The size of the result.</param>
 		public DeclareData(Reference reference, DataSize size)
-			: this(c => new SimpleExpression(reference), size)
+			: this(c => new ReferenceOffset(reference), size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(reference != null);
@@ -76,7 +76,7 @@ namespace SharpAssembler.Instructions
 		/// <param name="value">A 8-bit signed integer value.</param>
 		[CLSCompliant(false)]
 		public DeclareData(sbyte value)
-			: this(c => new SimpleExpression(value), DataSize.Bit8)
+			: this(c => new ReferenceOffset(value), DataSize.Bit8)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="value">A 8-bit unsigned integer value.</param>
 		public DeclareData(byte value)
-			: this(c => new SimpleExpression(value), DataSize.Bit8)
+			: this(c => new ReferenceOffset(value), DataSize.Bit8)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="value">A 16-bit signed integer value.</param>
 		public DeclareData(short value)
-			: this(c => new SimpleExpression(value), DataSize.Bit16)
+			: this(c => new ReferenceOffset(value), DataSize.Bit16)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace SharpAssembler.Instructions
 		/// <param name="value">A 16-bit unsigned integer value.</param>
 		[CLSCompliant(false)]
 		public DeclareData(ushort value)
-			: this(c => new SimpleExpression(value), DataSize.Bit16)
+			: this(c => new ReferenceOffset(value), DataSize.Bit16)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -109,7 +109,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="value">A 32-bit signed integer value.</param>
 		public DeclareData(int value)
-			: this(c => new SimpleExpression(value), DataSize.Bit32)
+			: this(c => new ReferenceOffset(value), DataSize.Bit32)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace SharpAssembler.Instructions
 		/// <param name="value">A 32-bit unsigned integer value.</param>
 		[CLSCompliant(false)]
 		public DeclareData(uint value)
-			: this(c => new SimpleExpression(value), DataSize.Bit32)
+			: this(c => new ReferenceOffset(value), DataSize.Bit32)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace SharpAssembler.Instructions
 		/// </summary>
 		/// <param name="value">A 64-bit signed integer value.</param>
 		public DeclareData(long value)
-			: this(c => new SimpleExpression(value), DataSize.Bit64)
+			: this(c => new ReferenceOffset(value), DataSize.Bit64)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace SharpAssembler.Instructions
 		/// <param name="value">A 64-bit unsigned integer value.</param>
 		[CLSCompliant(false)]
 		public DeclareData(ulong value)
-			: this(c => new SimpleExpression(value), DataSize.Bit64)
+			: this(c => new ReferenceOffset(value), DataSize.Bit64)
 		{ /* Nothing to do. */ }
 
 		/// <summary>
@@ -144,23 +144,23 @@ namespace SharpAssembler.Instructions
 		/// <param name="value">A 128-bit signed integer value.</param>
 		[CLSCompliant(false)]
 		public DeclareData(Int128 value)
-			: this(c => new SimpleExpression(value), DataSize.Bit128)
+			: this(c => new ReferenceOffset(value), DataSize.Bit128)
 		{ /* Nothing to do. */ }
 		#endregion
 		#endregion
 
 		#region Properties
-		private Expression<Func<Context, SimpleExpression>> expression;
+		private Expression<Func<Context, ReferenceOffset>> expression;
 		/// <summary>
 		/// Gets or sets the expression that will be declared.
 		/// </summary>
-		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Expression<Func<Context, SimpleExpression>> Expression
+		/// <value>A function accepting a <see cref="Context"/> and returning a <see cref="ReferenceOffset"/>.</value>
+		public Expression<Func<Context, ReferenceOffset>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, ReferenceOffset>>>() != null);
 				#endregion
 				return expression;
 			}

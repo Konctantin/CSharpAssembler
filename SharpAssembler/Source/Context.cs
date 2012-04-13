@@ -84,12 +84,12 @@ namespace SharpAssembler
 			set { section = value; }
 		}
 
-		private Int128 address;
+		private UInt128 address;
 		/// <summary>
 		/// Gets or sets the current virtual address.
 		/// </summary>
 		/// <value>The current virtual address.</value>
-		public Int128 Address
+		public UInt128 Address
 		{
 			get { return address; }
 			set { address = value; }

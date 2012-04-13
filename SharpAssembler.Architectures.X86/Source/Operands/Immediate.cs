@@ -60,7 +60,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// <param name="constant">A constant.</param>
 		/// <param name="size">The size of the resulting value.</param>
 		public Immediate(Int128 constant, DataSize size)
-			: this(c => new SimpleExpression(constant), size)
+			: this(c => new ReferenceOffset(constant), size)
 		{
 			#region Contract
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), size));
@@ -85,7 +85,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// <param name="reference">A reference.</param>
 		/// <param name="size">The size of the resulting value.</param>
 		public Immediate(Reference reference, DataSize size)
-			: this(c => new SimpleExpression(reference), size)
+			: this(c => new ReferenceOffset(reference), size)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(reference != null);
@@ -97,7 +97,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// Initializes a new instance of the <see cref="Immediate"/> class.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
-		public Immediate(Expression<Func<Context, SimpleExpression>> expression)
+		public Immediate(Expression<Func<Context, ReferenceOffset>> expression)
 			: this(expression, DataSize.None)
 		{
 			#region Contract
@@ -110,7 +110,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <param name="size">The size of the resulting value.</param>
-		public Immediate(Expression<Func<Context, SimpleExpression>> expression, DataSize size)
+		public Immediate(Expression<Func<Context, ReferenceOffset>> expression, DataSize size)
 			: base(size)
 		{
 			#region Contract
@@ -123,17 +123,17 @@ namespace SharpAssembler.Architectures.X86.Operands
 		#endregion
 
 		#region Properties
-		private Expression<Func<Context, SimpleExpression>> expression;
+		private Expression<Func<Context, ReferenceOffset>> expression;
 		/// <summary>
 		/// Gets or sets the expression evaluating to the immediate value.
 		/// </summary>
-		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="SimpleExpression"/>.</value>
-		public Expression<Func<Context, SimpleExpression>> Expression
+		/// <value>A function taking a <see cref="Context"/> and returning a <see cref="ReferenceOffset"/>.</value>
+		public Expression<Func<Context, ReferenceOffset>> Expression
 		{
 			get
 			{
 				#region Contract
-				Contract.Ensures(Contract.Result<Expression<Func<Context, SimpleExpression>>>() != null);
+				Contract.Ensures(Contract.Result<Expression<Func<Context, ReferenceOffset>>>() != null);
 				#endregion
 				return expression;
 			}
@@ -158,7 +158,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			// CONTRACT: Operand
 
 			// Let's evaluate the expression.
-			SimpleExpression result = expression.Compile()(context);
+			ReferenceOffset result = expression.Compile()(context);
 
 			// Determine the size of the immediate operand.
 			DataSize size = PreferredSize;

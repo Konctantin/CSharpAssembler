@@ -30,47 +30,43 @@ using System.Globalization;
 namespace SharpAssembler
 {
 	/// <summary>
-	/// A 128-bit signed integer.
+	/// A 128-bit unsigned integer.
 	/// </summary>
 	/// <remarks>
 	/// This implementation is based on the code described in
 	/// <see href="http://www.informit.com/guides/content.aspx?g=dotnet&amp;seqNum=636"/>.
 	/// </remarks>
-	public struct Int128 : IFormattable, IConvertible,
-		IComparable, IComparable<Int128>, IEquatable<Int128>
+	public struct UInt128 : IFormattable, IConvertible,
+		IComparable, IComparable<UInt128>, IEquatable<UInt128>
 	{
 		#region Constants
 		/// <summary>
-		/// The maximum value a <see cref="Int128"/> can represent.
+		/// The maximum value a <see cref="UInt128"/> can represent.
 		/// </summary>
-		public static readonly Int128 MaxValue = new Int128(0xFFFFFFFFFFFFFFFF, 0x7FFFFFFFFFFFFFFF);
+		public static readonly UInt128 MaxValue = new UInt128(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
 		/// <summary>
-		/// The minimum value a <see cref="Int128"/> can represent.
+		/// The minimum value a <see cref="UInt128"/> can represent.
 		/// </summary>
-		public static readonly Int128 MinValue = new Int128(0, unchecked((long)0x8000000000000000));
+		public static readonly UInt128 MinValue = new UInt128(0, 0);
 
 		/// <summary>
-		/// A <see cref="Int128"/> value of -1.
+		/// A <see cref="UInt128"/> value of 0.
 		/// </summary>
-		public static readonly Int128 MinusOne = new Int128(0xFFFFFFFFFFFFFFFF, unchecked((long)0xFFFFFFFFFFFFFFFF));
+		public static readonly UInt128 Zero = new UInt128(0, 0);
 		/// <summary>
-		/// A <see cref="Int128"/> value of 0.
+		/// A <see cref="UInt128"/> value of 1.
 		/// </summary>
-		public static readonly Int128 Zero = new Int128(0, 0);
-		/// <summary>
-		/// A <see cref="Int128"/> value of 1.
-		/// </summary>
-		public static readonly Int128 One = new Int128(1, 0);
+		public static readonly UInt128 One = new UInt128(1, 0);
 		#endregion
 
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Int128"/> struct.
+		/// Initializes a new instance of the <see cref="UInt128"/> struct.
 		/// </summary>
 		/// <param name="low">The least significant 64-bits of the integer.</param>
 		/// <param name="high">The most siginificant 64-bits of the integer.</param>
 		[CLSCompliant(false)]
-		public Int128(ulong low, long high)
+		public UInt128(ulong low, ulong high)
 		{
 			this.low = low;
 			this.high = high;
@@ -79,7 +75,7 @@ namespace SharpAssembler
 
 		#region Properties
 		/// <summary>
-		/// Gets whether the value of this <see cref="Int128"/> is an even number.
+		/// Gets whether the value of this <see cref="UInt128"/> is an even number.
 		/// </summary>
 		/// <value><see langword="true"/> when this value is an even number;
 		/// otherwise, <see langword="false"/>.</value>
@@ -95,7 +91,7 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Gets whether the value of this <see cref="Int128"/> is zero.
+		/// Gets whether the value of this <see cref="UInt128"/> is zero.
 		/// </summary>
 		/// <value><see langword="true"/> when this value is zero;
 		/// otherwise, <see langword="false"/>.</value>
@@ -105,7 +101,7 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Gets whether the value of this <see cref="Int128"/> is one.
+		/// Gets whether the value of this <see cref="UInt128"/> is one.
 		/// </summary>
 		/// <value><see langword="true"/> when this value is one;
 		/// otherwise, <see langword="false"/>.</value>
@@ -115,23 +111,13 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Gets whether the value of this <see cref="Int128"/> is a power of two.
+		/// Gets whether the value of this <see cref="UInt128"/> is a power of two.
 		/// </summary>
 		/// <value><see langword="true"/> when this value is a power of two;
 		/// otherwise, <see langword="false"/>.</value>
 		public bool IsPowerOfTwo
 		{
 			get { return !IsZero && (this & (this - 1)) == 0; }
-		}
-
-		/// <summary>
-		/// Gets a number that indicates the sign (negative, positive, or zero) of the current <see cref="Int128"/>.
-		/// </summary>
-		/// <value>A number that indicates the sign. The return value is 0 when the value is zero, 1 when the value
-		/// is positive or -1 when the value is negative.</value>
-		public int Sign
-		{
-			get { return this.CompareTo(0); }
 		}
 
 		/// <summary>
@@ -149,7 +135,7 @@ namespace SharpAssembler
 		/// </summary>
 		/// <value>The 64 most significant bits.</value>
 		[CLSCompliant(false)]
-		public long High
+		public ulong High
 		{
 			get { return this.high; }
 		}
@@ -165,9 +151,9 @@ namespace SharpAssembler
 		public override bool Equals(object obj)
 		{
 			if (Object.ReferenceEquals(obj, null) ||
-				!(obj is Int128))
+				!(obj is UInt128))
 				return false;
-			return Equals((Int128)obj);
+			return Equals((UInt128)obj);
 		}
 
 		/// <summary>
@@ -176,7 +162,7 @@ namespace SharpAssembler
 		/// <param name="other">An object to compare with this object.</param>
 		/// <returns><see langword="true"/> if the current object is equal to the other parameter;
 		/// otherwise, <see langword="false"/>.</returns>
-		public bool Equals(Int128 other)
+		public bool Equals(UInt128 other)
 		{
 			return this.high == other.high && this.low == other.low;
 		}
@@ -197,25 +183,25 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether two <see cref="Int128"/> objects have the same value.
+		/// Returns a value that indicates whether two <see cref="UInt128"/> objects have the same value.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the <paramref name="left"/> and <paramref name="right"/> parameters have
 		/// the same value; otherwise, <see langword="false"/>.</returns>
-		public static bool operator ==(Int128 left, Int128 right)
+		public static bool operator ==(UInt128 left, UInt128 right)
 		{
 			return left.Equals(right);
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether two <see cref="Int128"/> objects have different values.
+		/// Returns a value that indicates whether two <see cref="UInt128"/> objects have different values.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the <paramref name="left"/> and <paramref name="right"/> parameters have
 		/// different values; otherwise, <see langword="false"/>.</returns>
-		public static bool operator !=(Int128 left, Int128 right)
+		public static bool operator !=(UInt128 left, UInt128 right)
 		{
 			return !left.Equals(right);
 		}
@@ -229,8 +215,8 @@ namespace SharpAssembler
 		/// <returns>A value that indicates the relative order of the objects being compared.</returns>
 		public int CompareTo(object obj)
 		{
-			if (obj is Int128)
-				return CompareTo((Int128)obj);
+			if (obj is UInt128)
+				return CompareTo((UInt128)obj);
 			else
 				throw new ArgumentException("The specified object is not the same type as this instance.", "obj");
 		}
@@ -240,7 +226,7 @@ namespace SharpAssembler
 		/// </summary>
 		/// <param name="other">An object to compare with this instance.</param>
 		/// <returns>A value that indicates the relative order of the objects being compared.</returns>
-		public int CompareTo(Int128 other)
+		public int CompareTo(UInt128 other)
 		{
 			int result = this.high.CompareTo(other.high);
 			if (result == 0)
@@ -249,53 +235,53 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether a <see cref="Int128"/> value is greater than another
-		/// <see cref="Int128"/> value.
+		/// Returns a value that indicates whether a <see cref="UInt128"/> value is greater than another
+		/// <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the value of <paramref name="left"/> is greater than the value of
 		/// <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-		public static bool operator >(Int128 left, Int128 right)
+		public static bool operator >(UInt128 left, UInt128 right)
 		{
 			return left.CompareTo(right) > 0;
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether a <see cref="Int128"/> value is less than another
-		/// <see cref="Int128"/> value.
+		/// Returns a value that indicates whether a <see cref="UInt128"/> value is less than another
+		/// <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the value of <paramref name="left"/> is less than the value of
 		/// <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-		public static bool operator <(Int128 left, Int128 right)
+		public static bool operator <(UInt128 left, UInt128 right)
 		{
 			return left.CompareTo(right) < 0;
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether a <see cref="Int128"/> value is greater than or equal to another
-		/// <see cref="Int128"/> value.
+		/// Returns a value that indicates whether a <see cref="UInt128"/> value is greater than or equal to another
+		/// <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the value of <paramref name="left"/> is greater than or equal to the
 		/// value of <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-		public static bool operator >=(Int128 left, Int128 right)
+		public static bool operator >=(UInt128 left, UInt128 right)
 		{
 			return left.CompareTo(right) >= 0;
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether a <see cref="Int128"/> value is less than or equal to another
-		/// <see cref="Int128"/> value.
+		/// Returns a value that indicates whether a <see cref="UInt128"/> value is less than or equal to another
+		/// <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns><see langword="true"/> if the value of <paramref name="left"/> is less than or equal to the value
 		/// of <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-		public static bool operator <=(Int128 left, Int128 right)
+		public static bool operator <=(UInt128 left, UInt128 right)
 		{
 			return left.CompareTo(right) <= 0;
 		}
@@ -303,98 +289,98 @@ namespace SharpAssembler
 
 		#region Conversions
 		/// <summary>
-		/// Converts the specfied unsigned 128-bit value to a signed 128-bit value.
+		/// Converts the specfied signed 128-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
 		[CLSCompliant(false)]
-		public static explicit operator Int128(UInt128 value)
+		public static explicit operator UInt128(Int128 value)
 		{
-			return new Int128(value.Low, unchecked((long)value.High));
+			return new UInt128(value.Low, unchecked((ulong)value.High));
 		}
 
 		/// <summary>
-		/// Converts the specfied unsigned 64-bit value to a signed 128-bit value.
+		/// Converts the specfied unsigned 64-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
 		[CLSCompliant(false)]
-		public static implicit operator Int128(ulong value)
+		public static implicit operator UInt128(ulong value)
 		{
-			return new Int128(value, 0);
+			return new UInt128(value, 0);
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 64-bit value to a signed 128-bit value.
+		/// Converts the specfied signed 64-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
-		public static implicit operator Int128(long value)
+		public static implicit operator UInt128(long value)
 		{
-			return new Int128(unchecked((ulong)value), (value < 0 ? -1 : 0));
+			return (UInt128)(Int128)value;
 		}
 
 		/// <summary>
-		/// Converts the specfied unsigned 32-bit value to a signed 128-bit value.
-		/// </summary>
-		/// <param name="value">The value to convert.</param>
-		/// <returns>The resulting 128-bit value.</returns>
-		[CLSCompliant(false)]
-		public static implicit operator Int128(uint value)
-		{
-			return (Int128)(ulong)value;
-		}
-
-		/// <summary>
-		/// Converts the specfied signed 32-bit value to a signed 128-bit value.
-		/// </summary>
-		/// <param name="value">The value to convert.</param>
-		/// <returns>The resulting 128-bit value.</returns>
-		public static implicit operator Int128(int value)
-		{
-			return (Int128)(long)value;
-		}
-
-		/// <summary>
-		/// Converts the specfied unsigned 16-bit value to a signed 128-bit value.
+		/// Converts the specfied unsigned 32-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
 		[CLSCompliant(false)]
-		public static implicit operator Int128(ushort value)
+		public static implicit operator UInt128(uint value)
 		{
-			return (Int128)(ulong)value;
+			return (UInt128)(ulong)value;
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 16-bit value to a signed 128-bit value.
+		/// Converts the specfied signed 32-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
-		public static implicit operator Int128(short value)
+		public static implicit operator UInt128(int value)
 		{
-			return (Int128)(long)value;
+			return (UInt128)(long)value;
 		}
 
 		/// <summary>
-		/// Converts the specfied unsigned 8-bit value to a signed 128-bit value.
-		/// </summary>
-		/// <param name="value">The value to convert.</param>
-		/// <returns>The resulting 128-bit value.</returns>
-		public static implicit operator Int128(byte value)
-		{
-			return (Int128)(ulong)value;
-		}
-
-		/// <summary>
-		/// Converts the specfied signed 8-bit value to a signed 128-bit value.
+		/// Converts the specfied unsigned 16-bit value to an unsigned 128-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 128-bit value.</returns>
 		[CLSCompliant(false)]
-		public static implicit operator Int128(sbyte value)
+		public static implicit operator UInt128(ushort value)
 		{
-			return (Int128)(long)value;
+			return (UInt128)(ulong)value;
+		}
+
+		/// <summary>
+		/// Converts the specfied signed 16-bit value to an unsigned 128-bit value.
+		/// </summary>
+		/// <param name="value">The value to convert.</param>
+		/// <returns>The resulting 128-bit value.</returns>
+		public static implicit operator UInt128(short value)
+		{
+			return (UInt128)(long)value;
+		}
+
+		/// <summary>
+		/// Converts the specfied unsigned 8-bit value to an unsigned 128-bit value.
+		/// </summary>
+		/// <param name="value">The value to convert.</param>
+		/// <returns>The resulting 128-bit value.</returns>
+		public static implicit operator UInt128(byte value)
+		{
+			return (UInt128)(ulong)value;
+		}
+
+		/// <summary>
+		/// Converts the specfied signed 8-bit value to an unsigned 128-bit value.
+		/// </summary>
+		/// <param name="value">The value to convert.</param>
+		/// <returns>The resulting 128-bit value.</returns>
+		[CLSCompliant(false)]
+		public static implicit operator UInt128(sbyte value)
+		{
+			return (UInt128)(long)value;
 		}
 
 		/// <summary>
@@ -403,17 +389,17 @@ namespace SharpAssembler
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 64-bit value.</returns>
 		[CLSCompliant(false)]
-		public static explicit operator ulong(Int128 value)
+		public static explicit operator ulong(UInt128 value)
 		{
 			return (ulong)value.low;
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 128-bit value to a signed 64-bit value.
+		/// Converts the specfied signed 128-bit value to an unsigned 64-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 64-bit value.</returns>
-		public static explicit operator long(Int128 value)
+		public static explicit operator long(UInt128 value)
 		{
 			return (long)value.low;
 		}
@@ -424,17 +410,17 @@ namespace SharpAssembler
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 32-bit value.</returns>
 		[CLSCompliant(false)]
-		public static explicit operator uint(Int128 value)
+		public static explicit operator uint(UInt128 value)
 		{
 			return (uint)value.low;
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 128-bit value to a signed 32-bit value.
+		/// Converts the specfied signed 128-bit value to an unsigned 32-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 32-bit value.</returns>
-		public static explicit operator int(Int128 value)
+		public static explicit operator int(UInt128 value)
 		{
 			return (int)value.low;
 		}
@@ -445,17 +431,17 @@ namespace SharpAssembler
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 16-bit value.</returns>
 		[CLSCompliant(false)]
-		public static explicit operator ushort(Int128 value)
+		public static explicit operator ushort(UInt128 value)
 		{
 			return (ushort)value.low;
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 128-bit value to a signed 16-bit value.
+		/// Converts the specfied signed 128-bit value to an unsigned 16-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 16-bit value.</returns>
-		public static explicit operator short(Int128 value)
+		public static explicit operator short(UInt128 value)
 		{
 			return (short)value.low;
 		}
@@ -465,18 +451,18 @@ namespace SharpAssembler
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 8-bit value.</returns>
-		public static explicit operator byte(Int128 value)
+		public static explicit operator byte(UInt128 value)
 		{
 			return (byte)value.low;
 		}
 
 		/// <summary>
-		/// Converts the specfied signed 128-bit value to a signed 8-bit value.
+		/// Converts the specfied signed 128-bit value to an unsigned 8-bit value.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
 		/// <returns>The resulting 8-bit value.</returns>
 		[CLSCompliant(false)]
-		public static explicit operator sbyte(Int128 value)
+		public static explicit operator sbyte(UInt128 value)
 		{
 			return (sbyte)value.low;
 		}
@@ -535,7 +521,7 @@ namespace SharpAssembler
 				return conv.ToUInt32(provider);
 			if (conversionType == typeof(UInt64))
 				return conv.ToUInt64(provider);
-			if (conversionType == typeof(Int128))
+			if (conversionType == typeof(UInt128))
 				return this;
 
 			throw new InvalidCastException();
@@ -743,53 +729,31 @@ namespace SharpAssembler
 		#region Arithmetic
 		#region Unary
 		/// <summary>
-		/// Returns the value of the <see cref="Int128"/>.
+		/// Returns the value of the <see cref="UInt128"/>.
 		/// </summary>
 		/// <param name="value">An integer value.</param>
 		/// <returns>The value of the <paramref name="value"/> parameter.</returns>
-		public static Int128 operator +(Int128 value)
+		public static UInt128 operator +(UInt128 value)
 		{
 			return value;
 		}
 
 		/// <summary>
-		/// Negates a <see cref="Int128"/> value.
-		/// </summary>
-		/// <param name="value">The value to negate.</param>
-		/// <returns>The result of the value parameter multiplied by negative one (-1).</returns>
-		public static Int128 operator -(Int128 value)
-		{
-			return Negate(value);
-		}
-
-		/// <summary>
-		/// Negates an <see cref="Int128"/>.
-		/// </summary>
-		/// <param name="value">The value to negate.</param>
-		/// <returns>The result of the value parameter multiplied by negative one (-1).</returns>
-		public static Int128 Negate(Int128 value)
-		{
-			value = ~value;
-			value++;
-			return value;
-		}
-
-		/// <summary>
-		/// Returns the bitwise one's complement of an <see cref="Int128"/> value.
+		/// Returns the bitwise one's complement of an <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="value">An integer value.</param>
 		/// <returns>The bitwise one's complement of <paramref name="value"/>.</returns>
-		public static Int128 operator ~(Int128 value)
+		public static UInt128 operator ~(UInt128 value)
 		{
-			return new Int128(~value.low, ~value.high);
+			return new UInt128(~value.low, ~value.high);
 		}
 
 		/// <summary>
-		/// Increments a <see cref="Int128"/> value by 1.
+		/// Increments a <see cref="UInt128"/> value by 1.
 		/// </summary>
 		/// <param name="value">The value to increment.</param>
 		/// <returns>The value of the <paramref name="value"/> parameter incremented by 1.</returns>
-		public static Int128 operator ++(Int128 value)
+		public static UInt128 operator ++(UInt128 value)
 		{
 			value.low++;
 			if (value.low == 0)
@@ -798,11 +762,11 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Decrements a <see cref="Int128"/> value by 1.
+		/// Decrements a <see cref="UInt128"/> value by 1.
 		/// </summary>
 		/// <param name="value">The value to decrement.</param>
 		/// <returns>The value of the <paramref name="value"/> parameter decremented by 1.</returns>
-		public static Int128 operator --(Int128 value)
+		public static UInt128 operator --(UInt128 value)
 		{
 			if (value.low == 0)
 				value.high--;
@@ -813,23 +777,23 @@ namespace SharpAssembler
 
 		#region Binary
 		/// <summary>
-		/// Adds the values of two specified <see cref="Int128"/> values.
+		/// Adds the values of two specified <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value to add.</param>
 		/// <param name="right">The second value to add.</param>
 		/// <returns>The sum of <paramref name="left"/> and <paramref name="right"/>.</returns>
-		public static Int128 operator +(Int128 left, Int128 right)
+		public static UInt128 operator +(UInt128 left, UInt128 right)
 		{
 			return Add(left, right);
 		}
 
 		/// <summary>
-		/// Adds two <see cref="Int128"/> values and returns the result.
+		/// Adds two <see cref="UInt128"/> values and returns the result.
 		/// </summary>
 		/// <param name="left">The first value to add.</param>
 		/// <param name="right">The second value to add.</param>
 		/// <returns>The sum of <paramref name="left"/> and <paramref name="right"/>.</returns>
-		public static Int128 Add(Int128 left, Int128 right)
+		public static UInt128 Add(UInt128 left, UInt128 right)
 		{
 			var oldLow = left.low;
 
@@ -842,67 +806,67 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Subtracts an <see cref="Int128"/> from another <see cref="Int128"/> value.
+		/// Subtracts an <see cref="UInt128"/> from another <see cref="UInt128"/> value.
 		/// </summary>
 		/// <param name="left">The value to subtract from.</param>
 		/// <param name="right">The value to subtract.</param>
 		/// <returns>The result of subtracting <paramref name="right"/> from <paramref name="left"/>.</returns>
-		public static Int128 operator -(Int128 left, Int128 right)
+		public static UInt128 operator -(UInt128 left, UInt128 right)
 		{
 			return Subtract(left, right);
 		}
 
 		/// <summary>
-		/// Subtracts one <see cref="Int128"/> from another and returns the result.
+		/// Subtracts one <see cref="UInt128"/> from another and returns the result.
 		/// </summary>
 		/// <param name="left">The value to subtract from.</param>
 		/// <param name="right">The value to subtract.</param>
 		/// <returns>The result of subtracting <paramref name="right"/> from <paramref name="left"/>.</returns>
-		public static Int128 Subtract(Int128 left, Int128 right)
+		public static UInt128 Subtract(UInt128 left, UInt128 right)
 		{
-			return left + (-right);
+			return (UInt128)((Int128)left - (Int128)right);
 		}
 
 		/// <summary>
-		/// Performs a bitwise AND operation on two <see cref="Int128"/> values.
+		/// Performs a bitwise AND operation on two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value.</param>
 		/// <param name="right">The second value.</param>
 		/// <returns>The result of the bitwise AND operation.</returns>
-		public static Int128 operator &(Int128 left, Int128 right)
+		public static UInt128 operator &(UInt128 left, UInt128 right)
 		{
-			return new Int128(left.low & right.low, left.high & right.high);
+			return new UInt128(left.low & right.low, left.high & right.high);
 		}
 
 		/// <summary>
-		/// Performs a bitwise OR operation on two <see cref="Int128"/> values.
+		/// Performs a bitwise OR operation on two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value.</param>
 		/// <param name="right">The second value.</param>
 		/// <returns>The result of the bitwise OR operation.</returns>
-		public static Int128 operator |(Int128 left, Int128 right)
+		public static UInt128 operator |(UInt128 left, UInt128 right)
 		{
-			return new Int128(left.low | right.low, left.high | right.high);
+			return new UInt128(left.low | right.low, left.high | right.high);
 		}
 
 		/// <summary>
-		/// Performs a bitwise exclusive OR (XOR) operation on two <see cref="Int128"/> values.
+		/// Performs a bitwise exclusive OR (XOR) operation on two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value.</param>
 		/// <param name="right">The second value.</param>
 		/// <returns>The result of the bitwise XOR operation.</returns>
-		public static Int128 operator ^(Int128 left, Int128 right)
+		public static UInt128 operator ^(UInt128 left, UInt128 right)
 		{
-			return new Int128(left.low ^ right.low, left.high ^ right.high);
+			return new UInt128(left.low ^ right.low, left.high ^ right.high);
 		}
 
 		/// <summary>
-		/// Shifts an <see cref="Int128"/> value a specified number of bits to the left.
+		/// Shifts an <see cref="UInt128"/> value a specified number of bits to the left.
 		/// </summary>
 		/// <param name="value">The value whose bits are to be shifted.</param>
 		/// <param name="shift">The number of bits to shift <paramref name="value"/> to the left.</param>
 		/// <returns>A value that has been shifted to the left by the specified number of bits.</returns>
-		public static Int128 operator <<(Int128 value, int shift)
+		public static UInt128 operator <<(UInt128 value, int shift)
 		{
 			if (shift == 0)
 				return value;
@@ -918,13 +882,13 @@ namespace SharpAssembler
 			if (shift > 63)
 			{
 				shift -= 64;
-				value.high = unchecked((long)value.low);
+				value.high = value.low;
 				value.low = 0;
 			}
 
 			if (shift > 0)
 			{
-				long highbits = unchecked((long)(value.low >> (64 - shift)));
+				ulong highbits = value.low >> (64 - shift);
 				value.low <<= shift;
 				value.high <<= shift;
 				value.high |= highbits;
@@ -934,12 +898,12 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Shifts an <see cref="Int128"/> value a specified number of bits to the right.
+		/// Shifts an <see cref="UInt128"/> value a specified number of bits to the right.
 		/// </summary>
 		/// <param name="value">The value whose bits are to be shifted.</param>
 		/// <param name="shift">The number of bits to shift <paramref name="value"/> to the right.</param>
 		/// <returns>A value that has been shifted to the right by the specified number of bits.</returns>
-		public static Int128 operator >>(Int128 value, int shift)
+		public static UInt128 operator >>(UInt128 value, int shift)
 		{
 			if (shift == 0)
 				return value;
@@ -955,13 +919,13 @@ namespace SharpAssembler
 			if (shift > 63)
 			{
 				shift -= 64;
-				value.low = unchecked((ulong)value.high);
+				value.low = value.high;
 				value.high = 0;
 			}
 
 			if (shift > 0)
 			{
-				ulong lowbits = unchecked((ulong)(value.high << (64 - shift)));
+				ulong lowbits = value.high << (64 - shift);
 				value.low >>= shift;
 				value.high >>= shift;
 				value.low |= lowbits;
@@ -971,23 +935,23 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Multiplies two specified <see cref="Int128"/> values.
+		/// Multiplies two specified <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value to multiply.</param>
 		/// <param name="right">The second value to multiply.</param>
 		/// <returns>The product of <paramref name="left"/> and <paramref name="right"/>.</returns>
-		public static Int128 operator *(Int128 left, Int128 right)
+		public static UInt128 operator *(UInt128 left, UInt128 right)
 		{
 			return Multiply(left, right);
 		}
 
 		/// <summary>
-		/// Returns the product of two <see cref="Int128"/> values.
+		/// Returns the product of two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first number to multiply.</param>
 		/// <param name="right">The second number to multiply.</param>
 		/// <returns>The product of <paramref name="left"/> and <paramref name="right"/>.</returns>
-		public static Int128 Multiply(Int128 left, Int128 right)
+		public static UInt128 Multiply(UInt128 left, UInt128 right)
 		{
 			uint left3 = (uint)(left.high >> 32);
 			uint left2 = (uint)left.high;
@@ -999,19 +963,19 @@ namespace SharpAssembler
 			ulong right1 = (uint)(right.low >> 32);
 			ulong right0 = (uint)right.low;
 
-			Int128 value00 = (Int128)(left0 * right0);
-			Int128 value10 = (Int128)(left1 * right0) << 32;
-			Int128 value20 = new Int128(0, (long)(left2 * right0));
-			Int128 value30 = new Int128(0, (long)((left3 * right0) << 32));
+			UInt128 value00 = (UInt128)(left0 * right0);
+			UInt128 value10 = (UInt128)(left1 * right0) << 32;
+			UInt128 value20 = new UInt128(0, left2 * right0);
+			UInt128 value30 = new UInt128(0, (left3 * right0) << 32);
 
-			Int128 value01 = (Int128)(left0 * right1) << 32;
-			Int128 value11 = new Int128(0, (long)(left1 * right1));
-			Int128 value21 = new Int128(0, (long)((left2 * right1) << 32));
+			UInt128 value01 = (UInt128)(left0 * right1) << 32;
+			UInt128 value11 = new UInt128(0, left1 * right1);
+			UInt128 value21 = new UInt128(0, (left2 * right1) << 32);
 
-			Int128 value02 = new Int128(0, (long)(left0 * right2));
-			Int128 value12 = new Int128(0, (long)((left1 * right2) << 32));
+			UInt128 value02 = new UInt128(0, left0 * right2);
+			UInt128 value12 = new UInt128(0, (left1 * right2) << 32);
 
-			Int128 value03 = new Int128(0, (long)((left0 * right3) << 32));
+			UInt128 value03 = new UInt128(0, (left0 * right3) << 32);
 
 			return value00 + value10 + value20 + value30
 				+ value01 + value11 + value21
@@ -1020,12 +984,12 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Divides a specified <see cref="Int128"/> value by another specified <see cref="Int128"/> value by using integer division.
+		/// Divides a specified <see cref="UInt128"/> value by another specified <see cref="UInt128"/> value by using integer division.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <returns>The integral result of the division.</returns>
-		public static Int128 operator /(Int128 dividend, Int128 divisor)
+		public static UInt128 operator /(UInt128 dividend, UInt128 divisor)
 		{
 			#region Contract
 			Contract.Requires<DivideByZeroException>(divisor != 0);
@@ -1035,28 +999,28 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Divides one <see cref="Int128"/> by another and returns the result.
+		/// Divides one <see cref="UInt128"/> by another and returns the result.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <returns>The quotient of the division.</returns>
-		public static Int128 Divide(Int128 dividend, Int128 divisor)
+		public static UInt128 Divide(UInt128 dividend, UInt128 divisor)
 		{
 			#region Contract
 			Contract.Requires<DivideByZeroException>(divisor != 0);
 			#endregion
 
-			Int128 remainder;
+			UInt128 remainder;
 			return DivRem(dividend, divisor, out remainder);
 		}
 
 		/// <summary>
-		/// Returns the remainder that results from division with two specified <see cref="Int128"/> values.
+		/// Returns the remainder that results from division with two specified <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <returns>The remainder that results from the division.</returns>
-		public static Int128 operator %(Int128 dividend, Int128 divisor)
+		public static UInt128 operator %(UInt128 dividend, UInt128 divisor)
 		{
 			#region Contract
 			Contract.Requires<DivideByZeroException>(divisor != 0);
@@ -1066,91 +1030,53 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Performs integer division on two <see cref="Int128"/> values and returns the remainder.
+		/// Performs integer division on two <see cref="UInt128"/> values and returns the remainder.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <returns>The remainder after dividing <paramref name="dividend"/> by <paramref name="divisor"/>.</returns>
-		public static Int128 Remainder(Int128 dividend, Int128 divisor)
+		public static UInt128 Remainder(UInt128 dividend, UInt128 divisor)
 		{
 			#region Contract
 			Contract.Requires<DivideByZeroException>(divisor != 0);
 			#endregion
 
-			Int128 remainder;
+			UInt128 remainder;
 			DivRem(dividend, divisor, out remainder);
 			return remainder;
 		}
 		#endregion
 
 		/// <summary>
-		/// Gets the absolute value of an <see cref="Int128"/>.
-		/// </summary>
-		/// <param name="value">A value.</param>
-		/// <returns>The absolute value of <paramref name="value"/>.</returns>
-		public static Int128 Abs(Int128 value)
-		{
-			#region Contract
-			Contract.Ensures(Contract.Result<Int128>() >= 0);
-			#endregion
-
-			Int128 result = value;
-			if (result < 0)
-				result = -result;
-			Contract.Assume(result >= 0);
-			return result;
-		}
-
-		/// <summary>
-		/// Divides one <see cref="Int128"/> value by another, using signed integer division, and returns the result
+		/// Divides one <see cref="UInt128"/> value by another, using signed integer division, and returns the result
 		/// and the remainder.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <param name="remainder">The remainder from the division.</param>
 		/// <returns>The quotient of the division.</returns>
-		public static Int128 DivRem(Int128 dividend, Int128 divisor, out Int128 remainder)
+		public static UInt128 DivRem(UInt128 dividend, UInt128 divisor, out UInt128 remainder)
 		{
 			#region Contract
 			Contract.Requires<DivideByZeroException>(divisor != 0);
 			#endregion
 
-			Int128 quotient;
-
-			int remainderSign = 1;
-			if (dividend < 0)
-			{
-				dividend = -dividend;
-				remainderSign = -1;
-			}
-
-			int quotientSign = 1;
-			if (divisor < 0)
-			{
-				divisor = -divisor;
-				quotientSign = -1;
-			}
-			quotientSign *= remainderSign;
-
-			quotient = UnsignedDivRem(dividend, divisor, out remainder);
-
-			quotient *= quotientSign;
-			remainder *= remainderSign;
+			UInt128 quotient = UnsignedDivRem(dividend, divisor, out remainder);
 
 			return quotient;
 		}
 
 		/// <summary>
-		/// Divides one <see cref="Int128"/> value by another, using unsigned integer division, and returns the result
+		/// Divides one <see cref="UInt128"/> value by another, using unsigned integer division, and returns the result
 		/// and the remainder.
 		/// </summary>
 		/// <param name="dividend">The value to be divided.</param>
 		/// <param name="divisor">The value to divide by.</param>
 		/// <param name="remainder">The remainder from the division.</param>
 		/// <returns>The quotient of the division.</returns>
-		public static Int128 UnsignedDivRem(Int128 dividend, Int128 divisor, out Int128 remainder)
+		public static UInt128 UnsignedDivRem(UInt128 dividend, UInt128 divisor, out UInt128 remainder)
 		{
-			Int128 quotient = dividend;
+			UInt128 quotient = dividend;
 			remainder = 0;
 			for (int i = 0; i < 128; i++)
 			{
@@ -1170,19 +1096,19 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns the larger of two <see cref="Int128"/> values.
+		/// Returns the larger of two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns>The <paramref name="left"/> or <paramref name="right"/> parameter, whichever is larger.</returns>
-		public static Int128 Max(Int128 left, Int128 right)
+		public static UInt128 Max(UInt128 left, UInt128 right)
 		{
 			#region Contract
-			Contract.Ensures(Contract.Result<Int128>() >= left);
-			Contract.Ensures(Contract.Result<Int128>() >= right);
+			Contract.Ensures(Contract.Result<UInt128>() >= left);
+			Contract.Ensures(Contract.Result<UInt128>() >= right);
 			#endregion
 
-			Int128 result = left;
+			UInt128 result = left;
 			if (right > left)
 				result = right;
 			Contract.Assert(result >= left);
@@ -1191,19 +1117,19 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns the smaller of two <see cref="Int128"/> values.
+		/// Returns the smaller of two <see cref="UInt128"/> values.
 		/// </summary>
 		/// <param name="left">The first value to compare.</param>
 		/// <param name="right">The second value to compare.</param>
 		/// <returns>The <paramref name="left"/> or <paramref name="right"/> parameter, whichever is smaller.</returns>
-		public static Int128 Min(Int128 left, Int128 right)
+		public static UInt128 Min(UInt128 left, UInt128 right)
 		{
 			#region Contract
-			Contract.Ensures(Contract.Result<Int128>() <= left);
-			Contract.Ensures(Contract.Result<Int128>() <= right);
+			Contract.Ensures(Contract.Result<UInt128>() <= left);
+			Contract.Ensures(Contract.Result<UInt128>() <= right);
 			#endregion
 
-			Int128 result = left;
+			UInt128 result = left;
 			if (right < left)
 				result = right;
 			Contract.Assume(result <= left);
@@ -1216,12 +1142,12 @@ namespace SharpAssembler
 		/// </summary>
 		/// <param name="boundary">The boundary to align to, which must be a power of two.</param>
 		/// <returns>The number of padding bytes required to align the address to the specified boundary.</returns>
-		public Int128 GetPadding(int boundary)
+		public UInt128 GetPadding(int boundary)
 		{
 			#region Contract
 			Contract.Requires<ArgumentOutOfRangeException>(boundary >= 1);
 			Contract.Requires<ArgumentException>(MathExt.IsPowerOfTwo(boundary));
-			Contract.Ensures(Contract.Result<Int128>() >= 0);
+			Contract.Ensures(Contract.Result<UInt128>() >= 0);
 			#endregion
 
 			return MathExt.CalculatePadding(this, boundary);
@@ -1232,12 +1158,12 @@ namespace SharpAssembler
 		/// </summary>
 		/// <param name="boundary">The boundary to align to, which must be a power of two.</param>
 		/// <returns>The address aligned to the specified boundary.</returns>
-		public Int128 Align(int boundary)
+		public UInt128 Align(int boundary)
 		{
 			#region Contract
 			Contract.Requires<ArgumentOutOfRangeException>(boundary >= 1);
 			Contract.Requires<ArgumentException>(MathExt.IsPowerOfTwo(boundary));
-			Contract.Ensures(Contract.Result<Int128>() >= this);
+			Contract.Ensures(Contract.Result<UInt128>() >= this);
 			#endregion
 
 			return MathExt.Align(this, boundary);
@@ -1286,7 +1212,7 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns the value of this <see cref="Int128"/> as a string with a hexadecimal number.
+		/// Returns the value of this <see cref="UInt128"/> as a string with a hexadecimal number.
 		/// </summary>
 		/// <param name="minimumDigitCount">The minimum number of digits to write.</param>
 		/// <param name="uppercase">Whether to use uppercase hexadecimal characters.</param>
@@ -1311,7 +1237,7 @@ namespace SharpAssembler
 		}
 
 		/// <summary>
-		/// Returns the value of this <see cref="Int128"/> as a string with a decimal number.
+		/// Returns the value of this <see cref="UInt128"/> as a string with a decimal number.
 		/// </summary>
 		/// <param name="format">The number format info to use.</param>
 		/// <returns>The decimal string.</returns>
@@ -1324,18 +1250,15 @@ namespace SharpAssembler
 
 			StringBuilder sb = new StringBuilder();
 
-			Int128 @base = 10;
-			Int128 current = this & ~MinValue;		// Get the absolute value
-			Int128 remainder;
+			UInt128 @base = 10;
+			UInt128 current = this;
+			UInt128 remainder;
 			do
 			{
 				current = DivRem(current, @base, out remainder);
 				if (!current.IsZero || remainder.low > 0)
 					sb.Insert(0, (char)('0' + remainder.low));
 			} while (!current.IsZero);
-
-			if (this.Sign < 0)
-				sb.Insert(0, format.NegativeSign);
 
 			return sb.ToString();
 		}
@@ -1349,7 +1272,7 @@ namespace SharpAssembler
 		/// <summary>
 		/// The high part of the integer.
 		/// </summary>
-		private long high;
+		private ulong high;
 		#endregion
 	}
 }

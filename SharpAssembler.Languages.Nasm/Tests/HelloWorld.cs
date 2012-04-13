@@ -43,7 +43,7 @@ namespace SharpAssembler.Languages.Nasm.Tests
 			data.Contents.AddRange(new Constructable[]{
 				new Label("str"),
 				new DeclareString("Hello World\n"),
-				new Define("len", c => new SimpleExpression(c.Address - c.SymbolTable["str"].Value)),
+				new Define("len", c => new ReferenceOffset((Int128)c.Address - c.SymbolTable["str"].Value)),
 			});
 
 			// When

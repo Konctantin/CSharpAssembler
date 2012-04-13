@@ -54,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		public EffectiveAddress(
 			DataSize operandSize,
 			DataSize addressSize,
-			Expression<Func<Context, SimpleExpression>> displacement)
+			Expression<Func<Context, ReferenceOffset>> displacement)
 			: this(operandSize, Register.None, Register.None, 0, displacement)
 		{
 			#region Contract
@@ -78,7 +78,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			Register baseRegister,
 			Register indexRegister,
 			int scale,
-			Expression<Func<Context, SimpleExpression>> displacement)
+			Expression<Func<Context, ReferenceOffset>> displacement)
 			: base(operandSize)
 		{
 			#region Contract
@@ -168,13 +168,13 @@ namespace SharpAssembler.Architectures.X86.Operands
 			}
 		}
 
-		private Expression<Func<Context, SimpleExpression>> displacement;
+		private Expression<Func<Context, ReferenceOffset>> displacement;
 		/// <summary>
 		/// Gets or sets the expression specifying the displacement of the effective address.
 		/// </summary>
-		/// <value>The displacement <see cref="Func{Context, SimpleExpression}"/>; or <see langword="null"/> to specify
+		/// <value>The displacement <see cref="Func{Context, ReferenceOffset}"/>; or <see langword="null"/> to specify
 		/// no displacement.</value>
-		public Expression<Func<Context, SimpleExpression>> Displacement
+		public Expression<Func<Context, ReferenceOffset>> Displacement
 		{
 			get { return displacement; }
 			set { displacement = value; }
@@ -346,7 +346,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 			#endregion
 
 			DataSize displacementSize = DataSize.None;
-			SimpleExpression displacementExpression = null;
+			ReferenceOffset displacementExpression = null;
 
 			if (displacement != null)
 			{

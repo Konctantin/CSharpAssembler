@@ -88,7 +88,7 @@ namespace SharpAssembler.Languages.Nasm
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <returns>The number of written characters.</returns>
-		int WriteExpression(Expression<Func<Context, SimpleExpression>> expression);
+		int WriteExpression(Expression<Func<Context, ReferenceOffset>> expression);
 	}
 
 
@@ -133,7 +133,7 @@ namespace SharpAssembler.Languages.Nasm
 				return default(int);
 			}
 
-			public int WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+			public int WriteExpression(Expression<Func<Context, ReferenceOffset>> expression)
 			{
 				Contract.Requires<ArgumentNullException>(expression != null);
 				Contract.Ensures(Contract.Result<int>() >= 0);

@@ -499,7 +499,7 @@ namespace SharpAssembler.Languages.Nasm
 		#endregion
 
 		/// <inheritdoc />
-		int INasmLanguageControl.WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+		int INasmLanguageControl.WriteExpression(Expression<Func<Context, ReferenceOffset>> expression)
 		{
 			return WriteExpression(expression);
 		}
@@ -509,7 +509,7 @@ namespace SharpAssembler.Languages.Nasm
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <returns>The number of written characters.</returns>
-		protected internal int WriteExpression(Expression<Func<Context, SimpleExpression>> expression)
+		protected internal int WriteExpression(Expression<Func<Context, ReferenceOffset>> expression)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(expression != null);

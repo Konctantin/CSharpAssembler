@@ -242,6 +242,19 @@ namespace SharpAssembler.Symbols
 		}
 
 		/// <summary>
+		/// Defines the symbol by setting its value and adding it to the symbol table.
+		/// </summary>
+		/// <param name="context">The current <see cref="Context"/>.</param>
+		/// <param name="value">The value of the symbol.</param>
+		public void Define(Context context, UInt128 value)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			#endregion
+			Define(context, (Int128)value);
+		}
+
+		/// <summary>
 		/// References the symbol by adding it to the symbol table.
 		/// </summary>
 		/// <param name="context">The current <see cref="Context"/>.</param>

@@ -40,7 +40,7 @@ namespace SharpAssembler
 		/// </summary>
 		/// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
 		/// <param name="value">The value to write.</param>
-		public static void Write(this BinaryWriter writer, Int128 value)
+		public static void Write(this BinaryWriter writer, UInt128 value)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(writer != null);
@@ -57,6 +57,39 @@ namespace SharpAssembler
 				writer.Write((ulong)value.High);
 				writer.Write((ulong)value.Low);
 			}
+		}
+
+		/// <summary>
+		/// Writes a value to the <see cref="BinaryWriter"/> as a value with the specified size.
+		/// </summary>
+		/// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
+		/// <param name="value">The value to write.</param>
+		/// <param name="size">The size of the value to write.</param>
+		/// <returns>The number of written bytes.</returns>
+		public static int Write(this BinaryWriter writer, UInt128 value, DataSize size)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(writer != null);
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), size));
+			Contract.Requires<ArgumentException>(size != DataSize.None);
+			Contract.Ensures(Contract.Result<int>() >= 0);
+			#endregion
+
+			return Write(writer, (Int128)value, size);
+		}
+
+		/// <summary>
+		/// Writes a 128-bit value to the <see cref="BinaryWriter"/>.
+		/// </summary>
+		/// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
+		/// <param name="value">The value to write.</param>
+		public static void Write(this BinaryWriter writer, Int128 value)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(writer != null);
+			#endregion
+
+			Write(writer, (UInt128)value);
 		}
 
 		/// <summary>
