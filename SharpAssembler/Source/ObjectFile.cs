@@ -43,7 +43,8 @@ namespace SharpAssembler
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ObjectFile"/> class with the specified name.
+		/// Initializes a new instance of the <see cref="ObjectFile"/> class
+		/// with the specified name.
 		/// </summary>
 		/// <param name="format">The format of the object file.</param>
 		/// <param name="architecture">The architecture.</param>
@@ -60,6 +61,22 @@ namespace SharpAssembler
 			this.architecture = architecture;
 			this.sections = new SectionCollection(this);
 			this.AssociatedSymbol = new Symbol(SymbolType.None, name);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ObjectFile"/> class
+		/// with no name.
+		/// </summary>
+		/// <param name="format">The format of the object file.</param>
+		/// <param name="architecture">The architecture.</param>
+		public ObjectFile(IObjectFileFormat format, IArchitecture architecture)
+			: this(format, architecture, null)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(format != null);
+			Contract.Requires<ArgumentNullException>(architecture != null);
+			Contract.Requires<ArgumentException>(format.IsSupportedArchitecture(architecture));
+			#endregion
 		}
 		#endregion
 

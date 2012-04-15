@@ -32,16 +32,18 @@ using System.Linq.Expressions;
 namespace SharpAssembler.Languages.Nasm
 {
 	/// <summary>
-	/// 
+	/// Writes NASM assembler.
 	/// </summary>
-	public class NasmLanguage : Language, IIndented, INasmLanguageControl
+	public class NasmLanguage : Language, IIndented
 	{
-		#region Fields
+		private CodeWriter writer;
 		/// <summary>
-		/// The current indentationlevel.
+		/// The underlying <see cref="CodeWriter"/> that is used.
 		/// </summary>
-		int indentationlevel = 0;
-		#endregion
+		protected internal CodeWriter Writer
+		{
+			get { return this.writer; }
+		}
 
 		#region Constructors
 		/// <summary>
@@ -54,6 +56,8 @@ namespace SharpAssembler.Languages.Nasm
 			#region Contract
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
+
+			this.writer = new CodeWriter(writer);
 		}
 		#endregion
 
@@ -100,15 +104,9 @@ namespace SharpAssembler.Languages.Nasm
 		{
 			switch (objectFile.Architecture.AddressSize)
 			{
-				case DataSize.Bit16:
-					Writer.WriteLine("[BITS 16]");
-					break;
-				case DataSize.Bit32:
-					Writer.WriteLine("[BITS 32]");
-					break;
-				case DataSize.Bit64:
-					Writer.WriteLine("[BITS 64]");
-					break;
+				case DataSize.Bit16: Writer.WriteLine("[BITS 16]"); break;
+				case DataSize.Bit32: Writer.WriteLine("[BITS 32]"); break;
+				case DataSize.Bit64: Writer.WriteLine("[BITS 64]"); break;
 				default:
 					throw new LanguageException("The object file's architecture address size is not supported " +
 						"by this language.");
@@ -126,9 +124,9 @@ namespace SharpAssembler.Languages.Nasm
 			if (InsertNewlines)
 				Writer.WriteLine();
 
-			PopIndent();
+			Writer.PopIndent();
 			WriteSectionStart(section);
-			PushIndent();
+			Writer.PushIndent();
 
 			// Visit the constructables.
 			base.VisitSection(section);
@@ -227,9 +225,7 @@ namespace SharpAssembler.Languages.Nasm
 			if (label.Comment != null)
 				commentstring = label.Comment.Text;
 
-			int linelength = 0;
-			indentationlevel--;
-			if (indentationlevel < 0) indentationlevel = 0;
+			Writer.PopIndent();
 
 			string identifier;
 			SymbolType type;
@@ -245,7 +241,6 @@ namespace SharpAssembler.Languages.Nasm
 					// Single line, with comments.
 
 					Writer.Write("{0}:", identifier);
-					linelength = identifier.Length + 1;
 
 					WriteCommentOf(label, linelength);
 				}
@@ -257,11 +252,9 @@ namespace SharpAssembler.Languages.Nasm
 					{
 						case SymbolType.Public:
 							Writer.Write("global {0}", identifier);
-							linelength = 7 + identifier.Length;
 							break;
 						case SymbolType.Weak:
 							Writer.Write("weak {0}", identifier);
-							linelength = 5 + identifier.Length;
 							break;
 						case SymbolType.Private:
 						default:
@@ -274,9 +267,7 @@ namespace SharpAssembler.Languages.Nasm
 					else
 						Writer.WriteLine();
 
-					linelength = 0;
 					Writer.Write("{0}:", identifier);
-					linelength = identifier.Length + 1;
 
 					// Write the rest of the comment.
 					if (commentstring != null)
@@ -287,20 +278,18 @@ namespace SharpAssembler.Languages.Nasm
 			}
 			else
 			{
-				linelength = WriteCommentString("label <unkown>", -1, 0, -1);
+				WriteCommentString("label <unkown>", -1, 0, -1);
 
 				WriteCommentOf(label, linelength);
 			}
 
-			indentationlevel++;
+			Writer.PushIndent();
 		}
 
 		/// <inheritdoc />
 		protected override void VisitExtern(Extern reference)
 		{
-			int linelength;
-			indentationlevel--;
-			if (indentationlevel < 0) indentationlevel = 0;
+			Writer.PopIndent();
 
 			if (reference.ExternSymbol != null)
 			{
@@ -317,14 +306,13 @@ namespace SharpAssembler.Languages.Nasm
 
 			WriteCommentOf(reference, linelength);
 
-			indentationlevel++;
+			Writer.PushIndent();
 		}
 
 		/// <inheritdoc />
 		protected override void VisitAlign(Align align)
 		{
-			int linelength = 0;
-			linelength = WriteIndent(indentationlevel);
+			Writer.WriteIndent();
 
 			string s;
 			if (align.PaddingByte != 0x90)
@@ -332,7 +320,6 @@ namespace SharpAssembler.Languages.Nasm
 			else
 				s = String.Format("align {0}", align.Boundary);
 			Writer.Write(s);
-			linelength += s.Length;
 
 			WriteCommentOf(align, linelength);
 		}
@@ -340,34 +327,21 @@ namespace SharpAssembler.Languages.Nasm
 		/// <inheritdoc />
 		protected override void VisitDeclareData(DeclareData declaration)
 		{
-			int linelength = 0;
-			linelength = WriteIndent(indentationlevel);
+			Writer.WriteIndent();
 
 			switch (declaration.Size)
 			{
-				case DataSize.Bit8:
-					Writer.Write("db ");
-					linelength += 3;
-					break;
-				case DataSize.Bit16:
-					Writer.Write("dw ");
-					linelength += 3;
-					break;
-				case DataSize.Bit32:
-					Writer.Write("dd ");
-					linelength += 3;
-					break;
-				case DataSize.Bit64:
-					Writer.Write("dq ");
-					linelength += 3;
-					break;
+				case DataSize.Bit8: Writer.Write("db "); break;
+				case DataSize.Bit16: Writer.Write("dw "); break;
+				case DataSize.Bit32: Writer.Write("dd "); break;
+				case DataSize.Bit64: Writer.Write("dq "); break;
 				case DataSize.Bit128:
 				case DataSize.Bit256:
 				default:
 					throw new LanguageException("Declared data's size is not supported.");
 			}
 
-			linelength += WriteExpression(declaration.Expression);
+			WriteExpression(declaration.Expression);
 
 			WriteCommentOf(declaration, linelength);
 		}
@@ -1043,96 +1017,18 @@ namespace SharpAssembler.Languages.Nasm
 		#endregion
 
 		#region Indentation
-		private string indentString = "    ";
 		/// <inheritdoc />
 		public string IndentString
 		{
-			get { return this.indentString; }
-			set { this.indentString = value; }
+			get { return Writer.IndentString; }
+			set { Writer.IndentString = value; }
 		}
 
-		private bool indent = true;
 		/// <inheritdoc />
 		public bool Indent
 		{
-			get { return this.indent; }
-			set { this.indent = value; }
-		}
-
-		/// <inheritdoc />
-		void INasmLanguageControl.PopIndent()
-		{
-			PopIndent();
-		}
-
-		/// <summary>
-		/// Removes an indentation level.
-		/// </summary>
-		protected internal void PopIndent()
-		{
-			indentationlevel--;
-			if (indentationlevel < 0) indentationlevel = 0;
-		}
-
-		/// <inheritdoc />
-		void INasmLanguageControl.PushIndent()
-		{
-			PushIndent();
-		}
-
-		/// <summary>
-		/// Adds an indentation level.
-		/// </summary>
-		protected internal void PushIndent()
-		{
-			indentationlevel++;
-		}
-
-		/// <inheritdoc />
-		int INasmLanguageControl.WriteIndent()
-		{
-			return WriteIndent(0);
-		}
-
-		/// <inheritdoc />
-		int INasmLanguageControl.WriteIndent(int levelAdjustment)
-		{
-			return WriteIndent(levelAdjustment);
-		}
-
-		/// <summary>
-		/// Writes the indent.
-		/// </summary>
-		/// <returns>The number of written characters.</returns>
-		protected internal int WriteIndent()
-		{
-			#region Contract
-			Contract.Ensures(Contract.Result<int>() >= 0);
-			#endregion
-			return WriteIndent(0);
-		}
-
-		/// <summary>
-		/// Writes the indent.
-		/// </summary>
-		/// <param name="levelAdjustment">The indent level adjustment, which is added to the current
-		/// indent level, with a minimum of zero.</param>
-		/// <returns>The number of written characters.</returns>
-		protected internal int WriteIndent(int levelAdjustment)
-		{
-			#region Contract
-			Contract.Ensures(Contract.Result<int>() >= 0);
-			#endregion
-			int level = this.indentationlevel + levelAdjustment;
-
-			if (!Indent) return 0;
-			int length = 0;
-			for (int i = 0; i < level; i++)
-			{
-				Writer.Write(indentString);
-				length += indentString.Length;
-			}
-			return length;
+			get { return Writer.Indent; }
+			set { Writer.Indent = value; }
 		}
 		#endregion
 	}

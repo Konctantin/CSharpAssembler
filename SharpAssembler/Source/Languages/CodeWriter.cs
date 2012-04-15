@@ -11,7 +11,7 @@ namespace SharpAssembler.Languages
 	/// Writes code.
 	/// </summary>
 	/// <remarks>
-	/// Use the <see cref="CodeWriter.WriteLine"/> methods to indicate the end of a line,
+	/// Use the <see cref="CodeWriter.WriteLine()"/> methods to indicate the end of a line,
 	/// instead of writing the end-of-line character sequence manually.
 	/// </remarks>
 	public class CodeWriter : TextWriter
@@ -33,6 +33,30 @@ namespace SharpAssembler.Languages
 		public override Encoding Encoding
 		{
 			get { return this.underlyingWriter.Encoding; }
+		}
+
+		private int preferredLineLength = 80;
+		/// <summary>
+		/// Gets or sets the preferred length of a line.
+		/// </summary>
+		/// <value>The preferred length of each line, in characters;
+		/// or 0 to specify no limit.</value>
+		public int PreferredLineLength
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<int>() >= 0);
+				#endregion
+				return this.preferredLineLength;
+			}
+			set
+			{
+				#region Contract
+				Contract.Requires<ArgumentOutOfRangeException>(value >= 0);
+				#endregion
+				this.preferredLineLength = value;
+			}
 		}
 
 		#region Constructors
@@ -102,37 +126,205 @@ namespace SharpAssembler.Languages
 		#endregion
 
 		#region Miscelaneous operations
-		/// <summary>
-		/// Writes any data to be written to the underlying stream and clears all buffers.
-		/// </summary>
-		public void Flush()
+		/// <inheritdoc />
+		public override void Flush()
 		{
 			this.underlyingWriter.Flush();
 		}
 		#endregion
 
-		/// <inhertidoc />
+		#region General Writing
+		/// <inheritdoc />
 		public override void Write(char value)
 		{
 			currentLineLength++;
 			this.underlyingWriter.Write(value);
 		}
 
-		/// <inhertidoc />
+		/// <inheritdoc />
+		public override void Write(char[] buffer)
+		{
+			currentLineLength += buffer.Length;
+			this.underlyingWriter.Write(buffer);
+		}
+
+		/// <inheritdoc />
 		public override void Write(char[] buffer, int index, int count)
 		{
 			currentLineLength += count;
 			this.underlyingWriter.Write(buffer, index, count);
 		}
 
-		/// <inhertidoc />
+		/// <inheritdoc />
+		public override void Write(string value)
+		{
+			currentLineLength += value.Length;
+			this.underlyingWriter.Write(value);
+		}
+
+		/// <inheritdoc />
 		public override void WriteLine()
 		{
 			this.underlyingWriter.WriteLine();
 			currentLineLength = 0;
 		}
 
+		/// <inheritdoc />
+		public override void WriteLine(string value)
+		{
+			this.underlyingWriter.WriteLine(value);
+			currentLineLength = 0;
+		}
+		#endregion
+
+		#region Indentations
+		private string indentString = "    ";
+		/// <summary>
+		/// Gets or sets the string to use for indents.
+		/// </summary>
+		/// <value>An indentation string.</value>
+		public virtual string IndentString
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Contract.Result<string>() != null);
+				#endregion
+				return this.indentString;
+			}
+			set
+			{
+				#region Contract
+				Contract.Requires<ArgumentNullException>(value != null);
+				#endregion
+				this.indentString = value;
+			}
+		}
+
+		private bool indent = true;
+		/// <summary>
+		/// Gets or sets whether to use indentation.
+		/// </summary>
+		/// <value><see langword="true"/> to use indentation;
+		/// otherwise, <see langword="false"/>.</value>
+		public bool Indent
+		{
+			get { return this.indent; }
+			set { this.indent = value; }
+		}
+
+		private int indentationLevel = 0;
+
+		/// <summary>
+		/// Removes an indentation level.
+		/// </summary>
+		public void PopIndent()
+		{
+			PopIndent(1);
+		}
+
+		/// <summary>
+		/// Removes indentation levels.
+		/// </summary>
+		/// <param name="levels">The number of indentation levels to pop.</param>
+		public void PopIndent(int levels)
+		{
+			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(levels >= 0);
+			#endregion
+			indentationLevel -= levels;
+			if (indentationLevel < 0)
+				indentationLevel = 0;
+		}
+
+		/// <summary>
+		/// Adds an indentation level.
+		/// </summary>
+		public void PushIndent()
+		{
+			PushIndent(1);
+		}
+
+		/// <summary>
+		/// Adds indentation levels.
+		/// </summary>
+		/// <param name="levels">The number of indentation levels to push.</param>
+		public void PushIndent(int levels)
+		{
+			#region Contract
+			Contract.Requires<ArgumentOutOfRangeException>(levels >= 0);
+			#endregion
+			indentationLevel += levels;
+		}
+
+		/// <summary>
+		/// Writes the indent.
+		/// </summary>
+		/// <returns>The number of written characters.</returns>
+		/// <remarks>
+		/// When <see cref="Indent"/> is <see langword="false"/>,
+		/// this method does nothing.
+		/// </remarks>
+		public void WriteIndent()
+		{
+			WriteIndent(0);
+		}
+
+		/// <summary>
+		/// Writes the indent.
+		/// </summary>
+		/// <param name="adjustment">The indent level adjustment, which is added to the current
+		/// indent level, with a minimum of zero.</param>
+		/// <remarks>
+		/// When <see cref="Indent"/> is <see langword="false"/>,
+		/// this method does nothing.
+		/// </remarks>
+		public void WriteIndent(int adjustment)
+		{
+			// Only write an indentation when it is enabled.
+			if (!this.indent)
+				return;
+
+			int level = this.indentationLevel + adjustment;
+			while (level > 0)
+			{
+				this.Write(indentString);
+				level--;
+			}
+		}
+		#endregion
+
 		#region Comments
+		/// <summary>
+		/// Writes the specified comment on the end of the current line and any
+		/// subsequent lines.
+		/// </summary>
+		/// <param name="comment">The comment to write.</param>
+		/// <remarks>
+		/// Call <see cref="WriteLine()"/> after calling this method to write the first
+		/// line of the multi-line comment on that line. On each subsequent call to
+		/// <see cref="WriteLine()"/> the next line of the multi-line comment is written
+		/// at the end of the line.
+		/// </remarks>
+		public void StartWritingMultiLineComment(string comment)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Writes any remaining comment lines on the end of the current line
+		/// and any added subsequent lines.
+		/// </summary>
+		/// <remarks>
+		/// Call <see cref="WriteLine()"/> after calling this method to write the next line
+		/// of the multi-line comment and any other lines required to end the comment.
+		/// </remarks>
+		public void EndWritingMultiLineComment()
+		{
+			throw new NotImplementedException();
+		}
+
+
 #if false
 		/// <summary>
 		/// Writes the specified comment on the current line, and if necessary,
@@ -166,10 +358,10 @@ namespace SharpAssembler.Languages
 		/// <param name="linelength">The number of written characters on this line.</param>
 		protected internal void WriteCommentOf(Constructable constructable, int linelength)
 		{
-			#region Contract
+		#region Contract
 			Contract.Requires<ArgumentNullException>(constructable != null);
 			Contract.Requires<ArgumentOutOfRangeException>(linelength > 0);
-			#endregion
+		#endregion
 			// We don't write comments associated with comments.
 			if (constructable is Comment)
 				return;
@@ -194,12 +386,12 @@ namespace SharpAssembler.Languages
 		/// </returns>
 		protected internal int WriteCommentString(string comment, int column, int startindex, int lineCount)
 		{
-			#region Contract
+		#region Contract
 			Contract.Requires<ArgumentOutOfRangeException>(column >= 0);
 			Contract.Requires<ArgumentOutOfRangeException>(lineCount >= 0);
 			Contract.Ensures(Contract.Result<int>() >= -1);
 			if (comment == null || startindex < 0) return -1;
-			#endregion
+		#endregion
 
 			int linelength = (column < 0 ? 0 : column);		// The length of the current output line.
 			int written = 0;								// Number of comment characters written.
@@ -277,7 +469,18 @@ namespace SharpAssembler.Languages
 		{
 			this.Flush();
 			base.Close();
-			//((IDisposable)this).Dispose();
+		}
+		#endregion
+
+		#region Invariant
+		/// <summary>
+		/// Asserts the invariants of this type.
+		/// </summary>
+		[ContractInvariantMethod]
+		private void ObjectInvariant()
+		{
+			Contract.Invariant(this.indentString != null);
+			Contract.Invariant(this.preferredLineLength >= 0);
 		}
 		#endregion
 	}

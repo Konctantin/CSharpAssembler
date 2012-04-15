@@ -268,14 +268,44 @@ namespace SharpAssembler
 			return new ReferenceOffset((Int128)value.Value);
 		}
 
+		/// <summary>
+		/// Takes two reference offsets and adds the left one to the right one.
+		/// </summary>
+		/// <param name="left">The left reference offset to use.</param>
+		/// <param name="right">The right reference offset to use.</param>
+		/// <returns>The resulting reference offset.</returns>
 		public static ReferenceOffset operator +(ReferenceOffset left, ReferenceOffset right)
 		{
 			if (left.reference != null && right.reference != null)
 				throw new Exception("Cannot add two symbol-relative expressions.");
+
 			else if (left.reference != null)
 				return new ReferenceOffset(left.reference, left.constant + right.constant);
 			else
 				return new ReferenceOffset(right.reference, left.constant + right.constant);
+		}
+
+		/// <summary>
+		/// Takes two reference-offsets and subtracts the right one from the left one.
+		/// </summary>
+		/// <param name="left">The left reference-offset to use.</param>
+		/// <param name="right">The right reference-offset to use.</param>
+		/// <returns>The resulting reference-offset.</returns>
+		public static ReferenceOffset operator -(ReferenceOffset left, ReferenceOffset right)
+		{
+			if (left.reference != null && !left.reference.Resolved)
+				throw new Exception("The left-hand reference-offset is not resolved.");
+			if (right.reference != null && !right.reference.Resolved)
+				throw new Exception("The right-hand reference-offset is not resolved.");
+
+			if (left.reference != null && right.reference != null)
+			{
+				return new ReferenceOffset(
+					null,
+					left.reference.Symbol.Value - right.reference.Symbol.Value +
+					left.constant - right.constant);
+			}
+			throw new NotImplementedException();
 		}
 		#endregion
 	}

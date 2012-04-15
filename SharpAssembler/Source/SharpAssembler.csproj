@@ -105,6 +105,9 @@
     <Compile Include="Constructable.cs" />
     <Compile Include="ConstructableCollection.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Languages\CommentLayout.cs" />
+    <Compile Include="Languages\ICommentLayout.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="UInt128.cs" />
     <Compile Include="Extra\BinaryWriterExtensions.cs" />
     <Compile Include="Extra\CollectionExtensions.cs" />
