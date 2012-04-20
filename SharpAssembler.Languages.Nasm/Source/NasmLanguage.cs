@@ -354,6 +354,7 @@ namespace SharpAssembler.Languages.Nasm
 		#endregion
 
 		#region Comment
+#if false
 		/// <inheritdoc />
 		void INasmLanguageControl.WriteCommentOf(Constructable constructable, int linelength)
 		{
@@ -470,13 +471,8 @@ namespace SharpAssembler.Languages.Nasm
 				return -1;
 			return commentstart;
 		}
+#endif
 		#endregion
-
-		/// <inheritdoc />
-		int INasmLanguageControl.WriteExpression(Expression<Func<Context, ReferenceOffset>> expression)
-		{
-			return WriteExpression(expression);
-		}
 
 		/// <summary>
 		/// Writes the specified expression.

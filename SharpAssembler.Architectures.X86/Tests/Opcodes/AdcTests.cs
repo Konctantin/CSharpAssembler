@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Moq;
-using SharpAssembler.Formats.Bin;
+using NUnit.Framework;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Tests.Opcodes
@@ -12,6 +10,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	/// <summary>
 	/// Tests all variants of the ADC opcode.
 	/// </summary>
+	[TestFixture]
 	public class AdcTests : OpcodeTestBase
 	{
 		[Test]
@@ -242,6 +241,22 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void reg64_regmem64()
 		{
+			var instruction = Instr.Adc(
+				Register.RCX,
+				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)));
+
+			AssertInstructionFail(instruction, DataSize.Bit16);
+			AssertInstructionFail(instruction, DataSize.Bit32);
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x48, 0x13, 0x0C, 0x25, 0xD2, 0x04, 0x00, 0x00 });
+		}
+
+
+
+		[Test]
+		public void test()
+		{
+			var x = new RelativeOffset(c => 0x1234, DataSize.Bit16);
+
 			var instruction = Instr.Adc(
 				Register.RCX,
 				new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(1234)));

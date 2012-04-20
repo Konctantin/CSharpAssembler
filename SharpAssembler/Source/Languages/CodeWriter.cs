@@ -74,7 +74,7 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CodeWriter3"/> class
+		/// Initializes a new instance of the <see cref="CodeWriter"/> class
 		/// writing to the specified <see cref="Stream"/> using the specified encoding.
 		/// </summary>
 		/// <param name="stream">The stream to which this code writer writes.</param>
@@ -90,7 +90,7 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CodeWriter3"/> class
+		/// Initializes a new instance of the <see cref="CodeWriter"/> class
 		/// writing to the specified <see cref="Stream"/> using UTF-8 encoding.
 		/// </summary>
 		/// <param name="stream">The stream to which this code writer writes.</param>
@@ -107,7 +107,7 @@ namespace SharpAssembler.Languages
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CodeWriter3"/> class
+		/// Initializes a new instance of the <see cref="CodeWriter"/> class
 		/// with the specified underlying <see cref="TextWriter"/>.
 		/// </summary>
 		/// <param name="writer">The underlying <see cref="TextWriter"/>.</param>
