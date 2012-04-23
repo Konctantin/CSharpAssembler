@@ -1,0 +1,2 @@
+Source\bin\Debug\SharpAssembler.OpcodeWriter.exe -y "Assembler\yasm.exe" -oc "..\..\SharpAssembler.Architectures.X86\Source\Opcodes" -ot "..\..\SharpAssembler.Architectures.X86\Tests\Opcodes" -r "..\..\Input\X86 Opcodes"
+pause
