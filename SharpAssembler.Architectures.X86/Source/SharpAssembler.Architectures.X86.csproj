@@ -110,7 +110,7 @@
     <Compile Include="Opcodes\AdcOpcode.cs" />
     <Compile Include="Opcodes\AddOpcode.cs" />
     <Compile Include="Opcodes\IntOpcode.cs" />
-    <Compile Include="Opcodes\MovOpcode.cs" />
+    <Compile Include="Opcodes\MovOpcode.generated.cs" />
     <Compile Include="Opcodes\Opcodes.cs" />
     <Compile Include="Opcodes\X87\FAddOpcode.cs" />
     <Compile Include="TypeSwitch.cs" />

@@ -12,6 +12,21 @@ namespace SharpAssembler.OpcodeWriter.X86
 	/// </summary>
 	public partial class X86SpecWriter : SpecWriter
 	{
+		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="X86SpecWriter"/> class.
+		/// </summary>
+		/// <param name="yasmExecutablePath">The path to the YASM executable.</param>
+		public X86SpecWriter(string yasmExecutablePath)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(yasmExecutablePath != null);
+			#endregion
+			
+			this.yasmExecutablePath = yasmExecutablePath;
+		}
+		#endregion
+
 		protected override string SubNamespace
 		{
 			get { return "X86"; }

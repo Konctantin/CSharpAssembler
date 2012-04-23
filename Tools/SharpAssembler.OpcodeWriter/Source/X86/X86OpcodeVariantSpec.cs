@@ -36,20 +36,5 @@ namespace SharpAssembler.OpcodeWriter.X86
 				fixedReg = value;
 			}
 		}
-
-		///// <summary>
-		///// Gets a collection of operands.
-		///// </summary>
-		///// <value>A collection of operands.</value>
-		//public new IList<X86OperandSpec> Operands
-		//{
-		//    get
-		//    {
-		//        #region Contract
-		//        Contract.Ensures(Contract.Result<IList<X86OperandSpec>>() != null);
-		//        #endregion
-		//        return (IList<X86OperandSpec>)base.Operands;
-		//    }
-		//}
 	}
 }

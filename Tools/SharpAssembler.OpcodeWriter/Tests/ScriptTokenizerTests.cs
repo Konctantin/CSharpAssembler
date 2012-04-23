@@ -258,6 +258,48 @@ Hello world";
 		}
 
 		[Test]
+		public void Literal2()
+		{
+			// Given
+			ScriptTokenizer tokenizer = new ScriptTokenizer();
+			string input = "Hello 'My string' world";
+
+			// When
+			var tokens = tokenizer.Tokenize(input);
+
+			// Then
+			Assert.That(tokens, Is.EquivalentTo(new string[] { "Hello", "'My string'", "world" }));
+		}
+
+		[Test]
+		public void Literal3()
+		{
+			// Given
+			ScriptTokenizer tokenizer = new ScriptTokenizer();
+			string input = "Hello `My string` world";
+
+			// When
+			var tokens = tokenizer.Tokenize(input);
+
+			// Then
+			Assert.That(tokens, Is.EquivalentTo(new string[] { "Hello", "`My string`", "world" }));
+		}
+
+		[Test]
+		public void NestedLiterals()
+		{
+			// Given
+			ScriptTokenizer tokenizer = new ScriptTokenizer();
+			string input = "Hello `My \"nested\" string` world";
+
+			// When
+			var tokens = tokenizer.Tokenize(input);
+
+			// Then
+			Assert.That(tokens, Is.EquivalentTo(new string[] { "Hello", "`My \"nested\" string`", "world" }));
+		}
+
+		[Test]
 		public void StringAtEndOfScript()
 		{
 			// Given

@@ -6,7 +6,7 @@ using System.Text;
 namespace SharpAssembler.OpcodeWriter
 {
 	/// <summary>
-	/// Specifies the state of the <see cref="ScriptReader"/>.
+	/// Specifies the state of the <see cref="ScriptInterpreter"/>.
 	/// </summary>
 	internal enum ReaderState
 	{

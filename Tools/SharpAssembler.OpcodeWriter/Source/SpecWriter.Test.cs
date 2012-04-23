@@ -21,8 +21,6 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
-			Console.WriteLine("Writing tests for {0}...", spec.Mnemonic.ToUpperInvariant());
-
 			WriteWarning(writer);
 			WriteLicense(writer);
 			WriteTestUsingDirectives(writer);
@@ -31,8 +29,6 @@ namespace SharpAssembler.OpcodeWriter
 			WriteTestClassTests(spec, writer);
 			WriteTestClassEnd(writer);
 			WriteWarning(writer);
-
-			Console.WriteLine("DONE writing tests for {0}", spec.Mnemonic.ToUpperInvariant());
 		}
 
 		/// <summary>

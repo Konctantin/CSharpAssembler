@@ -119,6 +119,7 @@
     <None Include="Instructions\CmpsTest.cs" />
     <None Include="Instructions\InstructionTestBase.cs" />
     <Compile Include="Opcodes\AdcTests.cs" />
+    <Compile Include="Opcodes\MovTests.generated.cs" />
     <Compile Include="Opcodes\OpcodeTestBase.cs" />
     <Compile Include="RegisterTypeExtensionsTests.cs" />
     <Compile Include="EncodedInstruction.SibByteTests.cs" />

@@ -109,7 +109,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptInterpreterTests.cs" />
+    <Compile Include="ScriptReaderTests.cs" />
     <Compile Include="ScriptTokenizerTests.cs" />
+    <Compile Include="X86SpecWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Source\SharpAssembler.OpcodeWriter.csproj">

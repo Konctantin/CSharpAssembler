@@ -11,6 +11,11 @@ namespace SharpAssembler.OpcodeWriter.X86
 {
 	partial class X86SpecWriter
 	{
+		/// <summary>
+		/// The path to the YASM executable.
+		/// </summary>
+		private string yasmExecutablePath;
+
 		/// <inheritdoc />
 		protected override void WriteTestUsingDirectives(TextWriter writer)
 		{
@@ -273,11 +278,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 			sb.AppendLine(instruction);
 			string feedback;
 			expected = RunAssembler(sb.ToString(), out feedback);
-			Console.WriteLine("  {0}:", instruction);
-			if (!String.IsNullOrWhiteSpace(feedback))
-				Console.WriteLine("    {0}", feedback.Replace("test.asm:2: ", "").Trim().Replace("\n", "\n    "));
-			if (expected != null)
-				Console.WriteLine("    {0}", String.Join(" ", from e in expected select e.ToString("X2")));
 			return expected;
 		}
 
@@ -295,19 +295,31 @@ namespace SharpAssembler.OpcodeWriter.X86
 			#endregion
 
 			byte[] encodedData = Encoding.UTF8.GetBytes(data);
-			using (FileStream fs = File.Create("test.asm"))
+			string tempAsmFile = Path.GetTempFileName();
+			string tempBinFile = Path.GetTempFileName();
+			using (FileStream fs = File.Create(tempAsmFile))
 			{
 				fs.Write(encodedData, 0, encodedData.Length);
 			}
-			File.Delete("test.bin");
-			ProcessStartInfo psi = new ProcessStartInfo(@"..\..\Assembler\yasm",
-				"-a x86 -f bin -o test.bin test.asm");
+
+			string executable = Path.GetFullPath(yasmExecutablePath);
+
+			ProcessStartInfo psi = new ProcessStartInfo(executable,
+				"-a x86 -f bin -o " + tempBinFile + " " + tempAsmFile);
 			psi.RedirectStandardOutput = true;
 			psi.RedirectStandardError = true;
 			psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 			psi.UseShellExecute = false;
 
-			Process process = System.Diagnostics.Process.Start(psi);
+			Process process;
+			try
+			{
+				process = System.Diagnostics.Process.Start(psi);
+			}
+			catch (Win32Exception wex)
+			{
+				throw new FileNotFoundException(String.Format("Could not find file {0}.", executable), executable, wex);
+			}
 			StreamReader std = process.StandardOutput;
 			StreamReader err = process.StandardError;
 			process.WaitForExit();
@@ -316,7 +328,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 			byte[] result;
 			try
 			{
-				using (FileStream fs = File.OpenRead("test.bin"))
+				using (FileStream fs = File.OpenRead(tempBinFile))
 				{
 					result = new byte[fs.Length];
 					fs.Read(result, 0, (int)fs.Length);
@@ -326,6 +338,10 @@ namespace SharpAssembler.OpcodeWriter.X86
 			{
 				result = null;
 			}
+			if (result.Length == 0)
+				result = null;
+			File.Delete(tempAsmFile);
+			File.Delete(tempBinFile);
 			return result;
 		}
 	}

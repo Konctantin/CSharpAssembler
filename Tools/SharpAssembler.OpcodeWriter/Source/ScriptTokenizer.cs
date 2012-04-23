@@ -24,7 +24,12 @@ namespace SharpAssembler.OpcodeWriter
 		/// <summary>
 		/// The tokens that should be used by themselves, when not used in strings.
 		/// </summary>
-		private static readonly char[] SpecialTokens = new char[] { '{', '}', '[', ']', '(', ')', ';', ',', '=' };
+		private static readonly char[] SpecialTokens = new char[] { '{', '}', '[', ']', '(', ')', '<', '>', ';', ',', '=' };
+
+		/// <summary>
+		/// Literal delimiters.
+		/// </summary>
+		private static readonly char[] LiteralDelimiters = new char[]{'"', '\'', '`'};
 
 		/// <summary>
 		/// Divides the input into separate tokens, and may perform preprocessing steps before doing so
@@ -58,7 +63,9 @@ namespace SharpAssembler.OpcodeWriter
 			#endregion
 			foreach (string s in parts)
 			{
-				if (!s.StartsWith("\""))
+				if (s.Length == 0)
+					continue;
+				if (!LiteralDelimiters.Contains(s[0]))
 				{
 					var tokens = from t in SplitOnTokens(s, SpecialTokens)
 								 from u in t.Split((char[])null, StringSplitOptions.RemoveEmptyEntries)
@@ -110,16 +117,17 @@ namespace SharpAssembler.OpcodeWriter
 			SortedSet<int> splits = new SortedSet<int>();
 			State state = State.Normal;
 			int position = 0;
+			char literalDelimiter = '\0';
 
 			while (state != State.Done)
 			{
 				switch (state)
 				{
 					case State.Normal:
-						state = ToNextSubpartStart(input, ref position, splits);
+						state = ToNextSubpartStart(input, ref position, splits, ref literalDelimiter);
 						break;
-					case State.InString:
-						state = ToEndOfString(input, ref position, splits);
+					case State.InLiteral:
+						state = ToEndOfLiteral(input, ref position, splits, literalDelimiter);
 						break;
 					case State.InSingleLineComment:
 						state = ToEndOfSingleLineComment(input, ref position, splits);
@@ -153,15 +161,16 @@ namespace SharpAssembler.OpcodeWriter
 		/// <param name="input">The input string.</param>
 		/// <param name="position">The current zero-based character position within <paramref name="input"/>.</param>
 		/// <param name="splits">A set of indices of characters before which the input string will be split.</param>
+		/// <param name="literalDelimiter">Stores the delimiter for a newly entered literal.</param>
 		/// <returns>The new state.</returns>
-		private State ToNextSubpartStart(string input, ref int position, SortedSet<int> splits)
+		private State ToNextSubpartStart(string input, ref int position, SortedSet<int> splits, ref char literalDelimiter)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(input != null);
 			Contract.Requires<ArgumentOutOfRangeException>(position >= 0 && position <= input.Length);
 			Contract.Requires<ArgumentNullException>(splits != null);
 			#endregion
-			int next = input.IndexOfAny(new char[] { '"', '/' }, position);
+			int next = input.IndexOfAny(LiteralDelimiters.Concat(new char[] { '/' }).ToArray(), position);
 
 			bool foundNothing = next < 0;
 			bool atEndOfLine = position >= input.Length - 1;
@@ -188,10 +197,11 @@ namespace SharpAssembler.OpcodeWriter
 
 			splits.Add(next);
 
-			if (input[next] == '"')
+			if (LiteralDelimiters.Contains(input[next]))
 			{
+				literalDelimiter = input[next];
 				position = next + 1;
-				return State.InString;
+				return State.InLiteral;
 			}
 			else if (input[next + 1] == '/')
 			{
@@ -213,8 +223,9 @@ namespace SharpAssembler.OpcodeWriter
 		/// <param name="input">The input string.</param>
 		/// <param name="position">The current zero-based character position within <paramref name="input"/>.</param>
 		/// <param name="splits">A set of indices of characters before which the input string will be split.</param>
+		/// <param name="literalDelimiter">Thw character that ends the literal.</param>
 		/// <returns>The new state.</returns>
-		private State ToEndOfString(string input, ref int position, SortedSet<int> splits)
+		private State ToEndOfLiteral(string input, ref int position, SortedSet<int> splits, char literalDelimiter)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(input != null);
@@ -222,9 +233,9 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(splits != null);
 			#endregion
 
-			int next = input.IndexOf('"', position);
+			int next = input.IndexOf(literalDelimiter, position);
 			if (next < 0)
-				throw new ScriptException(String.Format("End of string started at index {0} not found.", splits.Last()));
+				throw new ScriptException(String.Format("End of literal ({1}...{1}) started at index {0} not found.", splits.Last(), literalDelimiter));
 			position = next + 1;
 			splits.Add(position);
 
@@ -301,9 +312,9 @@ namespace SharpAssembler.OpcodeWriter
 			/// </summary>
 			InMultiLineComment,
 			/// <summary>
-			/// The tokenizer entered a string.
+			/// The tokenizer entered a literal.
 			/// </summary>
-			InString,
+			InLiteral,
 			/// <summary>
 			/// The tokenizer is done.
 			/// </summary>

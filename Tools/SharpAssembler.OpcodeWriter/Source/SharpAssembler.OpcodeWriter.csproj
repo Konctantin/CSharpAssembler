@@ -111,11 +111,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IScriptReader.cs" />
+    <Compile Include="SpecWriterDispenser.cs" />
+    <Compile Include="Identifier.cs" />
+    <Compile Include="IScriptInterpreter.cs" />
+    <Compile Include="SpecFactory.cs" />
     <Compile Include="OperandSpec.cs" />
     <Compile Include="ReaderState.cs" />
     <Compile Include="ScriptException.cs" />
+    <Compile Include="ScriptReader.cs" />
     <Compile Include="ScriptTokenizer.cs" />
+    <Compile Include="SpecFactoryDispenser.cs" />
     <Compile Include="SpecWriter.Test.cs" />
     <Compile Include="SpecWriter.Code.cs" />
     <Compile Include="SpecWriter.cs" />
@@ -124,13 +129,14 @@
     <Compile Include="OpcodeVariantSpec.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="X86\X86SpecFactory.cs" />
     <Compile Include="X86\X86SpecWriter.cs" />
     <Compile Include="X86\X86SpecWriter.Test.cs" />
     <Compile Include="X86\X86OpcodeVariantSpec.cs" />
     <Compile Include="X86\X86OperandType.cs" />
     <Compile Include="X86\Register.cs" />
     <Compile Include="X86\RegisterType.cs" />
-    <Compile Include="ScriptReader.cs" />
+    <Compile Include="ScriptInterpreter.cs" />
     <Compile Include="X86\X86OpcodeSpec.cs" />
     <Compile Include="X86\X86OperandSpec.cs" />
     <Compile Include="X86\X86SpecWriter.Code.cs" />

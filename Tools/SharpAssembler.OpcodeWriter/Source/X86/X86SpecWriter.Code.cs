@@ -22,6 +22,13 @@ namespace SharpAssembler.OpcodeWriter.X86
 			base.WriteCodeOpcodeClassProperties(spec, writer);
 		}
 
+		/// <inheritdoc />
+		protected override void WriteCodeUsingDirectives(TextWriter writer)
+		{
+			base.WriteCodeUsingDirectives(writer);
+			writer.WriteLine("using SharpAssembler.Architectures.X86.Operands;");
+		}
+
 
 		/// <summary>
 		/// Writes the <c>CanLock</c> property.
@@ -126,6 +133,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 				case X86OperandType.RegisterOperand:
 					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose{0}Bit)",
 						operand.Size.GetBitCount());
+					// TODO: Add ", OperandEncoding.OpcodeAdd" when there is no reg/mem.
 					break;
 				case X86OperandType.FixedRegister:
 					writer.Write(T + T + T + T + T + "new OperandDescriptor(Register.{0})",
@@ -195,14 +203,17 @@ namespace SharpAssembler.OpcodeWriter.X86
 			var x86spec = (X86OpcodeSpec)spec;
 
 			// Determine all possible combinations of parameters.
-			var operandArguments = x86spec.Variants.SelectMany(v => CartesianProduct(from o in v.Operands.Cast<X86OperandSpec>() select GetOperandArguments(o)));
-			//var operandArgumentProduct = CartesianProduct(operandArguments);
+			var operandArguments = x86spec.Variants
+				.SelectMany(v => CartesianProduct(
+					from o in v.Operands.Cast<X86OperandSpec>()
+					select GetOperandArguments(o)));
 			var operandTuples = operandArguments.Distinct(new OperandEnumerationEqualityComparer());
 
 
 			if (operandTuples.Any())
 			{
-				foreach (var operands in operandTuples)
+				WriteCodeInstrOpcodeVariantMethod(x86spec, operandTuples.First(), writer);
+				foreach (var operands in operandTuples.Skip(1))
 				{
 					writer.WriteLine();
 					WriteCodeInstrOpcodeVariantMethod(x86spec, operands, writer);
@@ -226,10 +237,44 @@ namespace SharpAssembler.OpcodeWriter.X86
 			#endregion
 
 			WriteCodeInstrOpcodeVariantMethodDocumentation(spec, operands, writer);
+			WriteCodeCLSCompliance(operands, writer);
 			writer.WriteLine(T + T + "public static X86Instruction {0}({1})",
 				GetOpcodeClassName(spec), String.Join(", ", from o in operands select o.Item2 + " " + o.Item1.Name));
 			writer.WriteLine(T + T + "{{ return X86Opcode.{0}.CreateInstruction({1}); }}",
 				GetOpcodeClassName(spec), String.Join(", ", from o in operands select String.Format(o.Item3, o.Item1.Name)));
+		}
+
+		/// <summary>
+		/// Writes whether the variant method is CLS compliant.
+		/// </summary>
+		/// <param name="operands">The method's operands.</param>
+		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
+		private void WriteCodeCLSCompliance(IEnumerable<Tuple<X86OperandSpec, string, string>> operands, TextWriter writer)
+		{
+			if (operands.Any(t => !IsCLSCompliantType(t.Item2)))
+			{
+				writer.WriteLine(T + T + "[CLSCompliant(false)]");
+			}
+		}
+
+		/// <summary>
+		/// Returns whether the specified type name is CLS compliant.
+		/// </summary>
+		/// <param name="typeName">The name of the type.</param>
+		/// <returns><see langword="true"/> when the type is CLS compliant;
+		/// otherwise, <see langword="false"/>.</returns>
+		private bool IsCLSCompliantType(string typeName)
+		{
+			switch(typeName)
+			{
+				case"sbyte":
+				case "ushort":
+				case "uint":
+				case "ulong":
+					return false;
+				default:
+					return true;
+			}
 		}
 
 		/// <summary>
@@ -260,6 +305,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 		/// Gets the arguments for the specified operand.
 		/// </summary>
 		/// <param name="operand">The operand.</param>
+		/// <param name="clsCompliant">Whether the resulting method is CLS compliant.</param>
 		/// <returns>An array of tuples. Each tuple specifies the type of the argument and the
 		/// implementation as an operand. The latter uses <c>{0}</c> in place of the argument name.</returns>
 		private IEnumerable<Tuple<X86OperandSpec, String, String>> GetOperandArguments(X86OperandSpec operand)

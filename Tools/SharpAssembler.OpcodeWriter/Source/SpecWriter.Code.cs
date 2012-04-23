@@ -21,8 +21,6 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
-			Console.WriteLine("Writing code for {0}...", spec.Mnemonic.ToUpperInvariant());
-
 			WriteWarning(writer);
 			WriteLicense(writer);
 			WriteCodeUsingDirectives(writer);
@@ -41,8 +39,6 @@ namespace SharpAssembler.OpcodeWriter
 			WriteCodeInstrClassEnd(writer);
 
 			WriteWarning(writer);
-
-			Console.WriteLine("DONE writing code for {0}", spec.Mnemonic.ToUpperInvariant());
 		}
 
 		/// <summary>

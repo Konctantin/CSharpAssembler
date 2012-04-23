@@ -13,6 +13,15 @@ namespace SharpAssembler.OpcodeWriter
 	/// </summary>
 	public class OpcodeSpec
 	{
+		/// <summary>
+		/// Gets the platform for which this <see cref="OpcodeSpec"/> is written.
+		/// </summary>
+		/// <value>A platform identifier; or <see langword="null"/> when not specified.</value>
+		public virtual string Platform
+		{
+			get { return null; }
+		}
+
 		private string mnemonic;
 		/// <summary>
 		/// Gets or sets the mnemonic of the opcode.
