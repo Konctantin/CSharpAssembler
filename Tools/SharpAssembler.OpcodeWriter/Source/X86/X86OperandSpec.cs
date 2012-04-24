@@ -86,6 +86,31 @@ namespace SharpAssembler.OpcodeWriter.X86
 			}
 		}
 
+		private X86OperandEncoding encoding = X86OperandEncoding.Default;
+		/// <summary>
+		/// Gets or sets the encoding of the operand.
+		/// </summary>
+		/// <value>A member of the operand encoding enumeration;
+		/// or <see cref="SharpAssembler.OpcodeWriter.X86.X86OperandEncoding.Default"/> to specify the default.
+		/// The default is <see cref="SharpAssembler.OpcodeWriter.X86.X86OperandEncoding.Default"/>.</value>
+		public X86OperandEncoding Encoding
+		{
+			get
+			{
+				#region Contract
+				Contract.Ensures(Enum.IsDefined(typeof(X86OperandEncoding), Contract.Result<X86OperandEncoding>()));
+				#endregion
+				return this.encoding;
+			}
+			set
+			{
+				#region Contract
+				Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(X86OperandEncoding), value));
+				#endregion
+				this.encoding = value;
+			}
+		}
+
 		#region Invariant
 		/// <summary>
 		/// Asserts the invariants for this type.

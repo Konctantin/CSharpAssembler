@@ -76,7 +76,6 @@ namespace SharpAssembler.OpcodeWriter
 		{
 			// CONTRACT: IScriptReader
 
-			this.state = ReaderState.Initial;
 			this.opcodespecs = new List<OpcodeSpec>();
 			this.reader = new ScriptReader(this.tokenizer.Tokenize(script));
 			Execute();
@@ -87,11 +86,6 @@ namespace SharpAssembler.OpcodeWriter
 		/// The tokenizer to use.
 		/// </summary>
 		private ScriptTokenizer tokenizer;
-
-		/// <summary>
-		/// The current reader state.
-		/// </summary>
-		private ReaderState state;
 
 		/// <summary>
 		/// A list to which all read <see cref="OpcodeSpec"/> objects are added.
@@ -113,44 +107,82 @@ namespace SharpAssembler.OpcodeWriter
 		/// </summary>
 		private SpecFactory factory;
 
+		/// <summary>
+		/// Aliases.
+		/// </summary>
+		private Dictionary<string, string> aliases = new Dictionary<string, string>();
+
+		/// <summary>
+		/// Annotations applied to a specific object.
+		/// </summary>
+		private Dictionary<object, IList<Annotation>> annotationAssociations = new Dictionary<object, IList<Annotation>>();
+
+		/// <summary>
+		/// Annotations that were read, but not yet applied to an object.
+		/// </summary>
+		private IList<Annotation> readAnnotations =  new List<Annotation>();
+
 		
 		/// <summary>
 		/// Executes the state machine.
 		/// </summary>
 		private void Execute()
 		{
-			while (this.state != ReaderState.Finished)
+			while (this.reader.Peek() != null)
 			{
-				switch (this.state)
+				string keyword = this.reader.Peek();
+				switch (keyword)
 				{
-					case ReaderState.Initial:
-						this.state = ReaderState.ObjectDefinition;
+					case "opcode":
+						ReadOpcodeDefinition();
 						break;
-					case ReaderState.ObjectDefinition:
-						ReadObjectDefinition();
-						if (this.reader.Peek() == null)
-							this.state = ReaderState.Finished;
+					case "alias":
+						ReadAlias();
+						break;
+					case "[":
+						ReadAnnotations();
 						break;
 					default:
-						throw new NotImplementedException("In an unexpected state.");
+						throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: opcode, alias, [", keyword));
 				}
 			}
+
+			ApplyAllAnnotations();
 		}
 
 		/// <summary>
-		/// Reads an object definition from the file.
+		/// Reads an alias.
 		/// </summary>
-		private void ReadObjectDefinition()
+		private void ReadAlias()
 		{
-			string keyword = this.reader.Read();
-			switch(keyword)
-			{
-				case "opcode":
-					ReadOpcodeDefinition();
-					break;
-				default:
-					throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: opcode", keyword));
-			}
+			this.reader.Read();
+
+			string from = ReadIdentifier();
+
+			string equalsSign = this.reader.Read();
+			if (!equalsSign.Equals("="))
+				throw new ScriptException(String.Format("Expected '=' operator, got {0}.", equalsSign));
+
+			string to = ReadIdentifier();
+
+			string terminator = this.reader.Read();
+			if (!terminator.Equals(";"))
+				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
+
+			this.aliases.Add(from, to);
+		}
+
+		/// <summary>
+		/// Reads an identifier, and applies the alias if possible.
+		/// </summary>
+		/// <returns>The identifier.</returns>
+		private string ReadIdentifier()
+		{
+			string oldIdentifier = this.reader.ReadIdentifier();
+			string newIdentifier;
+			if (!this.aliases.TryGetValue(oldIdentifier, out newIdentifier))
+				newIdentifier = oldIdentifier;
+			return newIdentifier;
 		}
 
 		/// <summary>
@@ -171,89 +203,99 @@ namespace SharpAssembler.OpcodeWriter
 		/// </summary>
 		private void ReadOpcodeDefinition()
 		{
-			string platform = this.reader.ReadIdentifier();
+			this.reader.Read();
+
+			string platform = ReadIdentifier();
 			SetFactoryForPlatform(platform);
 			var opcodeSpec = this.factory.CreateOpcodeSpec();
 			this.opcodespecs.Add(opcodeSpec);
-			opcodeSpec.Mnemonic = this.reader.ReadIdentifier();
+			opcodeSpec.Mnemonic = ReadIdentifier();
+
+			ApplyAnnotations(opcodeSpec);
 
 			this.reader.ReadRegionAndRepeat(ScriptReader.RegionType.Body, () =>
 			{
 				string keyword = this.reader.Peek();
 				switch (keyword)
 				{
-					case "set":
-						ReadPropertySetting(opcodeSpec);
-						break;
 					case "var":
 						ReadOpcodeVariant(opcodeSpec);
 						break;
+					case "[":
+						ReadAnnotations();
+						break;
 					default:
-						throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: set, var", keyword));
+						throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: var, [", keyword));
 				}
 			});
 		}
 
-		#region Property Setting
+		#region Annotations
 		/// <summary>
-		/// Reads a property setting.
+		/// Reads an annotation.
 		/// </summary>
-		/// <param name="target">The object on which the property is set.</param>
-		private void ReadPropertySetting(object target)
+		private Annotation ReadAnnotation()
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(target != null);
+			Contract.Ensures(Contract.Result<Annotation>() != null);
 			#endregion
 
-			string keyword = this.reader.Read();
-			if (!keyword.Equals("set"))
-				throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: set", keyword));
-			string propertyName = this.reader.ReadIdentifier();
+			string name = ReadIdentifier();
+
 			string equalsSign = this.reader.Read();
 			if (!equalsSign.Equals("="))
 				throw new ScriptException(String.Format("Expected '=' operator, got {0}.", equalsSign));
-			object value = ReadAnyValue();
-			string terminator = this.reader.Read();
-			if (!terminator.Equals(";"))
-				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
 
-			SetProperty(target, propertyName, value);
+			object value = ReadAnyValue();
+
+			return new Annotation(name, value);
 		}
 
 		/// <summary>
-		/// Sets a property on the specified object.
+		/// Reads annotations, if they are specified.
+		/// </summary>
+		private void ReadAnnotations()
+		{
+			if (reader.Peek() == "[")
+			{
+				this.reader.ReadListInRegion(ScriptReader.RegionType.SquareBrackets, ",", () =>
+				{
+					this.readAnnotations.Add(ReadAnnotation());
+				});
+			}
+		}
+
+		/// <summary>
+		/// Adds the annotations to the specified object.
 		/// </summary>
 		/// <param name="target">The target object.</param>
-		/// <param name="name">The name of the property.</param>
-		/// <param name="value">The value of the property.</param>
-		private void SetProperty(object target, string name, object value)
+		private void ApplyAnnotations(object target)
 		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(target != null);
-			Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(name));
-			#endregion
-			var type = target.GetType();
-			var property = type.GetProperty(name);
+			var annotations = this.readAnnotations;
+			this.readAnnotations = new List<Annotation>();
 
-			var propertyType = property.PropertyType;
-			if (propertyType.Equals(typeof(Byte)))
-				value = Convert.ToByte(value);
-			if (propertyType.Equals(typeof(SByte)))
-				value = Convert.ToSByte(value);
-			if (propertyType.Equals(typeof(Int16)))
-				value = Convert.ToInt16(value);
-			if (propertyType.Equals(typeof(UInt16)))
-				value = Convert.ToUInt16(value);
-			if (propertyType.Equals(typeof(Int32)))
-				value = Convert.ToInt32(value);
-			if (propertyType.Equals(typeof(UInt32)))
-				value = Convert.ToUInt32(value);
-			if (propertyType.Equals(typeof(Int64)))
-				value = Convert.ToInt64(value);
-			if (propertyType.Equals(typeof(UInt64)))
-				value = Convert.ToUInt64(value);
+			IList<Annotation> existingAnnotations;
+			if (!annotationAssociations.TryGetValue(target, out existingAnnotations))
+				annotationAssociations[target] = annotations;
+			else
+			{
+				foreach (var annotation in annotations)
+					existingAnnotations.Add(annotation);
+			}
+		}
 
-			property.SetValue(target, value, null);
+		/// <summary>
+		/// Applies all annotations.
+		/// </summary>
+		private void ApplyAllAnnotations()
+		{
+			foreach (var annotationAssociation in this.annotationAssociations)
+			{
+				foreach (var annotation in annotationAssociation.Value)
+				{
+					annotation.SetOn(annotationAssociation.Key);
+				}
+			}
 		}
 		#endregion
 
@@ -269,13 +311,17 @@ namespace SharpAssembler.OpcodeWriter
 			var opcodeVariantSpec = this.factory.CreateOpcodeVariantSpec();
 			opcodeSpec.Variants.Add(opcodeVariantSpec);
 
-			string opcodeBytesStr = this.reader.ReadIdentifier();
+			string opcodeBytesStr = ReadIdentifier();
 			opcodeVariantSpec.OpcodeBytes = ReadByteArray(opcodeBytesStr);
+
+			ApplyAnnotations(opcodeVariantSpec);
 
 			this.reader.ReadListInRegion(ScriptReader.RegionType.Parentheses, ",", () =>
 			{
-				string operandType = this.reader.ReadIdentifier();
-				string operandName = this.reader.ReadIdentifier();
+				ReadAnnotations();
+
+				string operandType = ReadIdentifier();
+				string operandName = ReadIdentifier();
 				object defaultValue = null;
 
 				if (this.reader.Peek().Equals("="))
@@ -287,20 +333,13 @@ namespace SharpAssembler.OpcodeWriter
 				var operandSpec = this.factory.CreateOperandSpec(operandType, defaultValue);
 				opcodeVariantSpec.Operands.Add(operandSpec);
 				operandSpec.Name = operandName;
+
+				ApplyAnnotations(operandSpec);
 			});
 
-			this.reader.ReadRegionAndRepeat(ScriptReader.RegionType.Body, () =>
-			{
-				keyword = this.reader.Peek();
-				switch (keyword)
-				{
-					case "set":
-						ReadPropertySetting(opcodeVariantSpec);
-						break;
-					default:
-						throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: set", keyword));
-				}
-			});
+			string terminator = this.reader.Read();
+			if (!terminator.Equals(";"))
+				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
 		}
 
 		/// <summary>
@@ -346,7 +385,7 @@ namespace SharpAssembler.OpcodeWriter
 				return this.reader.ReadInteger();
 
 			if (this.reader.PeekIdentifier() != null)
-				return (Identifier)this.reader.ReadIdentifier();
+				return (Identifier)ReadIdentifier();
 
 			throw new ScriptException("Could not determine type of value.");
 		}

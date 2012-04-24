@@ -1,40 +1,47 @@
+alias d = destination;
+alias s = source;
+
+[ShortDescription = "Move"]
+[IsValidIn64BitMode = true]
+[CanLock = true]
 opcode x86 mov
 {
-	set ShortDescription = "Move";
-	set IsValidIn64BitMode = true;
-	set CanLock = true;
 	/* A comment
 	on multiple lines */
-	var `88` (reg/mem8  destination, reg8  source);
-	var `89` (reg/mem16 destination, reg16 source);
-	var `89` (reg/mem32 destination, reg32 source);
-	var `89` (reg/mem64 destination, reg64 source);
+	var `88` (reg/mem8  d, reg8  s);
+	var `89` (reg/mem16 d, reg16 s);
+	var `89` (reg/mem32 d, reg32 s);
+	var `89` (reg/mem64 d, reg64 s);
 	
-	var `8A` (reg8  destination, reg/mem8  source);
-	var `8B` (reg16 destination, reg/mem16 source);
-	var `8B` (reg32 destination, reg/mem32 source);
-	var `8B` (reg64 destination, reg/mem64 source);
+	var `8A` (reg8  d, reg/mem8  s);
+	var `8B` (reg16 d, reg/mem16 s);
+	var `8B` (reg32 d, reg/mem32 s);
+	var `8B` (reg64 d, reg/mem64 s);
 	
-	//var `8C` (reg16/32/64/mem16 destination, segReg source);
-	//var `8E` (segReg destination, reg/mem16 source);
+	//var `8C` (reg16/32/64/mem16 d, segReg s);
+	//var `8E` (segReg d, reg/mem16 s);
 	
-	//var `A0` (void destination = %AL,  moffset8  source);
-	//var `A1` (void destination = %AX,  moffset16 source);
-	//var `A1` (void destination = %EAX, moffset32 source);
-	//var `A1` (void destination = %RAX, moffset64 source);
+	//var `A0` (void d = AL,  moffset8  s);
+	//var `A1` (void d = AX,  moffset16 s);
+	//var `A1` (void d = EAX, moffset32 s);
+	//var `A1` (void d = RAX, moffset64 s);
 	
-	//var `A2` (moffset8  destination, void source = %AL);
-	//var `A3` (moffset16 destination, void source = %AX);
-	//var `A3` (moffset32 destination, void source = %EAX);
-	//var `A3` (moffset64 destination, void source = %RAX);
+	//var `A2` (moffset8  d, void s = AL);
+	//var `A3` (moffset16 d, void s = AX);
+	//var `A3` (moffset32 d, void s = EAX);
+	//var `A3` (moffset64 d, void s = RAX);
 	
-	var `B0` (reg8  destination, imm8  source);
-	var `B8` (reg16 destination, imm16 source);
-	var `B8` (reg32 destination, imm32 source);
-	var `B8` (reg64 destination, imm64 source);
+	var `B0` ([Encoding = OpcodeAdd] reg8  d, imm8  s);
+	var `B8` ([Encoding = OpcodeAdd] reg16 d, imm16 s);
+	var `B8` ([Encoding = OpcodeAdd] reg32 d, imm32 s);
+	var `B8` ([Encoding = OpcodeAdd] reg64 d, imm64 s);
 	
-	var `C6` (reg/mem8  destination, imm8  source) { set FixedReg = 0; }
-	var `C7` (reg/mem16 destination, imm16 source) { set FixedReg = 0; }
-	var `C7` (reg/mem32 destination, imm32 source) { set FixedReg = 0; }
-	var `C7` (reg/mem64 destination, imm32 source) { set FixedReg = 0; }
+	[FixedReg = 0]
+	var `C6` (reg/mem8  d, imm8  s);
+	[FixedReg = 0]
+	var `C7` (reg/mem16 d, imm16 s);
+	[FixedReg = 0]
+	var `C7` (reg/mem32 d, imm32 s);
+	[FixedReg = 0]
+	var `C7` (reg/mem64 d, imm32 s);
 }

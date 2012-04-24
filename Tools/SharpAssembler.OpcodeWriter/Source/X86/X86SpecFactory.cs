@@ -92,7 +92,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 		{
 			string id = identifier.ToString();
 			Register reg;
-			if (!Enum.TryParse<Register>(id.Substring(1), true, out reg))
+			if (!Enum.TryParse<Register>(id, true, out reg))
 				throw new ScriptException(String.Format("Unknown register {0}", id));
 			return reg;
 		}

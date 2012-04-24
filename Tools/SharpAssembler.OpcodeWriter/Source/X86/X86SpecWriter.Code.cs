@@ -128,39 +128,42 @@ namespace SharpAssembler.OpcodeWriter.X86
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
+			string encodingStr = String.Empty;
+			if (operand.Encoding != X86OperandEncoding.Default)
+				encodingStr = ", OperandEncoding." + Enum.GetName(typeof(X86OperandEncoding), operand.Encoding);
+
 			switch (operand.Type)
 			{
 				case X86OperandType.RegisterOperand:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose{0}Bit)",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose{0}Bit" + encodingStr + ")",
 						operand.Size.GetBitCount());
-					// TODO: Add ", OperandEncoding.OpcodeAdd" when there is no reg/mem.
 					break;
 				case X86OperandType.FixedRegister:
 					writer.Write(T + T + T + T + T + "new OperandDescriptor(Register.{0})",
 						Enum.GetName(typeof(Register), operand.FixedRegister).ToUpperInvariant());
 					break;
 				case X86OperandType.Immediate:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.Immediate, DataSize.Bit{0})",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.Immediate, DataSize.Bit{0}" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				case X86OperandType.MemoryOperand:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit{0})",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit{0}" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				case X86OperandType.MemoryOffset:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit{0})",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.MemoryOffset, DataSize.Bit{0}" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				case X86OperandType.FarPointer:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.FarPointer, DataSize.Bit{0})",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.FarPointer, DataSize.Bit{0}" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				case X86OperandType.RegisterOrMemoryOperand:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose{0}Bit)",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose{0}Bit" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				case X86OperandType.RelativeOffset:
-					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit{0})",
+					writer.Write(T + T + T + T + T + "new OperandDescriptor(OperandType.RelativeOffset, DataSize.Bit{0}" + encodingStr + ")",
 						operand.Size.GetBitCount());
 					break;
 				default:

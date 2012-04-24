@@ -18,18 +18,23 @@ namespace SharpAssembler.OpcodeWriter.Tests
 			dispenser.Register("x86", new X86SpecFactory());
 			ScriptInterpreter reader = new ScriptInterpreter(new ScriptTokenizer(), dispenser);
 			string script =
-@"opcode x86 mov
+@"
+alias d = destination;
+alias s = source;
+[
+ShortDescription = ""Move"",
+IsValidIn64BitMode = true
+]
+[CanLock = true]
+opcode x86 mov
 {
-	set ShortDescription = ""Move"";
-	set IsValidIn64BitMode = true;
-	set CanLock = true;
-
 	/* A comment
 	on multiple lines */
-	var `88` (reg/mem8  destination, reg8  source);
-	var `A3` (moffset32 destination, void source = %EAX);
-	var `B8 D7` (reg32 destination, imm32 source);
-	var `C7` (reg/mem64 destination, imm32 source) { set FixedReg = 1; }
+	var `88` (reg/mem8  d, [FixedRegister = RDX] reg8  s);
+	var `A3` (moffset32 d, void s = EAX);
+	var `B8 D7` (reg32 d, imm32 s);
+	[FixedReg = 1]
+	var `C7` (reg/mem64 destination, imm32 source);
 }";
 
 			// When
@@ -46,18 +51,23 @@ namespace SharpAssembler.OpcodeWriter.Tests
 			dispenser.Register("x86", new X86SpecFactory());
 			ScriptInterpreter reader = new ScriptInterpreter(new ScriptTokenizer(), dispenser);
 			string script =
-@"opcode x86 mov
+@"
+alias d = destination;
+alias s = source;
+[
+ShortDescription = ""Move"",
+IsValidIn64BitMode = true
+]
+[CanLock = true]
+opcode x86 mov
 {
-	set ShortDescription = ""Move"";
-	set IsValidIn64BitMode = true;
-	set CanLock = true;
-
 	/* A comment
 	on multiple lines */
-	var `88` (reg/mem8  destination, reg8  source);
-	var `A3` (moffset32 destination, void source = %EAX);
-	var `B8 D7` (reg32 destination, imm32 source);
-	var `C7` (reg/mem64 destination, imm32 source) { set FixedReg = 1; }
+	var `88` (reg/mem8  d, [FixedRegister = RDX] reg8  s);
+	var `A3` (moffset32 d, void s = EAX);
+	var `B8 D7` (reg32 d, imm32 s);
+	[FixedReg = 1]
+	var `C7` (reg/mem64 destination, imm32 source);
 }";
 
 			// When
@@ -88,6 +98,7 @@ namespace SharpAssembler.OpcodeWriter.Tests
 			Assert.That(src.Name, Is.EqualTo("source"));
 			Assert.That(src.Type, Is.EqualTo(X86OperandType.RegisterOperand));
 			Assert.That(src.Size, Is.EqualTo(DataSize.Bit8));
+			Assert.That(src.FixedRegister, Is.EqualTo(Register.RDX));
 
 			Assert.That(var2.OpcodeBytes, Is.EquivalentTo(new byte[] { 0xA3 }));
 			Assert.That(var2.Operands.Count, Is.EqualTo(2));

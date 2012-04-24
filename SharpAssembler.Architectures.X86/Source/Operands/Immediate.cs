@@ -172,8 +172,8 @@ namespace SharpAssembler.Architectures.X86.Operands
 					// Otherwise, use the most efficient word size.
 					size = MathExt.GetSizeOfValue(result.Constant);
 			}
-			if (size >= DataSize.Bit64)
-				throw new AssemblerException("64-bit operands cannot be encoded.");
+			if (size > DataSize.Bit64)
+			    throw new AssemblerException("Operands with more than 64 bits cannot be encoded.");
 			else if (size == DataSize.None)
 				throw new AssemblerException("The operand size is not specified.");
 
