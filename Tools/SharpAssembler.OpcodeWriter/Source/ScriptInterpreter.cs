@@ -128,6 +128,10 @@ namespace SharpAssembler.OpcodeWriter
 		/// </summary>
 		private void Execute()
 		{
+			this.aliases = new Dictionary<string, string>();
+			this.annotationAssociations = new Dictionary<object, IList<Annotation>>();
+			this.readAnnotations = new List<Annotation>();
+
 			while (this.reader.Peek() != null)
 			{
 				string keyword = this.reader.Peek();
@@ -169,7 +173,7 @@ namespace SharpAssembler.OpcodeWriter
 			if (!terminator.Equals(";"))
 				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
 
-			this.aliases.Add(from, to);
+			this.aliases[from] = to;
 		}
 
 		/// <summary>

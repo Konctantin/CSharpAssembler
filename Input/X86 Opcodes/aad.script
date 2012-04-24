@@ -1,0 +1,6 @@
+[ShortDescription = "ASCII Adjust Before Division"]
+[IsValidIn64BitMode = false]
+opcode x86 aad
+{
+	var `D5` (imm8 base);
+}

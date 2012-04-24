@@ -41,6 +41,8 @@ To annotate an object, specification or definition, precede it with a comma-sepa
     [ShortDescription = "Move"]
 
 #### Variants ####
+*Note: the order of the variants **does** matter!* The earliest mentioned variant that is a match is used, regardless of whether it is the most efficient one.
+
 Each variant starts with the `var` keyword followed by a space separated list of hexadecimal byte values (without the `0x` prefix), which represent the opcode bytes for the variant (e.g. `FE 4A`). Then follows a parenthesized comma-separated operand list, and it ends with either a semi-colon or curly brackets with properties.
 
     var `0F AE F0` ();

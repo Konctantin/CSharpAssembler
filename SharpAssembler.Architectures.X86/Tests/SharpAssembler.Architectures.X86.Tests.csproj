@@ -118,7 +118,13 @@
     <None Include="Instructions\AdcTest.cs" />
     <None Include="Instructions\CmpsTest.cs" />
     <None Include="Instructions\InstructionTestBase.cs" />
-    <Compile Include="Opcodes\AdcTests.cs" />
+    <Compile Include="Opcodes\AaaTests.generated.cs" />
+    <Compile Include="Opcodes\AadTests.generated.cs" />
+    <Compile Include="Opcodes\AamTests.generated.cs" />
+    <Compile Include="Opcodes\AasTests.generated.cs" />
+    <Compile Include="Opcodes\AdcTests.generated.cs" />
+    <Compile Include="Opcodes\AddTests.generated.cs" />
+    <Compile Include="Opcodes\AndTests.generated.cs" />
     <Compile Include="Opcodes\MovTests.generated.cs" />
     <Compile Include="Opcodes\OpcodeTestBase.cs" />
     <Compile Include="RegisterTypeExtensionsTests.cs" />

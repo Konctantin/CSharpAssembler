@@ -1,0 +1,31 @@
+alias d = destination;
+alias s = source;
+
+[ShortDescription = "Logical AND"]
+[CanLock = true]
+opcode x86 and
+{
+	var `24` (void d =  AL, imm8  s);
+	var `25` (void d =  AX, imm16 s);
+	var `25` (void d = EAX, imm32 s);
+	var `25` (void d = RAX, imm32 s);
+	
+	// NOTE: The order matters. Specify the smallest variants first.
+	[FixedReg = 4] var `80` (reg/mem8  d, imm8  s);
+	[FixedReg = 4] var `83` (reg/mem16 d, imm8  s);
+	[FixedReg = 4] var `83` (reg/mem32 d, imm8  s);
+	[FixedReg = 4] var `83` (reg/mem64 d, imm8  s);
+	[FixedReg = 4] var `81` (reg/mem16 d, imm16 s);
+	[FixedReg = 4] var `81` (reg/mem32 d, imm32 s);
+	[FixedReg = 4] var `81` (reg/mem64 d, imm32 s);
+	
+	var `20` (reg/mem8  d, reg8  s);
+	var `21` (reg/mem16 d, reg16 s);
+	var `21` (reg/mem32 d, reg32 s);
+	var `21` (reg/mem64 d, reg64 s);
+	
+	var `22` (reg8  d, reg/mem8  s);
+	var `23` (reg16 d, reg/mem16 s);
+	var `23` (reg32 d, reg/mem32 s);
+	var `23` (reg64 d, reg/mem64 s);
+}

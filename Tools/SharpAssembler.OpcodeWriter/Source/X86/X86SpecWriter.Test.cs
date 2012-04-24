@@ -67,9 +67,13 @@ namespace SharpAssembler.OpcodeWriter.X86
 			byte[] bytes32 = GetEncodedInstruction(DataSize.Bit32, instruction);
 			byte[] bytes64 = GetEncodedInstruction(DataSize.Bit64, instruction);
 
+			string methodName = String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
+												 select GetOperandManualName(o)).Replace("/", "");
+			if (String.IsNullOrWhiteSpace(methodName))
+				methodName = "Variant" + (spec.Variants.IndexOf(variant) + 1).ToString();
+
 			writer.WriteLine(T + T + "[Test]");
-			writer.WriteLine(T + T + "public void {0}()", String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
-																		   select GetOperandManualName(o)).Replace("/", ""));
+			writer.WriteLine(T + T + "public void {0}()", methodName);
 			writer.WriteLine(T + T + "{");
 			writer.WriteLine(T + T + T + "var instruction = Instr.{0}({1});",
 				GetOpcodeClassName(spec), operands);

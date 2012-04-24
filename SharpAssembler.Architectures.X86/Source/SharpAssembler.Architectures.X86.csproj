@@ -102,13 +102,13 @@
   <ItemGroup>
     <Compile Include="Instr.cs" />
     <Compile Include="LockInstruction.cs" />
-    <Compile Include="Opcodes\AndOpcode.cs" />
-    <Compile Include="Opcodes\AaaOpcode.cs" />
-    <Compile Include="Opcodes\AadOpcode.cs" />
-    <Compile Include="Opcodes\AamOpcode.cs" />
-    <Compile Include="Opcodes\AasOpcode.cs" />
-    <Compile Include="Opcodes\AdcOpcode.cs" />
-    <Compile Include="Opcodes\AddOpcode.cs" />
+    <Compile Include="Opcodes\AaaOpcode.generated.cs" />
+    <Compile Include="Opcodes\AadOpcode.generated.cs" />
+    <Compile Include="Opcodes\AamOpcode.generated.cs" />
+    <Compile Include="Opcodes\AasOpcode.generated.cs" />
+    <Compile Include="Opcodes\AdcOpcode.generated.cs" />
+    <Compile Include="Opcodes\AddOpcode.generated.cs" />
+    <Compile Include="Opcodes\AndOpcode.generated.cs" />
     <Compile Include="Opcodes\IntOpcode.cs" />
     <Compile Include="Opcodes\MovOpcode.generated.cs" />
     <Compile Include="Opcodes\Opcodes.cs" />

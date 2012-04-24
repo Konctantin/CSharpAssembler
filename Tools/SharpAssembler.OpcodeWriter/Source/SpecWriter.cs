@@ -231,6 +231,43 @@ namespace SharpAssembler.OpcodeWriter
 			writer.WriteLine("#endregion");
 		}
 
+		/// <summary>
+		/// A list of reserved C# keywords.
+		/// </summary>
+		private static readonly string[] Keywords = new[]{
+			"abstract", "event", "new", "struct", "as", "explicit", "null", "switch", "base", "extern", "object",
+			"this", "bool", "false", "operator", "throw", "break", "finally", "out", "true", "byte", "fixed",
+			"override", "try", "case", "float", "params", "typeof", "catch", "for", "private", "uint", "char",
+			"foreach", "protected", "ulong", "checked", "goto", "public", "unchecked", "class", "if", "readonly",
+			"unsafe", "const", "implicit", "ref", "ushort", "continue", "in", "return", "using", "decimal", "int",
+			"sbyte", "virtual", "default", "interface", "sealed", "volatile", "delegate", "internal", "short", "void",
+			"do", "is", "sizeof", "while", "double", "lock", "stackalloc", "else", "long", "static", "enum",
+			"namespace", "string"
+		};
+
+		/// <summary>
+		/// Returns whether the specified variable name is a keyword.
+		/// </summary>
+		/// <param name="variableName">The name to check.</param>
+		/// <returns><see langword="true"/> when it is a keyword; otherwise, <see langword="false"/>.</returns>
+		protected bool IsKeyword(string variableName)
+		{
+			return Keywords.Contains(variableName);
+		}
+
+		/// <summary>
+		/// Returns the given variable name as a valid C# variable name.
+		/// </summary>
+		/// <param name="variableName">The variable name to return.</param>
+		/// <returns>The variable name made safe for use in C#.</returns>
+		protected string AsVariableName(string variableName)
+		{
+			if (IsKeyword(variableName))
+				return "@" + variableName;
+			else
+				return variableName;
+		}
+
 		#region Invariant
 		/// <summary>
 		/// Asserts the invariants for this type.

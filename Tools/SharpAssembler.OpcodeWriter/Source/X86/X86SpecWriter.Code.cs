@@ -83,12 +83,16 @@ namespace SharpAssembler.OpcodeWriter.X86
 			var operands = x86variant.Operands.Cast<X86OperandSpec>();
 			var operandNames = from o in operands select GetOperandManualName(o);
 
-			writer.WriteLine(T + T + T + T + "// {0} {1}", spec.Mnemonic.ToUpperInvariant(), String.Join(", ", operandNames));
+			writer.Write(T + T + T + T + "// {0}", spec.Mnemonic.ToUpperInvariant());
+			if (operandNames.Any())
+				writer.WriteLine(" {0}", String.Join(", ", operandNames));
+			else
+				writer.WriteLine();
 			writer.WriteLine(T + T + T + T + "new X86OpcodeVariant(");
 
 			string opcodeBytes = String.Join(", ", from b in x86variant.OpcodeBytes select String.Format("0x{0:X2}", b));
 
-			writer.Write(T + T + T + T + T + "new byte[] {{ {0} }},", opcodeBytes);
+			writer.Write(T + T + T + T + T + "new byte[] {{ {0} }}", opcodeBytes);
 
 			// Either the fixed REG is not 0, or the opcode has a spot for the REG available as it uses the
 			// ModRM byte (because it has a reg/mem operand) but does not specify the REG part (because it does not
@@ -97,23 +101,15 @@ namespace SharpAssembler.OpcodeWriter.X86
 				(operands.Any(o => o.Type == X86OperandType.RegisterOrMemoryOperand) &&
 				!operands.Any(o => o.Type == X86OperandType.RegisterOperand)))
 			{
-				writer.WriteLine(" {0},", x86variant.FixedReg);
-			}
-			else
-			{
-				writer.WriteLine();
+				writer.Write(", {0}", x86variant.FixedReg);
 			}
 
-			if (x86variant.Operands.Any())
+			foreach (var operand in operands)
 			{
-				WriteOperandDescriptor(operands.First(), writer);
-				foreach (var operand in operands.Skip(1))
-				{
-					writer.WriteLine(",");
-					WriteOperandDescriptor(operand, writer);
-				}
-				writer.WriteLine("),");
+				writer.WriteLine(",");
+				WriteOperandDescriptor(operand, writer);
 			}
+			writer.WriteLine("),");
 		}
 
 		/// <summary>
@@ -241,10 +237,14 @@ namespace SharpAssembler.OpcodeWriter.X86
 
 			WriteCodeInstrOpcodeVariantMethodDocumentation(spec, operands, writer);
 			WriteCodeCLSCompliance(operands, writer);
+			string operandsString = String.Join(", ", from o in operands
+													  select o.Item2 + " " + AsVariableName(o.Item1.Name));
 			writer.WriteLine(T + T + "public static X86Instruction {0}({1})",
-				GetOpcodeClassName(spec), String.Join(", ", from o in operands select o.Item2 + " " + o.Item1.Name));
+				GetOpcodeClassName(spec), operandsString);
+			string argumentsString = String.Join(", ", from o in operands
+													   select String.Format(o.Item3, AsVariableName(o.Item1.Name)));
 			writer.WriteLine(T + T + "{{ return X86Opcode.{0}.CreateInstruction({1}); }}",
-				GetOpcodeClassName(spec), String.Join(", ", from o in operands select String.Format(o.Item3, o.Item1.Name)));
+				GetOpcodeClassName(spec), argumentsString);
 		}
 
 		/// <summary>
@@ -270,7 +270,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 		{
 			switch(typeName)
 			{
-				case"sbyte":
+				case "sbyte":
 				case "ushort":
 				case "uint":
 				case "ulong":
