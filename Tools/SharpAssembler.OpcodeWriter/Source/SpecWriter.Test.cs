@@ -72,7 +72,9 @@ namespace SharpAssembler.OpcodeWriter
 			writer.WriteLine(T + "/// Tests all variants of the {0} opcode.", spec.Mnemonic.ToUpperInvariant());
 			writer.WriteLine(T + "/// </summary>");
 			writer.WriteLine(T + "[TestFixture]");
-			writer.WriteLine(T + "public class {0}Tests : {1}", GetOpcodeClassName(spec), GetTestBaseClassName());
+			writer.WriteLine(T + "public class {0} : {1}",
+				AsValidIdentifier(spec.Name + "Tests"),
+				GetTestBaseClassName());
 			writer.WriteLine(T + "{");
 		}
 

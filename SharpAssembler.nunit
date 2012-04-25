@@ -1,0 +1,13 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" processModel="Default" domainUsage="Default" />
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="Tools\SharpAssembler.OpcodeWriter\Tests\bin\Debug\SharpAssembler.OpcodeWriter.Tests.dll" />
+    <assembly path="SharpAssembler.Languages.Nasm\Tests\bin\Debug\SharpAssembler.Languages.Nasm.Tests.dll" />
+    <assembly path="SharpAssembler.Formats.Elf32\Tests\bin\Debug\SharpAssembler.Formats.Elf32.Tests.dll" />
+    <assembly path="SharpAssembler.Formats.Bin\Tests\bin\Debug\SharpAssembler.Formats.Bin.Tests.dll" />
+    <assembly path="SharpAssembler.Architectures.X86\Tests\bin\Debug\SharpAssembler.Architectures.X86.Tests.dll" />
+    <assembly path="SharpAssembler.Architectures.ARM\Tests\bin\Debug\SharpAssembler.Architectures.ARM.Tests.dll" />
+    <assembly path="SharpAssembler\Tests\bin\Debug\SharpAssembler.Tests.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto" />
+</NUnitProject>

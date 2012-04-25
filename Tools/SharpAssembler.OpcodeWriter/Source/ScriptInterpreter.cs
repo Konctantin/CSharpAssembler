@@ -47,7 +47,7 @@ namespace SharpAssembler.OpcodeWriter
 
 			using (var stream = File.OpenRead(path))
 			{
-				return ReadFrom(stream);
+				return ReadFrom(stream, Path.GetDirectoryName(path));
 			}
 		}
 
@@ -56,10 +56,18 @@ namespace SharpAssembler.OpcodeWriter
 		{
 			// CONTRACT: IScriptReader
 
+			return ReadFrom(stream, null);
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<OpcodeSpec> ReadFrom(Stream stream, string basePath)
+		{
+			// CONTRACT: IScriptReader
+
 			// TODO: Ensure that 'stream' is not closed afterwards.
 			using (var reader = new StreamReader(stream))
 			{
-				return ReadFrom(reader);
+				return ReadFrom(reader, basePath);
 			}
 		}
 
@@ -68,7 +76,15 @@ namespace SharpAssembler.OpcodeWriter
 		{
 			// CONTRACT: IScriptReader
 
-			return Read(reader.ReadToEnd());
+			return ReadFrom(reader, null);
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<OpcodeSpec> ReadFrom(TextReader reader, string basePath)
+		{
+			// CONTRACT: IScriptReader
+
+			return Read(reader.ReadToEnd(), basePath);
 		}
 
 		/// <inheritdoc />
@@ -76,11 +92,27 @@ namespace SharpAssembler.OpcodeWriter
 		{
 			// CONTRACT: IScriptReader
 
+			return Read(script, null);
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<OpcodeSpec> Read(string script, string basePath)
+		{
+			// CONTRACT: IScriptReader
+			
 			this.opcodespecs = new List<OpcodeSpec>();
 			this.reader = new ScriptReader(this.tokenizer.Tokenize(script));
+
+			this.basePath = basePath != null ? basePath : Directory.GetCurrentDirectory();
+
 			Execute();
 			return opcodespecs;
 		}
+
+		/// <summary>
+		/// The base path to the script, never <see langword="null"/>.
+		/// </summary>
+		private string basePath;
 
 		/// <summary>
 		/// The tokenizer to use.
@@ -137,6 +169,9 @@ namespace SharpAssembler.OpcodeWriter
 				string keyword = this.reader.Peek();
 				switch (keyword)
 				{
+					case "include":
+						ReadInclude();
+						break;
 					case "opcode":
 						ReadOpcodeDefinition();
 						break;
@@ -155,25 +190,46 @@ namespace SharpAssembler.OpcodeWriter
 		}
 
 		/// <summary>
+		/// Reads an include.
+		/// </summary>
+		private void ReadInclude()
+		{
+			ExpectRead("include");
+
+			string path = this.reader.ReadString();
+
+			ExpectRead(";");
+
+			if (Path.GetExtension(path) == String.Empty)
+			{
+				path += ".inc";
+			}
+
+			// Process the include right at this spot.
+			using (var stream = File.OpenRead(Path.Combine(basePath, path)))
+			using (var reader = new StreamReader(stream))
+			{
+				this.reader.Prepend(this.tokenizer.Tokenize(reader.ReadToEnd()));
+			}
+		}
+
+		/// <summary>
 		/// Reads an alias.
 		/// </summary>
 		private void ReadAlias()
 		{
-			this.reader.Read();
+			ExpectRead("alias");
 
 			string from = ReadIdentifier();
 
-			string equalsSign = this.reader.Read();
-			if (!equalsSign.Equals("="))
-				throw new ScriptException(String.Format("Expected '=' operator, got {0}.", equalsSign));
+			ExpectRead("=");
 
 			string to = ReadIdentifier();
 
-			string terminator = this.reader.Read();
-			if (!terminator.Equals(";"))
-				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
+			ExpectRead(";");
 
-			this.aliases[from] = to;
+			if (from != to)
+				this.aliases[from] = to;
 		}
 
 		/// <summary>
@@ -215,6 +271,13 @@ namespace SharpAssembler.OpcodeWriter
 			this.opcodespecs.Add(opcodeSpec);
 			opcodeSpec.Mnemonic = ReadIdentifier();
 
+			string asKeyword = this.reader.Peek();
+			if (asKeyword == "as")
+			{
+				ExpectRead("as");
+				opcodeSpec.Name = ReadIdentifier();
+			}
+
 			ApplyAnnotations(opcodeSpec);
 
 			this.reader.ReadRegionAndRepeat(ScriptReader.RegionType.Body, () =>
@@ -245,11 +308,7 @@ namespace SharpAssembler.OpcodeWriter
 			#endregion
 
 			string name = ReadIdentifier();
-
-			string equalsSign = this.reader.Read();
-			if (!equalsSign.Equals("="))
-				throw new ScriptException(String.Format("Expected '=' operator, got {0}.", equalsSign));
-
+			ExpectRead("=");
 			object value = ReadAnyValue();
 
 			return new Annotation(name, value);
@@ -275,6 +334,10 @@ namespace SharpAssembler.OpcodeWriter
 		/// <param name="target">The target object.</param>
 		private void ApplyAnnotations(object target)
 		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(target != null);
+			#endregion
+
 			var annotations = this.readAnnotations;
 			this.readAnnotations = new List<Annotation>();
 
@@ -308,9 +371,7 @@ namespace SharpAssembler.OpcodeWriter
 		/// </summary>
 		private void ReadOpcodeVariant(OpcodeSpec opcodeSpec)
 		{
-			string keyword = this.reader.Read();
-			if (!keyword.Equals("var"))
-				throw new ScriptException(String.Format("Unknown keyword {0}, expected one of: var", keyword));
+			ExpectRead("var");
 
 			var opcodeVariantSpec = this.factory.CreateOpcodeVariantSpec();
 			opcodeSpec.Variants.Add(opcodeVariantSpec);
@@ -341,9 +402,7 @@ namespace SharpAssembler.OpcodeWriter
 				ApplyAnnotations(operandSpec);
 			});
 
-			string terminator = this.reader.Read();
-			if (!terminator.Equals(";"))
-				throw new ScriptException(String.Format("Expected ';' terminator, got {0}.", terminator));
+			ExpectRead(";");
 		}
 
 		/// <summary>
@@ -367,6 +426,17 @@ namespace SharpAssembler.OpcodeWriter
 				bytes[index++] = (byte)value;
 			}
 			return bytes;
+		}
+
+		/// <summary>
+		/// Expects a particular value.
+		/// </summary>
+		/// <param name="expected">The value that is expected.</param>
+		private void ExpectRead(string expected)
+		{
+			string actual = this.reader.Read();
+			if (actual != expected)
+				throw new ScriptException(String.Format("Expected \"{0}\", got \"{1}\".", expected, actual));
 		}
 
 		/// <summary>

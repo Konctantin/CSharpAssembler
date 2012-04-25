@@ -44,7 +44,7 @@ namespace SharpAssembler.OpcodeWriter
 
 		private static IList<string> ReadArguments(string[] args, out string codeDirectory, out string testDirectory, out string yasmPath)
 		{
-			Console.WriteLine("Working directory: " + Directory.GetCurrentDirectory());
+			//Console.WriteLine("Working directory: " + Directory.GetCurrentDirectory());
 			List<string> files = new List<string>();
 			codeDirectory = null;
 			testDirectory = null;
@@ -214,7 +214,7 @@ Options:
 			Contract.Requires<ArgumentNullException>(testOutputDirectory != null);
 			#endregion
 
-			Console.Write(Path.GetFileName(filepath) + ": ");
+			Console.Write("{0,17}: ", Path.GetFileName(filepath));
 
 			try
 			{
@@ -253,9 +253,7 @@ Options:
 		/// <returns>A filename.</returns>
 		private static string GetCodeFilename(OpcodeSpec opcodeSpec)
 		{
-			string mnemonic = opcodeSpec.Mnemonic;
-			return Char.ToUpperInvariant(mnemonic[0]).ToString() + mnemonic.Substring(1)
-				+ "Opcode.generated.cs";
+			return SpecWriter.AsValidIdentifier(opcodeSpec.Name + "Opcode") + ".generated.cs";
 		}
 
 		/// <summary>
@@ -265,9 +263,7 @@ Options:
 		/// <returns>A filename.</returns>
 		private static string GetTestFilename(OpcodeSpec opcodeSpec)
 		{
-			string mnemonic = opcodeSpec.Mnemonic;
-			return Char.ToUpperInvariant(mnemonic[0]).ToString() + mnemonic.Substring(1)
-				+ "Tests.generated.cs";
+			return SpecWriter.AsValidIdentifier(opcodeSpec.Name + "Tests") + ".generated.cs";
 		}
 	}
 }

@@ -1,0 +1,7 @@
+include "amdsyntax";
+
+[ShortDescription = "Clear Direction Flag"]
+opcode x86 cld
+{
+	var `FC` ();
+}

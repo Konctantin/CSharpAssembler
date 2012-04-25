@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics.Contracts;
+using System.Text.RegularExpressions;
 
 namespace SharpAssembler.OpcodeWriter
 {
@@ -231,41 +232,32 @@ namespace SharpAssembler.OpcodeWriter
 			writer.WriteLine("#endregion");
 		}
 
-		/// <summary>
-		/// A list of reserved C# keywords.
-		/// </summary>
-		private static readonly string[] Keywords = new[]{
-			"abstract", "event", "new", "struct", "as", "explicit", "null", "switch", "base", "extern", "object",
-			"this", "bool", "false", "operator", "throw", "break", "finally", "out", "true", "byte", "fixed",
-			"override", "try", "case", "float", "params", "typeof", "catch", "for", "private", "uint", "char",
-			"foreach", "protected", "ulong", "checked", "goto", "public", "unchecked", "class", "if", "readonly",
-			"unsafe", "const", "implicit", "ref", "ushort", "continue", "in", "return", "using", "decimal", "int",
-			"sbyte", "virtual", "default", "interface", "sealed", "volatile", "delegate", "internal", "short", "void",
-			"do", "is", "sizeof", "while", "double", "lock", "stackalloc", "else", "long", "static", "enum",
-			"namespace", "string"
-		};
+		private static readonly Regex IdentifierValidation = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]", RegexOptions.Compiled);
+
+		private static readonly System.CodeDom.Compiler.CodeDomProvider CSharpCodeCompiler = Microsoft.CSharp.CSharpCodeProvider.CreateProvider("C#");
 
 		/// <summary>
-		/// Returns whether the specified variable name is a keyword.
+		/// Returns the given identifier as a valid C# identifier.
 		/// </summary>
-		/// <param name="variableName">The name to check.</param>
-		/// <returns><see langword="true"/> when it is a keyword; otherwise, <see langword="false"/>.</returns>
-		protected bool IsKeyword(string variableName)
+		/// <param name="identifier">The identifier to return.</param>
+		/// <returns>The identifier made safe for use in C#.</returns>
+		public static string AsValidIdentifier(string identifier)
 		{
-			return Keywords.Contains(variableName);
-		}
+			#region Contract
+			Contract.Requires<ArgumentNullException>(identifier != null);
+			Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(identifier));
+			Contract.Ensures(!String.IsNullOrWhiteSpace(Contract.Result<string>()));
+			#endregion
+			// Based on the code by Visual T4 posted here:
+			// http://blog.visualt4.com/2009/02/creating-valid-c-identifiers.html
 
-		/// <summary>
-		/// Returns the given variable name as a valid C# variable name.
-		/// </summary>
-		/// <param name="variableName">The variable name to return.</param>
-		/// <returns>The variable name made safe for use in C#.</returns>
-		protected string AsVariableName(string variableName)
-		{
-			if (IsKeyword(variableName))
-				return "@" + variableName;
-			else
-				return variableName;
+			// Compliant with item 2.4.2 of the C# specification
+			identifier = IdentifierValidation.Replace(identifier, "_");
+
+			if (!Char.IsLetter(identifier, 0))
+				identifier = "_" + identifier;
+
+			return CSharpCodeCompiler.CreateEscapedIdentifier(identifier);
 		}
 
 		#region Invariant

@@ -26,6 +26,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 		protected override void WriteCodeUsingDirectives(TextWriter writer)
 		{
 			base.WriteCodeUsingDirectives(writer);
+			writer.WriteLine("using SharpAssembler.Architectures.X86.Opcodes;");
 			writer.WriteLine("using SharpAssembler.Architectures.X86.Operands;");
 		}
 
@@ -42,7 +43,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
-			if (spec.CanLock)
+			if (!spec.CanLock)
 				return;
 
 			writer.WriteLine(T + T + "/// <inheritdoc />");
@@ -96,12 +97,17 @@ namespace SharpAssembler.OpcodeWriter.X86
 
 			// Either the fixed REG is not 0, or the opcode has a spot for the REG available as it uses the
 			// ModRM byte (because it has a reg/mem operand) but does not specify the REG part (because it does not
-			// have a reg operand).
-			if (x86variant.FixedReg != 0 ||
+			// have a reg operand), or the OperandSize is specified, which requires the REG also to be specified.
+			if (x86variant.FixedReg != 0 || (x86variant.OperandSize != DataSize.None && operands.Any()) ||
 				(operands.Any(o => o.Type == X86OperandType.RegisterOrMemoryOperand) &&
 				!operands.Any(o => o.Type == X86OperandType.RegisterOperand)))
 			{
 				writer.Write(", {0}", x86variant.FixedReg);
+			}
+
+			if (x86variant.OperandSize != DataSize.None)
+			{
+				writer.Write(", DataSize.{0}", Enum.GetName(typeof(DataSize), x86variant.OperandSize));
 			}
 
 			foreach (var operand in operands)
@@ -238,13 +244,13 @@ namespace SharpAssembler.OpcodeWriter.X86
 			WriteCodeInstrOpcodeVariantMethodDocumentation(spec, operands, writer);
 			WriteCodeCLSCompliance(operands, writer);
 			string operandsString = String.Join(", ", from o in operands
-													  select o.Item2 + " " + AsVariableName(o.Item1.Name));
+													  select o.Item2 + " " + AsValidIdentifier(o.Item1.Name));
 			writer.WriteLine(T + T + "public static X86Instruction {0}({1})",
-				GetOpcodeClassName(spec), operandsString);
+				AsValidIdentifier(spec.Name), operandsString);
 			string argumentsString = String.Join(", ", from o in operands
-													   select String.Format(o.Item3, AsVariableName(o.Item1.Name)));
+													   select String.Format(o.Item3, AsValidIdentifier(o.Item1.Name)));
 			writer.WriteLine(T + T + "{{ return X86Opcode.{0}.CreateInstruction({1}); }}",
-				GetOpcodeClassName(spec), argumentsString);
+				AsValidIdentifier(spec.Name), argumentsString);
 		}
 
 		/// <summary>

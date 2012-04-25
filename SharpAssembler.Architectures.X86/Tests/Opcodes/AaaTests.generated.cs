@@ -43,11 +43,11 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class AaaTests : OpcodeTestBase
 	{
 		[Test]
-		public void Variant1()
+		public void AAA()
 		{
 			var instruction = Instr.Aaa();
 
-			// aaa 
+			// AAA 
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x37 });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x37 });
 			AssertInstructionFail(instruction, DataSize.Bit64);

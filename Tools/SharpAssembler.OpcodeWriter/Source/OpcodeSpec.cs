@@ -34,6 +34,24 @@ namespace SharpAssembler.OpcodeWriter
 			set { this.mnemonic = value; }
 		}
 
+		private string name;
+		/// <summary>
+		/// Gets or sets the name of the opcode as used in classes and identifiers in the code.
+		/// </summary>
+		/// <value>The name to use; or <see langword="null"/> to use the mnemonic.
+		/// The default is <see langword="null"/>.</value>
+		public string Name
+		{
+			get
+			{
+				if (this.name != null)
+					return this.name;
+				else
+					return Char.ToUpperInvariant(this.mnemonic[0]).ToString() + this.mnemonic.Substring(1).ToLowerInvariant();
+			}
+			set { this.name = value; }
+		}
+
 		private string shortDescription;
 		/// <summary>
 		/// Gets or sets a short description of the opcode.
@@ -45,40 +63,6 @@ namespace SharpAssembler.OpcodeWriter
 			get { return this.shortDescription; }
 			set { this.shortDescription = value; }
 		}
-
-		///// <summary>
-		///// Gets the number of operands that the opcode can accept.
-		///// </summary>
-		///// <value>The number of operands.</value>
-		//public int OperandCount
-		//{
-		//    get
-		//    {
-		//        #region Contract
-		//        Contract.Ensures(Contract.Result<int>() >= 0);
-		//        #endregion
-		//        return this.operands.Count;
-		//    }
-		//}
-
-		//private readonly StringCollection operands = new StringCollection();
-		///// <summary>
-		///// Gets a collection of operands for this opcode.
-		///// </summary>
-		///// <value>A collection with a name for each of the operands.</value>
-		///// <remarks>
-		///// The number of entries in the collection determines the number of operands that the opcode can accept.
-		///// </remarks>
-		//public StringCollection Operands
-		//{
-		//    get
-		//    {
-		//        #region Contract
-		//        Contract.Ensures(Contract.Result<StringCollection>() != null);
-		//        #endregion
-		//        return this.operands;
-		//    }
-		//}
 
 		private readonly Collection<OpcodeVariantSpec> variants = new Collection<OpcodeVariantSpec>();
 		/// <summary>

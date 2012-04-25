@@ -1,0 +1,8 @@
+include "amdsyntax";
+
+[ShortDescription = "Byte Swap"]
+opcode x86 bswap
+{
+	var `0F C8` ([Encoding = OpcodeAdd] reg32 value);
+	var `0F C8` ([Encoding = OpcodeAdd] reg64 value);
+}

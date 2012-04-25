@@ -1,5 +1,7 @@
-alias d = destination;
-alias s = source;
+include "amdsyntax";
+
+alias dest = destination;
+alias src = source;
 
 [ShortDescription = "Move"]
 [IsValidIn64BitMode = true]
@@ -8,40 +10,36 @@ opcode x86 mov
 {
 	/* A comment
 	on multiple lines */
-	var `88` (reg/mem8  d, reg8  s);
-	var `89` (reg/mem16 d, reg16 s);
-	var `89` (reg/mem32 d, reg32 s);
-	var `89` (reg/mem64 d, reg64 s);
+	var `88` (reg/mem8  dest, reg8  src);
+	var `89` (reg/mem16 dest, reg16 src);
+	var `89` (reg/mem32 dest, reg32 src);
+	var `89` (reg/mem64 dest, reg64 src);
 	
-	var `8A` (reg8  d, reg/mem8  s);
-	var `8B` (reg16 d, reg/mem16 s);
-	var `8B` (reg32 d, reg/mem32 s);
-	var `8B` (reg64 d, reg/mem64 s);
+	var `8A` (reg8  dest, reg/mem8  src);
+	var `8B` (reg16 dest, reg/mem16 src);
+	var `8B` (reg32 dest, reg/mem32 src);
+	var `8B` (reg64 dest, reg/mem64 src);
 	
-	//var `8C` (reg16/32/64/mem16 d, segReg s);
-	//var `8E` (segReg d, reg/mem16 s);
+	//var `8C` (reg16/32/64/mem16 dest, segReg src);
+	//var `8E` (segReg dest, reg/mem16 src);
 	
-	//var `A0` (void d = AL,  moffset8  s);
-	//var `A1` (void d = AX,  moffset16 s);
-	//var `A1` (void d = EAX, moffset32 s);
-	//var `A1` (void d = RAX, moffset64 s);
+	//var `A0` (void d = AL,  moffset8  src);
+	//var `A1` (void d = AX,  moffset16 src);
+	//var `A1` (void d = EAX, moffset32 src);
+	//var `A1` (void d = RAX, moffset64 src);
 	
-	//var `A2` (moffset8  d, void s = AL);
-	//var `A3` (moffset16 d, void s = AX);
-	//var `A3` (moffset32 d, void s = EAX);
-	//var `A3` (moffset64 d, void s = RAX);
+	//var `A2` (moffset8  dest, void src = AL);
+	//var `A3` (moffset16 dest, void src = AX);
+	//var `A3` (moffset32 dest, void src = EAX);
+	//var `A3` (moffset64 dest, void src = RAX);
 	
-	var `B0` ([Encoding = OpcodeAdd] reg8  d, imm8  s);
-	var `B8` ([Encoding = OpcodeAdd] reg16 d, imm16 s);
-	var `B8` ([Encoding = OpcodeAdd] reg32 d, imm32 s);
-	var `B8` ([Encoding = OpcodeAdd] reg64 d, imm64 s);
+	var `B0` ([Encoding = OpcodeAdd] reg8  dest, imm8  src);
+	var `B8` ([Encoding = OpcodeAdd] reg16 dest, imm16 src);
+	var `B8` ([Encoding = OpcodeAdd] reg32 dest, imm32 src);
+	var `B8` ([Encoding = OpcodeAdd] reg64 dest, imm64 src);
 	
-	[FixedReg = 0]
-	var `C6` (reg/mem8  d, imm8  s);
-	[FixedReg = 0]
-	var `C7` (reg/mem16 d, imm16 s);
-	[FixedReg = 0]
-	var `C7` (reg/mem32 d, imm32 s);
-	[FixedReg = 0]
-	var `C7` (reg/mem64 d, imm32 s);
+	[FixedReg = 0] var `C6` (reg/mem8  dest, imm8  src);
+	[FixedReg = 0] var `C7` (reg/mem16 dest, imm16 src);
+	[FixedReg = 0] var `C7` (reg/mem32 dest, imm32 src);
+	[FixedReg = 0] var `C7` (reg/mem64 dest, imm32 src);
 }

@@ -14,9 +14,22 @@ namespace SharpAssembler.OpcodeWriter
 	/// </summary>
 	public class ScriptReader
 	{
-		private readonly IEnumerator<string> tokenEnumerator;
+		/// <summary>
+		/// A stack of tokens.
+		/// </summary>
+		private readonly Stack<string> tokens;
+
+		//private readonly IEnumerator<string> tokenEnumerator;
 
 		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ScriptReader"/> class.
+		/// </summary>
+		public ScriptReader()
+			: this(Enumerable.Empty<string>())
+		{
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ScriptReader"/> class.
 		/// </summary>
@@ -27,13 +40,11 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(tokens != null);
 			#endregion
 
-			this.tokenEnumerator = tokens.GetEnumerator();
-			this.endOfFile = !this.tokenEnumerator.MoveNext();
+			this.tokens = new Stack<string>(tokens.Reverse());
 		}
 		#endregion
 
 		#region Basic Methods
-		private bool endOfFile = false;
 		/// <summary>
 		/// Gets whether the reader is positioned at the end of file.
 		/// </summary>
@@ -41,7 +52,7 @@ namespace SharpAssembler.OpcodeWriter
 		/// otherwise, <see langword="false"/>.</value>
 		public bool EndOfFile
 		{
-			get { return this.endOfFile; }
+			get { return this.tokens.Count == 0; }
 		}
 
 		/// <summary>
@@ -53,12 +64,10 @@ namespace SharpAssembler.OpcodeWriter
 		/// </exception>
 		public string Read()
 		{
-			if (this.endOfFile)
+			if (this.EndOfFile)
 				throw new ScriptException("Unexpected end of file.");
 
-			string current = this.tokenEnumerator.Current;
-			this.endOfFile = !this.tokenEnumerator.MoveNext();
-			return current;
+			return this.tokens.Pop();
 		}
 
 		/// <summary>
@@ -68,10 +77,20 @@ namespace SharpAssembler.OpcodeWriter
 		/// or <see langword="null"/> when there are no more tokens.</returns>
 		public string Peek()
 		{
-			if (this.endOfFile)
+			if (this.EndOfFile)
 				return null;
 
-			return this.tokenEnumerator.Current;
+			return this.tokens.Peek();
+		}
+
+		/// <summary>
+		/// Prepends the specified list of tokens to the current reader.
+		/// </summary>
+		/// <param name="tokens">The tokens to prepend.</param>
+		public void Prepend(IEnumerable<string> tokens)
+		{
+			foreach (var token in tokens.Reverse())
+				this.tokens.Push(token);
 		}
 		#endregion
 
@@ -79,7 +98,7 @@ namespace SharpAssembler.OpcodeWriter
 		/// <summary>
 		/// The regular expression to which identifiers must adhere.
 		/// </summary>
-		private static readonly Regex IdentifierRegex = new Regex("^[a-zA-Z_%][a-zA-Z0-9_%/\\\\+*#\\-.]*$", RegexOptions.Compiled);
+		private static readonly Regex IdentifierRegex = new Regex("^[a-zA-Z_%][a-zA-Z0-9_%:&/\\\\+*#\\-.]*$", RegexOptions.Compiled);
 
 		/// <summary>
 		/// Reads an identifier.

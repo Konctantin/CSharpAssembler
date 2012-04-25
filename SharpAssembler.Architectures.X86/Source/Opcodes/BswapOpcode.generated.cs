@@ -1,4 +1,9 @@
-﻿#region Copyright and License
+﻿//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////
+#region Copyright and License
 /*
  * SharpAssembler
  * Library for .NET that assembles a predetermined list of
@@ -25,37 +30,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The AAM (ASCII Adjust After Multiply) instruction opcode.
+	/// The BSWAP (Byte Swap) instruction opcode.
 	/// </summary>
-	/// <remarks>
-	/// Instructions with this opcode expect one operand that has the following semantics:
-	/// <list type="table">
-	/// <listheader><term>Index</term><description>Semantics</description></listheader>
-	/// <item><term>0</term><description>Base</description></item>
-	/// </list>
-	/// </remarks>
-	public class AamOpcode : X86Opcode
+	public class BswapOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AamOpcode"/> class.
+		/// Initializes a new instance of the <see cref="BswapOpcode"/> class.
 		/// </summary>
-		public AamOpcode()
-			: base("aam", 1, GetOpcodeVariants())
+		public BswapOpcode()
+			: base("bswap", 1, GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
-		
+
 		/// <summary>
 		/// Returns the opcode variants of this opcode.
 		/// </summary>
@@ -63,13 +56,14 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// AAD
+				// BSWAP reg32
 				new X86OpcodeVariant(
-					new byte[] { 0xD4, 0x0A }),
-				// (None) imm8
+					new byte[] { 0x0F, 0xC8 },
+					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd)),
+				// BSWAP reg64
 				new X86OpcodeVariant(
-					new byte[] { 0xD4 },
-					new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
+					new byte[] { 0x0F, 0xC8 },
+					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit, OperandEncoding.OpcodeAdd)),
 			};
 		}
 	}
@@ -80,19 +74,25 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new AAM (ASCII Adjust After Multiply) instruction
-		/// with base 10.
+		/// Creates a new BSWAP (Byte Swap) instruction.
 		/// </summary>
+		/// <param name="value">A register.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aam()
-		{ return X86Opcode.Aam.CreateInstruction(); }
+		public static X86Instruction Bswap(Register value)
+		{ return X86Opcode.Bswap.CreateInstruction(new RegisterOperand(value)); }
+	}
 
+	partial class X86Opcode
+	{
 		/// <summary>
-		/// Creates a new AAM (ASCII Adjust After Multiply) instruction
-		/// with the specified base.
+		/// The BSWAP (Byte Swap) instruction opcode.
 		/// </summary>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aam(byte @base)
-		{ return X86Opcode.Aam.CreateInstruction(new Immediate(@base)); }
+		public static readonly X86Opcode Bswap = new BswapOpcode();
 	}
 }
+
+//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////

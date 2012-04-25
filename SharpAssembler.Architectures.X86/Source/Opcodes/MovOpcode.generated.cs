@@ -30,6 +30,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
@@ -39,6 +40,12 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class MovOpcode : X86Opcode
 	{
+		/// <inheritdoc />
+		public override bool CanLock
+		{
+			get { return true; }
+		}
+
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MovOpcode"/> class.
@@ -303,6 +310,14 @@ namespace SharpAssembler.Architectures.X86
 		[CLSCompliant(false)]
 		public static X86Instruction Mov(EffectiveAddress destination, uint source)
 		{ return X86Opcode.Mov.CreateInstruction(destination, new Immediate(source, DataSize.Bit32)); }
+	}
+
+	partial class X86Opcode
+	{
+		/// <summary>
+		/// The MOV (Move) instruction opcode.
+		/// </summary>
+		public static readonly X86Opcode Mov = new MovOpcode();
 	}
 }
 

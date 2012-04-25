@@ -30,6 +30,11 @@ At the root of the file, aliases can be specified. Whenever an identifier is use
 
 	alias d = destination;
 
+### Including a script ###
+Scripts may be included in other scripts. To do so, specify the path to the script as a string, preceded by the `include` keyword. The path is relative to the main script, and the `.inc` extension may be ommitted when the file name does not contain any dots.
+
+	include "amdsyntax";
+
 ### Defining an opcode ###
 An opcode definition starts with the keyword `opcode` followed by the special platform identifier. Then the actual mnemonic of the opcode, and the body of the opcode containing the properties and the opcode variants.
 

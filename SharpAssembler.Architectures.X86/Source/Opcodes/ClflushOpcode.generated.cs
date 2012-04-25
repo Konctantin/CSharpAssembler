@@ -1,4 +1,9 @@
-﻿#region Copyright and License
+﻿//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////
+#region Copyright and License
 /*
  * SharpAssembler
  * Library for .NET that assembles a predetermined list of
@@ -25,32 +30,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
+using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The AAA (ASCII Adjust After Addition) instruction opcode.
+	/// The CLFLUSH (Cache Line Flush) instruction opcode.
 	/// </summary>
-	/// <remarks>
-	/// Instructions with this opcode expect zero operands.
-	/// </remarks>
-	public class AaaOpcode : X86Opcode
+	public class ClflushOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AaaOpcode"/> class.
+		/// Initializes a new instance of the <see cref="ClflushOpcode"/> class.
 		/// </summary>
-		public AaaOpcode()
-			: base("aaa", 0, GetOpcodeVariants())
+		public ClflushOpcode()
+			: base("clflush", 1, GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
-		
+
 		/// <summary>
 		/// Returns the opcode variants of this opcode.
 		/// </summary>
@@ -58,9 +56,10 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// AAA
+				// CLFLUSH mem8
 				new X86OpcodeVariant(
-					new byte[] { 0x37 }),
+					new byte[] { 0x0F, 0xAE }, 7,
+					new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit8)),
 			};
 		}
 	}
@@ -71,10 +70,25 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new AAA (ASCII Adjust After Addition) instruction.
+		/// Creates a new CLFLUSH (Cache Line Flush) instruction.
 		/// </summary>
+		/// <param name="address">A memory operand.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aaa()
-		{ return X86Opcode.Aaa.CreateInstruction(); }
+		public static X86Instruction Clflush(EffectiveAddress address)
+		{ return X86Opcode.Clflush.CreateInstruction(address); }
+	}
+
+	partial class X86Opcode
+	{
+		/// <summary>
+		/// The CLFLUSH (Cache Line Flush) instruction opcode.
+		/// </summary>
+		public static readonly X86Opcode Clflush = new ClflushOpcode();
 	}
 }
+
+//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////

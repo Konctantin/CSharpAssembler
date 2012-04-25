@@ -30,6 +30,15 @@ namespace SharpAssembler.OpcodeWriter
 		IEnumerable<OpcodeSpec> ReadFrom(Stream stream);
 
 		/// <summary>
+		/// Reads the script from the specified <see cref="Stream"/>
+		/// and returns the opcode specifications it contains.
+		/// </summary>
+		/// <param name="stream">The <see cref="Stream"/>.</param>
+		/// <param name="basePath">The base path of the script; or <see langword="null"/> to specify none.</param>
+		/// <returns>An enumerable collection of <see cref="OpcodeSpec"/> objects.</returns>
+		IEnumerable<OpcodeSpec> ReadFrom(Stream stream, string basePath);
+
+		/// <summary>
 		/// Reads the script from the specified <see cref="TextReader"/>
 		/// and returns the opcode specifications it contains.
 		/// </summary>
@@ -38,11 +47,28 @@ namespace SharpAssembler.OpcodeWriter
 		IEnumerable<OpcodeSpec> ReadFrom(TextReader reader);
 
 		/// <summary>
+		/// Reads the script from the specified <see cref="TextReader"/>
+		/// and returns the opcode specifications it contains.
+		/// </summary>
+		/// <param name="reader">The <see cref="TextReader"/>.</param>
+		/// <param name="basePath">The base path of the script; or <see langword="null"/> to specify none.</param>
+		/// <returns>An enumerable collection of <see cref="OpcodeSpec"/> objects.</returns>
+		IEnumerable<OpcodeSpec> ReadFrom(TextReader reader, string basePath);
+
+		/// <summary>
 		/// Reads the specified script.
 		/// </summary>
 		/// <param name="script">The script to read.</param>
 		/// <returns>An enumerable collection of <see cref="OpcodeSpec"/> objects.</returns>
 		IEnumerable<OpcodeSpec> Read(string script);
+
+		/// <summary>
+		/// Reads the specified script.
+		/// </summary>
+		/// <param name="script">The script to read.</param>
+		/// <param name="basePath">The base path of the script; or <see langword="null"/> to specify none.</param>
+		/// <returns>An enumerable collection of <see cref="OpcodeSpec"/> objects.</returns>
+		IEnumerable<OpcodeSpec> Read(string script, string basePath);
 	}
 
 	#region Contract
@@ -68,6 +94,15 @@ namespace SharpAssembler.OpcodeWriter
 				return default(IEnumerable<OpcodeSpec>);
 			}
 
+			public IEnumerable<OpcodeSpec> ReadFrom(Stream stream, string basePath)
+			{
+				Contract.Requires<ArgumentNullException>(stream != null);
+				Contract.Requires<ArgumentException>(stream.CanRead);
+				Contract.Ensures(Contract.Result<IEnumerable<OpcodeSpec>>() != null);
+
+				return default(IEnumerable<OpcodeSpec>);
+			}
+
 			public IEnumerable<OpcodeSpec> ReadFrom(TextReader reader)
 			{
 				Contract.Requires<ArgumentNullException>(reader != null);
@@ -76,7 +111,23 @@ namespace SharpAssembler.OpcodeWriter
 				return default(IEnumerable<OpcodeSpec>);
 			}
 
+			public IEnumerable<OpcodeSpec> ReadFrom(TextReader reader, string basePath)
+			{
+				Contract.Requires<ArgumentNullException>(reader != null);
+				Contract.Ensures(Contract.Result<IEnumerable<OpcodeSpec>>() != null);
+
+				return default(IEnumerable<OpcodeSpec>);
+			}
+
 			public IEnumerable<OpcodeSpec> Read(string script)
+			{
+				Contract.Requires<ArgumentNullException>(script != null);
+				Contract.Ensures(Contract.Result<IEnumerable<OpcodeSpec>>() != null);
+
+				return default(IEnumerable<OpcodeSpec>);
+			}
+
+			public IEnumerable<OpcodeSpec> Read(string script, string basePath)
 			{
 				Contract.Requires<ArgumentNullException>(script != null);
 				Contract.Ensures(Contract.Result<IEnumerable<OpcodeSpec>>() != null);

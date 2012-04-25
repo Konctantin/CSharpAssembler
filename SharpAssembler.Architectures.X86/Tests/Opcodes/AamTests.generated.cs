@@ -43,11 +43,11 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class AamTests : OpcodeTestBase
 	{
 		[Test]
-		public void imm8()
+		public void AAM_imm8()
 		{
 			var instruction = Instr.Aam((byte)0x2A);
 
-			// aam BYTE 0x2A
+			// AAM BYTE 0x2A
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0xD4, 0x2A });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0xD4, 0x2A });
 			AssertInstructionFail(instruction, DataSize.Bit64);

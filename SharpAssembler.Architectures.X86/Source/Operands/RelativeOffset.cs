@@ -149,16 +149,13 @@ namespace SharpAssembler.Architectures.X86.Operands
 		/// otherwise, <see langword="false"/>.</returns>
 		internal override bool IsMatch(OperandDescriptor descriptor)
 		{
-			throw new NotImplementedException();
-#if false
 			switch (descriptor.OperandType)
 			{
-				case Instruction.OperandType.RegisterOperand:
-					break;
+				case OperandType.RelativeOffset:
+					return this.Size == DataSize.None || this.Size <= descriptor.Size;
 				default:
 					return false;
 			}
-#endif
 		}
 
 		/// <summary>

@@ -75,6 +75,18 @@ namespace SharpAssembler.OpcodeWriter.X86
 						operandSpec.Type = X86OperandType.Immediate;
 						break;
 
+					case "mem":
+						operandSpec.Type = X86OperandType.MemoryOperand;
+						break;
+
+					case "reloff":
+						operandSpec.Type = X86OperandType.RelativeOffset;
+						break;
+
+					case "pntr16:":
+						operandSpec.Type = X86OperandType.FarPointer;
+						break;
+
 					default:
 						throw new ScriptException(String.Format("Unknown operand type {0}", type));
 				}

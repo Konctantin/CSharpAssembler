@@ -1,0 +1,9 @@
+include "amdsyntax";
+
+[ShortDescription = "Check Array Bound"]
+[IsValidIn64BitMode = false]
+opcode x86 bound
+{
+	var `62` (reg16 index, mem16&mem16 bounds);
+	var `62` (reg32 index, mem32&mem32 bounds);
+}

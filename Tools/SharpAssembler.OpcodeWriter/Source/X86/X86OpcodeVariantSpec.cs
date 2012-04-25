@@ -36,5 +36,18 @@ namespace SharpAssembler.OpcodeWriter.X86
 				fixedReg = value;
 			}
 		}
+
+		private DataSize operandSize = DataSize.None;
+		/// <summary>
+		/// Gets or sets the operand size of the opcode variant.
+		/// </summary>
+		/// <value>A member of the <see cref="DataSize"/> enumeration;
+		/// or <see cref="SharpAssembler.OpcodeWriter.DataSize.None"/> to specify no operand size.
+		/// The default is <see cref="SharpAssembler.OpcodeWriter.DataSize.None"/>.</value>
+		public DataSize OperandSize
+		{
+			get { return this.operandSize; }
+			set { this.operandSize = value; }
+		}
 	}
 }

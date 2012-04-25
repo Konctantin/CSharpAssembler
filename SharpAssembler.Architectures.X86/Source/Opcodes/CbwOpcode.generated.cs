@@ -1,4 +1,9 @@
-﻿#region Copyright and License
+﻿//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////
+#region Copyright and License
 /*
  * SharpAssembler
  * Library for .NET that assembles a predetermined list of
@@ -25,37 +30,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The AAD (ASCII Adjust Before Division) instruction opcode.
+	/// The CBW (Convert to Sign-Extended) instruction opcode.
 	/// </summary>
-	/// <remarks>
-	/// Instructions with this opcode expect one operand that has the following semantics:
-	/// <list type="table">
-	/// <listheader><term>Index</term><description>Semantics</description></listheader>
-	/// <item><term>0</term><description>Base</description></item>
-	/// </list>
-	/// </remarks>
-	public class AadOpcode : X86Opcode
+	public class CbwOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AadOpcode"/> class.
+		/// Initializes a new instance of the <see cref="CbwOpcode"/> class.
 		/// </summary>
-		public AadOpcode()
-			: base("aad", 1, GetOpcodeVariants())
+		public CbwOpcode()
+			: base("cbw", 0, GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
-		
+
 		/// <summary>
 		/// Returns the opcode variants of this opcode.
 		/// </summary>
@@ -63,13 +56,9 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// AAD
+				// CBW
 				new X86OpcodeVariant(
-					new byte[] { 0xD5, 0x0A }),
-				// (None) imm8
-				new X86OpcodeVariant(
-					new byte[] { 0xD5 },
-					new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
+					new byte[] { 0x98 }, DataSize.Bit16),
 			};
 		}
 	}
@@ -80,19 +69,24 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new AAD (ASCII Adjust Before Division) instruction
-		/// with base 10.
+		/// Creates a new CBW (Convert to Sign-Extended) instruction.
 		/// </summary>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aad()
-		{ return X86Opcode.Aad.CreateInstruction(); }
+		public static X86Instruction Cbw()
+		{ return X86Opcode.Cbw.CreateInstruction(); }
+	}
 
+	partial class X86Opcode
+	{
 		/// <summary>
-		/// Creates a new AAD (ASCII Adjust Before Division) instruction
-		/// with the specified base.
+		/// The CBW (Convert to Sign-Extended) instruction opcode.
 		/// </summary>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aad(byte @base)
-		{ return X86Opcode.Aad.CreateInstruction(new Immediate(@base)); }
+		public static readonly X86Opcode Cbw = new CbwOpcode();
 	}
 }
+
+//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////

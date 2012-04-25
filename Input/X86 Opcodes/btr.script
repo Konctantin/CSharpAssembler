@@ -1,0 +1,13 @@
+include "amdsyntax";
+
+[ShortDescription = "Bit Test and Reset"]
+opcode x86 btr
+{
+	[FixedReg = 6] var `0F BA` (reg/mem16 value, imm8 bitindex);
+	[FixedReg = 6] var `0F BA` (reg/mem32 value, imm8 bitindex);
+	[FixedReg = 6] var `0F BA` (reg/mem64 value, imm8 bitindex);
+	
+	var `0F B3` (reg/mem16 value, reg16 bitindex);
+	var `0F B3` (reg/mem32 value, reg32 bitindex);
+	var `0F B3` (reg/mem64 value, reg64 bitindex);
+}

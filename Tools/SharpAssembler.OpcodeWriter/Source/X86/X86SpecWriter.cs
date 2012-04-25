@@ -49,6 +49,14 @@ namespace SharpAssembler.OpcodeWriter.X86
 		}
 
 		/// <inheritdoc />
+		protected override string GetOpcodeStaticClassName()
+		{
+			// CONTRACT: SpecWriter
+
+			return "X86Opcode";
+		}
+
+		/// <inheritdoc />
 		protected override string GetTestBaseClassName()
 		{
 			// CONTRACT: SpecWriter

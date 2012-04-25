@@ -30,6 +30,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
@@ -39,12 +40,6 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class AaaOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool CanLock
-		{
-			get { return true; }
-		}
-
 		/// <inheritdoc />
 		public override bool IsValidIn64BitMode
 		{
@@ -85,6 +80,14 @@ namespace SharpAssembler.Architectures.X86
 		/// <returns>The created instruction.</returns>
 		public static X86Instruction Aaa()
 		{ return X86Opcode.Aaa.CreateInstruction(); }
+	}
+
+	partial class X86Opcode
+	{
+		/// <summary>
+		/// The AAA (ASCII Adjust After Addition) instruction opcode.
+		/// </summary>
+		public static readonly X86Opcode Aaa = new AaaOpcode();
 	}
 }
 

@@ -69,6 +69,9 @@ namespace SharpAssembler.OpcodeWriter
 			var type = target.GetType();
 			var property = type.GetProperty(propertyName);
 
+			if (property == null)
+				throw new InvalidOperationException(String.Format("A property {0} could not be found on {1}.", propertyName, type));
+
 			property.SetValue(target, ConvertToType(property.PropertyType, value), null);
 		}
 

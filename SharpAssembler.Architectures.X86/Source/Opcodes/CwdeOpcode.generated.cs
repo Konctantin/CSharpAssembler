@@ -1,4 +1,9 @@
-﻿#region Copyright and License
+﻿//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////
+#region Copyright and License
 /*
  * SharpAssembler
  * Library for .NET that assembles a predetermined list of
@@ -25,31 +30,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The INT (Interrupt to Vector) instruction opcode.
+	/// The CWDE (Convert to Sign-Extended) instruction opcode.
 	/// </summary>
-	/// <remarks>
-	/// Instructions with this opcode expect one operand that has the following semantics:
-	/// <list type="table">
-	/// <listheader><term>Index</term><description>Semantics</description></listheader>
-	/// <item><term>0</term><description>Base</description></item>
-	/// </list>
-	/// </remarks>
-	public class IntOpcode : X86Opcode
+	public class CwdeOpcode : X86Opcode
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="IntOpcode"/> class.
+		/// Initializes a new instance of the <see cref="CwdeOpcode"/> class.
 		/// </summary>
-		public IntOpcode()
-			: base("int", 1, GetOpcodeVariants())
+		public CwdeOpcode()
+			: base("cwde", 0, GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
-		
+
 		/// <summary>
 		/// Returns the opcode variants of this opcode.
 		/// </summary>
@@ -57,10 +56,9 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// INT imm8
+				// CWDE
 				new X86OpcodeVariant(
-					new byte[] { 0xCD },
-					new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
+					new byte[] { 0x98 }, DataSize.Bit32),
 			};
 		}
 	}
@@ -71,11 +69,24 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new INT (Interrupt to Vector) instruction
-		/// with the specified base.
+		/// Creates a new CWDE (Convert to Sign-Extended) instruction.
 		/// </summary>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Int(byte interruptVector)
-		{ return X86Opcode.Int.CreateInstruction(new Immediate(interruptVector)); }
+		public static X86Instruction Cwde()
+		{ return X86Opcode.Cwde.CreateInstruction(); }
+	}
+
+	partial class X86Opcode
+	{
+		/// <summary>
+		/// The CWDE (Convert to Sign-Extended) instruction opcode.
+		/// </summary>
+		public static readonly X86Opcode Cwde = new CwdeOpcode();
 	}
 }
+
+//////////////////////////////////////////////////////
+//                     WARNING                      //
+//     The contents of this file is generated.      //
+//    DO NOT MODIFY, your changes will be lost!     //
+//////////////////////////////////////////////////////

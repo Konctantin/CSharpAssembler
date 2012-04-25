@@ -1,0 +1,12 @@
+include "amdsyntax";
+
+alias dest = destination;
+alias src = subject;
+
+[ShortDescription = "Bit Scan Forward"]
+opcode x86 bsf
+{
+	var `0F BC` (reg16 dest, reg/mem16 src);
+	var `0F BC` (reg32 dest, reg/mem32 src);
+	var `0F BC` (reg64 dest, reg/mem64 src);
+}

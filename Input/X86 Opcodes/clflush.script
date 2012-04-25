@@ -1,0 +1,7 @@
+include "amdsyntax";
+
+[ShortDescription = "Cache Line Flush"]
+opcode x86 clflush
+{
+	[FixedReg = 7] var `0F AE` (mem8 address);
+}

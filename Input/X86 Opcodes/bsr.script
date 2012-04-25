@@ -1,0 +1,12 @@
+include "amdsyntax";
+
+alias dest = destination;
+alias src = subject;
+
+[ShortDescription = "Bit Scan Reverse"]
+opcode x86 bsr
+{
+	var `0F BD` (reg16 dest, reg/mem16 src);
+	var `0F BD` (reg32 dest, reg/mem32 src);
+	var `0F BD` (reg64 dest, reg/mem64 src);
+}

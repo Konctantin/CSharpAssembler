@@ -1,31 +1,33 @@
-alias d = destination;
-alias s = source;
+include "amdsyntax";
+
+alias dest = destination;
+alias src = source;
 
 [ShortDescription = "Add with Carry"]
 [CanLock = true]
 opcode x86 adc
 {
-	var `14` (void d =  AL, imm8  s);
-	var `15` (void d =  AX, imm16 s);
-	var `15` (void d = EAX, imm32 s);
-	var `15` (void d = RAX, imm32 s);
+	var `14` (void dest =  AL, imm8  src);
+	var `15` (void dest =  AX, imm16 src);
+	var `15` (void dest = EAX, imm32 src);
+	var `15` (void dest = RAX, imm32 src);
 	
 	// NOTE: The order matters. Specify the smallest variants first.
-	[FixedReg = 2] var `80` (reg/mem8  d, imm8  s);
-	[FixedReg = 2] var `83` (reg/mem16 d, imm8  s);
-	[FixedReg = 2] var `83` (reg/mem32 d, imm8  s);
-	[FixedReg = 2] var `83` (reg/mem64 d, imm8  s);
-	[FixedReg = 2] var `81` (reg/mem16 d, imm16 s);
-	[FixedReg = 2] var `81` (reg/mem32 d, imm32 s);
-	[FixedReg = 2] var `81` (reg/mem64 d, imm32 s);
+	[FixedReg = 2] var `80` (reg/mem8  dest, imm8  src);
+	[FixedReg = 2] var `83` (reg/mem16 dest, imm8  src);
+	[FixedReg = 2] var `83` (reg/mem32 dest, imm8  src);
+	[FixedReg = 2] var `83` (reg/mem64 dest, imm8  src);
+	[FixedReg = 2] var `81` (reg/mem16 dest, imm16 src);
+	[FixedReg = 2] var `81` (reg/mem32 dest, imm32 src);
+	[FixedReg = 2] var `81` (reg/mem64 dest, imm32 src);
 	
-	var `10` (reg/mem8  d, reg8  s);
-	var `11` (reg/mem16 d, reg16 s);
-	var `11` (reg/mem32 d, reg32 s);
-	var `11` (reg/mem64 d, reg64 s);
+	var `10` (reg/mem8  dest, reg8  src);
+	var `11` (reg/mem16 dest, reg16 src);
+	var `11` (reg/mem32 dest, reg32 src);
+	var `11` (reg/mem64 dest, reg64 src);
 	
-	var `12` (reg8  d, reg/mem8  s);
-	var `13` (reg16 d, reg/mem16 s);
-	var `13` (reg32 d, reg/mem32 s);
-	var `13` (reg64 d, reg/mem64 s);
+	var `12` (reg8  dest, reg/mem8  src);
+	var `13` (reg16 dest, reg/mem16 src);
+	var `13` (reg32 dest, reg/mem32 src);
+	var `13` (reg64 dest, reg/mem64 src);
 }

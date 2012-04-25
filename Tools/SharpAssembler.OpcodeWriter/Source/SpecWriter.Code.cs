@@ -34,11 +34,67 @@ namespace SharpAssembler.OpcodeWriter
 			WriteCodeOpcodeVariantMethod(spec, writer);
 			WriteCodeOpcodeClassEnd(writer);
 
+			WriteCodeSubnamespaceStart(writer);
 			WriteCodeInstrClassStart(spec, writer);
 			WriteCodeInstrOpcodeVariantMethods(spec, writer);
 			WriteCodeInstrClassEnd(writer);
+			writer.WriteLine();
+			WriteCodeOpcodeClassField(spec, writer);
+			WriteCodeSubnamespaceEnd(writer);
 
 			WriteWarning(writer);
+		}
+
+		/// <summary>
+		/// Writes the start of the namespace defined at the bottom of the code file.
+		/// </summary>
+		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
+		private void WriteCodeSubnamespaceStart(TextWriter writer)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(writer != null);
+			#endregion
+
+			writer.WriteLine("namespace {0}", BaseNamespace);
+			writer.WriteLine("{");
+		}
+
+		/// <summary>
+		/// Writes the end of the namespace defined at the bottom of the code file.
+		/// </summary>
+		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
+		private void WriteCodeSubnamespaceEnd(TextWriter writer)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(writer != null);
+			#endregion
+
+			writer.WriteLine("}");
+			writer.WriteLine();
+		}
+
+		/// <summary>
+		/// Writes the read-only field member o the Opcode partial class.
+		/// </summary>
+		/// <param name="spec">The opcode specification.</param>
+		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
+		private void WriteCodeOpcodeClassField(OpcodeSpec spec, TextWriter writer)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(spec != null);
+			Contract.Requires<ArgumentNullException>(writer != null);
+			#endregion
+
+			writer.WriteLine(T + "partial class {0}", GetOpcodeStaticClassName());
+			writer.WriteLine(T + "{");
+			writer.WriteLine(T + T + "/// <summary>");
+			writer.WriteLine(T + T + "/// The {0} ({1}) instruction opcode.", spec.Mnemonic.ToUpperInvariant(), spec.ShortDescription);
+			writer.WriteLine(T + T + "/// </summary>");
+			writer.WriteLine(T + T + "public static readonly {0} {1} = new {2}();",
+				GetOpcodeBaseClassName(),
+				AsValidIdentifier(spec.Name),
+				AsValidIdentifier(spec.Name + "Opcode"));
+			writer.WriteLine(T + "}");
 		}
 
 		/// <summary>
@@ -79,27 +135,9 @@ namespace SharpAssembler.OpcodeWriter
 			writer.WriteLine(T + "/// <summary>");
 			writer.WriteLine(T + "/// The {0} ({1}) instruction opcode.", spec.Mnemonic.ToUpperInvariant(), spec.ShortDescription);
 			writer.WriteLine(T + "/// </summary>");
-			//writer.WriteLine(T + "/// <remarks>");
-
-			//if (spec.OperandCount == 0)
-			//{
-			//    writer.WriteLine(T + "/// Instructions with this opcode expect zero operands.");
-			//}
-			//else
-			//{
-
-			//    writer.WriteLine(T + "/// Instructions with this opcode expect two operands that have the following semantics:");
-			//    writer.WriteLine(T + "/// <list type=\"table\">");
-			//    writer.WriteLine(T + "/// <listheader><term>Index</term><description>Semantics</description></listheader>");
-			//    for (int i = 0; i < spec.Operands.Count; i++)
-			//    {
-			//        writer.WriteLine(T + "/// <item><term>{0}</term><description>{1}</description></item>", i, spec.Operands[i]);
-			//    }
-			//    writer.WriteLine(T + "/// </list>");
-			//}
-
-			//writer.WriteLine(T + "/// </remarks>");
-			writer.WriteLine(T + "public class {0}Opcode : {1}", GetOpcodeClassName(spec), GetOpcodeBaseClassName());
+			writer.WriteLine(T + "public class {0} : {1}",
+				AsValidIdentifier(spec.Name + "Opcode"),
+				GetOpcodeBaseClassName());
 			writer.WriteLine(T + "{");
 		}
 
@@ -145,11 +183,13 @@ namespace SharpAssembler.OpcodeWriter
 
 			int maxOperandCount = (from v in spec.Variants select v.Operands.Count).Max();
 
+			string className = AsValidIdentifier(spec.Name + "Opcode");
+
 			writer.WriteLine(T + T + "/// <summary>");
-			writer.WriteLine(T + T + "/// Initializes a new instance of the <see cref=\"{0}Opcode\"/> class.",
-				GetOpcodeClassName(spec));
+			writer.WriteLine(T + T + "/// Initializes a new instance of the <see cref=\"{0}\"/> class.",
+				className);
 			writer.WriteLine(T + T + "/// </summary>");
-			writer.WriteLine(T + T + "public {0}Opcode()", GetOpcodeClassName(spec));
+			writer.WriteLine(T + T + "public {0}()", className);
 			writer.WriteLine(T + T + T + ": base(\"{0}\", {1}, GetOpcodeVariants())", spec.Mnemonic.ToLowerInvariant(), maxOperandCount);
 			writer.WriteLine(T + T + "{ /* Nothing to do. */ }");
 		}
@@ -223,8 +263,6 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
-			writer.WriteLine("namespace {0}", BaseNamespace);
-			writer.WriteLine("{");
 			writer.WriteLine(T + "partial class Instr");
 			writer.WriteLine(T + "{");
 		}
@@ -247,23 +285,6 @@ namespace SharpAssembler.OpcodeWriter
 			#endregion
 
 			writer.WriteLine(T + "}");
-			writer.WriteLine("}");
-			writer.WriteLine();
-		}
-
-		/// <summary>
-		/// Returns the class name for the opcode class.
-		/// </summary>
-		/// <param name="spec">The opcode specification.</param>
-		/// <returns>The opcode class name.</returns>
-		protected virtual string GetOpcodeClassName(OpcodeSpec spec)
-		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(spec != null);
-			Contract.Ensures(Contract.Result<string>() != null);
-			#endregion
-
-			return Char.ToUpperInvariant(spec.Mnemonic[0]).ToString() + spec.Mnemonic.Substring(1);
 		}
 
 		/// <summary>
@@ -271,6 +292,12 @@ namespace SharpAssembler.OpcodeWriter
 		/// </summary>
 		/// <returns>The opcode base class name.</returns>
 		protected abstract string GetOpcodeBaseClassName();
+
+		/// <summary>
+		/// Returns the class name of the static class with opcode fields.
+		/// </summary>
+		/// <returns>The opcode static class name.</returns>
+		protected abstract string GetOpcodeStaticClassName();
 
 		/// <summary>
 		/// Returns the class name of the opcode variant class.

@@ -1,0 +1,19 @@
+include "amdsyntax";
+
+[ShortDescription = "Convert to Sign-Extended"]
+opcode x86 cbw
+{
+	[OperandSize = Bit16] var `98` ();
+}
+
+[ShortDescription = "Convert to Sign-Extended"]
+opcode x86 cwde
+{
+	[OperandSize = Bit32] var `98` ();
+}
+
+[ShortDescription = "Convert to Sign-Extended"]
+opcode x86 cdqe
+{
+	[OperandSize = Bit64] var `98` ();
+}

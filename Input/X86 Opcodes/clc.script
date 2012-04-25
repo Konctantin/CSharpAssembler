@@ -1,0 +1,7 @@
+include "amdsyntax";
+
+[ShortDescription = "Clear Carry Flag"]
+opcode x86 clc
+{
+	var `F8` ();
+}

@@ -30,6 +30,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpAssembler.Architectures.X86.Opcodes;
 using SharpAssembler.Architectures.X86.Operands;
 
 namespace SharpAssembler.Architectures.X86.Opcodes
@@ -39,6 +40,12 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class AndOpcode : X86Opcode
 	{
+		/// <inheritdoc />
+		public override bool CanLock
+		{
+			get { return true; }
+		}
+
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AndOpcode"/> class.
@@ -299,6 +306,14 @@ namespace SharpAssembler.Architectures.X86
 		/// <returns>The created instruction.</returns>
 		public static X86Instruction And(Register destination, EffectiveAddress source)
 		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), source); }
+	}
+
+	partial class X86Opcode
+	{
+		/// <summary>
+		/// The AND (Logical AND) instruction opcode.
+		/// </summary>
+		public static readonly X86Opcode And = new AndOpcode();
 	}
 }
 

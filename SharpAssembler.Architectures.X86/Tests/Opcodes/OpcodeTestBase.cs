@@ -31,6 +31,8 @@ using System.Text;
 using NUnit.Framework;
 using SharpAssembler.Formats.Bin;
 using SharpAssembler;
+using System.Diagnostics.Contracts;
+using System.Collections.Generic;
 
 namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 {
@@ -39,40 +41,6 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	/// </summary>
 	public abstract class OpcodeTestBase
 	{
-		/// <summary>
-		/// Assembles the given instruction.
-		/// </summary>
-		/// <param name="instruction">The <see cref="X86Instruction"/> to assemble.</param>
-		/// <param name="mode">The mode in which to assemble.</param>
-		/// <returns>The bytes representing the assembled instruction.</returns>
-		/// <exception cref="AssemblerException">
-		/// An assembler exception occurred.
-		/// </exception>
-		private byte[] Assemble(X86Instruction instruction, DataSize mode)
-		{
-			byte[] actual = null;
-			BinObjectFileFormat format = new BinObjectFileFormat();
-			var arch = new X86Architecture(CpuType.AmdBulldozer, mode);
-			BinObjectFile objectFile = (BinObjectFile)format.CreateObjectFile(arch, "test");
-			Section textSection = objectFile.Sections.AddNew(SectionType.Program);
-			var text = textSection.Contents;
-
-			text.Add(instruction);
-
-			using (MemoryStream ms = new MemoryStream())
-			{
-				using (BinaryWriter writer = new BinaryWriter(ms))
-				{
-					objectFile.Format.CreateAssembler(objectFile).Assemble(writer);
-					actual = ms.ToArray();
-				}
-			}
-
-			return actual;
-		}
-
-		// ------------------------------------------------------------- //
-
 		/// <summary>
 		/// Tests the given instruction.
 		/// </summary>
@@ -92,12 +60,14 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 				throw new ArgumentNullException("expected");
 			#endregion
 
-			var result = AssembleInstruction(instruction, null, mode);
-			byte[] actual = result.Item2;
+			Tuple<byte[], IEnumerable<string>> tuple = AssembleInstruction(instruction, mode);
+			byte[] actual = tuple.Item1;
+			string messages = tuple.Item2.Any() ? "(" + String.Join(", ", tuple.Item2) + ")" : String.Empty;
 
-			Assert.AreEqual(expected, actual, String.Format("Expected {0}, got {1}.",
+			Assert.AreEqual(expected, actual, String.Format("Expected {0}, got {1}{2}.",
 				ByteArrayToString(expected),
-				ByteArrayToString(actual)));
+				actual != null && actual.Length > 0 ? ByteArrayToString(actual) : "nothing",
+				messages));
 		}
 
 		private string ByteArrayToString(byte[] array)
@@ -124,186 +94,59 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 				throw new ArgumentException(null, "mode");
 			#endregion
 
-			var result = AssembleInstruction(instruction, null, mode);
-			byte[] actual = result.Item2;
+			Tuple<byte[], IEnumerable<string>> tuple = AssembleInstruction(instruction, mode);
+			byte[] actual = tuple.Item1;
+			string messages = tuple.Item2.Any() ? "(" + String.Join(", ", tuple.Item2) + ")" : String.Empty;
 
-			Assert.IsNull(actual);
-		}
-
-		/// <summary>
-		/// Tests the given instruction.
-		/// </summary>
-		/// <param name="instruction">The <see cref="X86Instruction"/> instance to test.</param>
-		/// <param name="nasmInstruction">The NASM string representation of the same instruction.</param>
-		/// <param name="mode">The mode (16-bit, 32-bit or 64-bit) to use.</param>
-		public void AssertInstruction(X86Instruction instruction, string nasmInstruction, DataSize mode)
-		{
-			#region Contract
-			if (instruction == null)
-				throw new ArgumentNullException("instruction");
-			if (nasmInstruction == null)
-				throw new ArgumentNullException("nasmInstruction");
-			if (!Enum.IsDefined(typeof(DataSize), mode))
-				throw new InvalidEnumArgumentException("mode", (int)mode, typeof(DataSize));
-			if (mode != DataSize.Bit16 && mode != DataSize.Bit32 && mode != DataSize.Bit64)
-				throw new ArgumentException(null, "mode");
-			#endregion
-
-			var result = AssembleInstruction(instruction, nasmInstruction, mode);
-			byte[] expected = result.Item1;
-			byte[] actual = result.Item2;
-			Assert.AreEqual(expected, actual, String.Format("Expected {0}, got {1}.",
-				ByteArrayToString(expected),
-				ByteArrayToString(actual)));
-		}
-
-		/// <summary>
-		/// Tests that the given instruction does not assemble.
-		/// </summary>
-		/// <param name="instruction">The <see cref="X86Instruction"/> instance to test.</param>
-		/// <param name="nasmInstruction">The NASM string representation of the same instruction.</param>
-		/// <param name="mode">The mode (16-bit, 32-bit or 64-bit) to use.</param>
-		public void AssertInstructionFail(X86Instruction instruction, string nasmInstruction, DataSize mode)
-		{
-			#region Contract
-			if (instruction == null)
-				throw new ArgumentNullException("instruction");
-			if (nasmInstruction == null)
-				throw new ArgumentNullException("nasmInstruction");
-			if (!Enum.IsDefined(typeof(DataSize), mode))
-				throw new InvalidEnumArgumentException("mode", (int)mode, typeof(DataSize));
-			if (mode != DataSize.Bit16 && mode != DataSize.Bit32 && mode != DataSize.Bit64)
-				throw new ArgumentException(null, "mode");
-			#endregion
-
-			var result = AssembleInstruction(instruction, nasmInstruction, mode);
-			byte[] expected = result.Item1;
-			byte[] actual = result.Item2;
-
-			Assert.IsNull(expected);
-			Assert.IsNull(actual);
+			Assert.IsNull(actual, String.Format("Expected failure, got {0}{1}.",
+				ByteArrayToString(actual), messages));
 		}
 
 		/// <summary>
 		/// Assembles the given instruction.
 		/// </summary>
 		/// <param name="instruction">The <see cref="X86Instruction"/> instance to test.</param>
-		/// <param name="nasmInstruction">The NASM string representation of the same instruction.</param>
 		/// <param name="mode">The mode (16-bit, 32-bit or 64-bit) to use.</param>
-		/// <returns>A (expected, actual) tuple.</returns>
-		private Tuple<byte[], byte[]> AssembleInstruction(X86Instruction instruction, string nasmInstruction, DataSize mode)
+		/// <returns>A tuple with the assembled bytes and any (error) messages.</returns>
+		private Tuple<byte[], IEnumerable<string>> AssembleInstruction(X86Instruction instruction, DataSize mode)
 		{
 			#region Contract
+			if (instruction == null)
+				throw new ArgumentNullException("instruction");
 			if (!Enum.IsDefined(typeof(DataSize), mode))
 				throw new InvalidEnumArgumentException("mode", (int)mode, typeof(DataSize));
 			if (mode != DataSize.Bit16 && mode != DataSize.Bit32 && mode != DataSize.Bit64)
 				throw new ArgumentException(null, "mode");
 			#endregion
 
-			// Assemble the NASM instruction.
-			byte[] expected = null;
-			if (nasmInstruction != null)
-			{
-				StringBuilder sb = new StringBuilder();
-				switch (mode)
-				{
-					case DataSize.Bit16:
-						sb.AppendLine("[BITS 16]");
-						break;
-					case DataSize.Bit32:
-						sb.AppendLine("[BITS 32]");
-						break;
-					case DataSize.Bit64:
-						sb.AppendLine("[BITS 64]");
-						break;
-					default:
-						throw new NotSupportedException();
-				}
-				sb.AppendLine(nasmInstruction);
-				string feedback;
-				expected = RunAssembler(sb.ToString(), out feedback);
-				if (feedback != null && feedback.Length > 0)
-				{
-					Console.WriteLine("Assembler feedback:");
-					Console.WriteLine(feedback);
-				}
-			}
-
 			// Assemble the SharpAssembler instruction.
 			byte[] actual = null;
-			if (instruction != null)
-			{
-				BinObjectFileFormat format = new BinObjectFileFormat();
-				var arch = new X86Architecture(CpuType.AmdBulldozer, mode);
-				BinObjectFile objectFile = (BinObjectFile)format.CreateObjectFile(arch, "test");
-				Section textSection = objectFile.Sections.AddNew(SectionType.Program);
-				var text = textSection.Contents;
+			List<string> messages = new List<string>();
 
-				text.Add(instruction);
+			BinObjectFileFormat format = new BinObjectFileFormat();
+			var arch = new X86Architecture(CpuType.AmdBulldozer, mode);
+			BinObjectFile objectFile = (BinObjectFile)format.CreateObjectFile(arch, "test");
+			Section textSection = objectFile.Sections.AddNew(SectionType.Program);
+			var text = textSection.Contents;
 
-				try
-				{
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (BinaryWriter writer = new BinaryWriter(ms))
-						{
-							objectFile.Format.CreateAssembler(objectFile).Assemble(writer);
-							actual = ms.ToArray();
-						}
-					}
-				}
-				catch (AssemblerException ex)
-				{
-					Console.WriteLine(ex);
-					actual = null;
-				}
-			}
+			text.Add(instruction);
 
-			return new Tuple<byte[], byte[]>(expected, actual);
-		}
-
-		/// <summary>
-		/// Runs an assembler and returns the results.
-		/// </summary>
-		/// <param name="data">The string data to assemble.</param>
-		/// <param name="feedback">The feedback from the assembler.</param>
-		/// <returns>The binary data resulting from the assembling; or <see langword="null"/> when an error
-		/// occurred.</returns>
-		private byte[] RunAssembler(string data, out string feedback)
-		{
-			byte[] encodedData = Encoding.UTF8.GetBytes(data);
-			using (FileStream fs = File.Create("test.asm"))
-			{
-				fs.Write(encodedData, 0, encodedData.Length);
-			}
-			File.Delete("test.bin");
-			ProcessStartInfo psi = new ProcessStartInfo(@"..\..\..\..\Yasm\yasm-1.1.0-win64",
-				"-a x86 -f bin -o test.bin test.asm");
-			psi.RedirectStandardOutput = true;
-			psi.RedirectStandardError = true;
-			psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-			psi.UseShellExecute = false;
-
-			Process process = System.Diagnostics.Process.Start(psi);
-			StreamReader std = process.StandardOutput;
-			StreamReader err = process.StandardError;
-			process.WaitForExit();
-			feedback = std.ReadToEnd() + err.ReadToEnd();
-
-			byte[] result;
 			try
 			{
-				using (FileStream fs = File.OpenRead("test.bin"))
+				using (MemoryStream ms = new MemoryStream())
+				using (BinaryWriter writer = new BinaryWriter(ms))
 				{
-					result = new byte[fs.Length];
-					fs.Read(result, 0, (int)fs.Length);
+					objectFile.Format.CreateAssembler(objectFile).Assemble(writer);
+					actual = ms.ToArray();
 				}
 			}
-			catch (FileNotFoundException)
+			catch (AssemblerException ex)
 			{
-				result = null;
+				messages.Add(String.Format("Error: {0}", ex.Message));
+				actual = null;
 			}
-			return result;
+
+			return new Tuple<byte[],IEnumerable<string>>(actual, messages);
 		}
 	}
 }

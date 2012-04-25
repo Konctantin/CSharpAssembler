@@ -60,23 +60,27 @@ namespace SharpAssembler.OpcodeWriter.X86
 								 select GetOperandStrings(spec, variant, o);
 			string operands = String.Join(", ", from o in operandStrings select o.Item1);
 
-			string instruction = String.Format("{0} {1}", spec.Mnemonic.ToLowerInvariant(),
+			string instruction = String.Format("{0} {1}", spec.Mnemonic.ToUpperInvariant(),
 				String.Join(", ", from o in operandStrings select o.Item2));
 
 			byte[] bytes16 = GetEncodedInstruction(DataSize.Bit16, instruction);
 			byte[] bytes32 = GetEncodedInstruction(DataSize.Bit32, instruction);
 			byte[] bytes64 = GetEncodedInstruction(DataSize.Bit64, instruction);
 
-			string methodName = String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
-												 select GetOperandManualName(o)).Replace("/", "");
-			if (String.IsNullOrWhiteSpace(methodName))
-				methodName = "Variant" + (spec.Variants.IndexOf(variant) + 1).ToString();
+			string methodName = spec.Mnemonic.ToUpperInvariant();
+			if (variant.Operands.Any())
+			{
+				methodName += "_" + String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
+													 select GetOperandManualName(o));
+			}
+			//if (String.IsNullOrWhiteSpace(methodName))
+			//	methodName = "Variant" + (spec.Variants.IndexOf(variant) + 1).ToString();
 
 			writer.WriteLine(T + T + "[Test]");
-			writer.WriteLine(T + T + "public void {0}()", methodName);
+			writer.WriteLine(T + T + "public void {0}()", AsValidIdentifier(methodName));
 			writer.WriteLine(T + T + "{");
 			writer.WriteLine(T + T + T + "var instruction = Instr.{0}({1});",
-				GetOpcodeClassName(spec), operands);
+				AsValidIdentifier(spec.Name), operands);
 			writer.WriteLine();
 			writer.WriteLine(T + T + T + "// " + instruction);
 			if (bytes16 != null)
@@ -151,8 +155,26 @@ namespace SharpAssembler.OpcodeWriter.X86
 					// TODO:
 					return new Tuple<string, string>("new MemoryOffset()", "0");
 				case X86OperandType.FarPointer:
-					// TODO:
-					throw new NotImplementedException();
+					{
+						if (operand.Size == DataSize.Bit16)
+						{
+							ushort selector = (ushort)rand.Next(0x100, 0x10000);
+							ushort offset = (ushort)rand.Next(0x100, 0x10000);
+							return new Tuple<string, string>(
+								String.Format("new FarPointer(c => 0x{0:X}, c => 0x{1:X}, DataSize.Bit16)", selector, offset),
+								String.Format("WORD 0x{0:X}:0x{1:X}", selector, offset));
+						}
+						else if (operand.Size == DataSize.Bit32)
+						{
+							uint selector = (uint)rand.Next(0x10000);
+							uint offset = (uint)rand.Next(0x10000);
+							return new Tuple<string, string>(
+								String.Format("new FarPointer(c => 0x{0:X}, c => 0x{1:X}, DataSize.Bit32)", selector, offset),
+								String.Format("DWORD 0x{0:X}:0x{1:X}", selector, offset));
+						}
+						else
+							throw new NotImplementedException();
+					}
 				case X86OperandType.MemoryOperand:
 				case X86OperandType.RegisterOrMemoryOperand:
 					{
