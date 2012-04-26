@@ -47,7 +47,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		{
 			var instruction = Instr.Cwde();
 
-			// CWDE 
+			// CWDE
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x98 });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x98 });
 			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x98 });

@@ -47,7 +47,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		{
 			var instruction = Instr.Aas();
 
-			// AAS 
+			// AAS
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x3F });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x3F });
 			AssertInstructionFail(instruction, DataSize.Bit64);

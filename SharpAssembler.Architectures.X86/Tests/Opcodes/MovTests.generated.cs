@@ -43,7 +43,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class MovTests : OpcodeTestBase
 	{
 		[Test]
-		public void MOV_reg_mem8_reg8()
+		public void MOV_regmem8_reg8()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(0x165E)), Register.CL);
 
@@ -54,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem16_reg16()
+		public void MOV_regmem16_reg16()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0xCEEA)), Register.CX);
 
@@ -65,7 +65,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem32_reg32()
+		public void MOV_regmem32_reg32()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0xBFD4)), Register.ECX);
 
@@ -76,7 +76,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem64_reg64()
+		public void MOV_regmem64_reg64()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xB992)), Register.RCX);
 
@@ -87,7 +87,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg8_reg_mem8()
+		public void MOV_reg8_regmem8()
 		{
 			var instruction = Instr.Mov(Register.CL, new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(0x302C)));
 
@@ -98,7 +98,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg16_reg_mem16()
+		public void MOV_reg16_regmem16()
 		{
 			var instruction = Instr.Mov(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
@@ -109,7 +109,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg32_reg_mem32()
+		public void MOV_reg32_regmem32()
 		{
 			var instruction = Instr.Mov(Register.ECX, new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x129F)));
 
@@ -120,7 +120,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg64_reg_mem64()
+		public void MOV_reg64_regmem64()
 		{
 			var instruction = Instr.Mov(Register.RCX, new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xDCD)));
 
@@ -175,7 +175,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem8_imm8()
+		public void MOV_regmem8_imm8()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit8, DataSize.None, c => new ReferenceOffset(0x47F4)), (byte)0x47);
 
@@ -186,7 +186,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem16_imm16()
+		public void MOV_regmem16_imm16()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0xFBC5)), (ushort)0xFBC5);
 
@@ -197,7 +197,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem32_imm32()
+		public void MOV_regmem32_imm32()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x69AF)), (uint)0x6918);
 
@@ -208,7 +208,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void MOV_reg_mem64_imm32()
+		public void MOV_regmem64_imm32()
 		{
 			var instruction = Instr.Mov(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0x83A3)), (uint)0x8327);
 

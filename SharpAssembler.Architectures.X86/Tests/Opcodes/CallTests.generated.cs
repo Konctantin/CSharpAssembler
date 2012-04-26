@@ -65,7 +65,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void CALL_reg_mem16()
+		public void CALL_regmem16()
 		{
 			var instruction = Instr.Call(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x2FD2)));
 
@@ -76,7 +76,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void CALL_reg_mem32()
+		public void CALL_regmem32()
 		{
 			var instruction = Instr.Call(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x2A79)));
 
@@ -87,7 +87,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void CALL_reg_mem64()
+		public void CALL_regmem64()
 		{
 			var instruction = Instr.Call(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0x1DC3)));
 

@@ -43,7 +43,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class BtcTests : OpcodeTestBase
 	{
 		[Test]
-		public void BTC_reg_mem16_imm8()
+		public void BTC_regmem16_imm8()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x7FCD)), (byte)0x7F);
 
@@ -54,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BTC_reg_mem32_imm8()
+		public void BTC_regmem32_imm8()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x2B86)), (byte)0x2A);
 
@@ -65,7 +65,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BTC_reg_mem64_imm8()
+		public void BTC_regmem64_imm8()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0x6B4C)), (byte)0x6A);
 
@@ -76,7 +76,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BTC_reg_mem16_reg16()
+		public void BTC_regmem16_reg16()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0xCEEA)), Register.CX);
 
@@ -87,7 +87,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BTC_reg_mem32_reg32()
+		public void BTC_regmem32_reg32()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0xBFD4)), Register.ECX);
 
@@ -98,7 +98,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BTC_reg_mem64_reg64()
+		public void BTC_regmem64_reg64()
 		{
 			var instruction = Instr.Btc(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xB992)), Register.RCX);
 

@@ -115,7 +115,24 @@ namespace SharpAssembler.OpcodeWriter.X86
 				writer.WriteLine(",");
 				WriteOperandDescriptor(operand, writer);
 			}
-			writer.WriteLine("),");
+			writer.Write(")");
+
+			if (!x86variant.ValidIn64BitMode || x86variant.Requires64BitMode)
+			{
+				writer.WriteLine();
+				writer.Write(T + T + T + T + T + "{ ");
+
+				List<string> properties = new List<string>();
+				if (!x86variant.ValidIn64BitMode)
+					properties.Add("ValidIn64BitMode = false");
+				if (x86variant.Requires64BitMode)
+					properties.Add("Requires64BitMode = true");
+
+				writer.Write(String.Join(", ", properties));
+
+				writer.Write(" }");
+			}
+			writer.WriteLine(",");
 		}
 
 		/// <summary>
@@ -201,7 +218,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 		}
 
 		/// <inheritdoc />
-		protected override void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, TextWriter writer)
+		protected override void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, string mnemonic, TextWriter writer)
 		{
 			// CONTRACT: SpecWriter
 
@@ -217,11 +234,11 @@ namespace SharpAssembler.OpcodeWriter.X86
 
 			if (operandTuples.Any())
 			{
-				WriteCodeInstrOpcodeVariantMethod(x86spec, operandTuples.First(), writer);
+				WriteCodeInstrOpcodeVariantMethod(x86spec, mnemonic, operandTuples.First(), writer);
 				foreach (var operands in operandTuples.Skip(1))
 				{
 					writer.WriteLine();
-					WriteCodeInstrOpcodeVariantMethod(x86spec, operands, writer);
+					WriteCodeInstrOpcodeVariantMethod(x86spec, mnemonic, operands, writer);
 				}
 			}
 		}
@@ -230,9 +247,11 @@ namespace SharpAssembler.OpcodeWriter.X86
 		/// Writes a single opcode variant method.
 		/// </summary>
 		/// <param name="spec">The opcode specification.</param>
+		/// <param name="mnemonic">The mnemonic to use.</param>
 		/// <param name="operands">The operands.</param>
 		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
 		private void WriteCodeInstrOpcodeVariantMethod(X86OpcodeSpec spec,
+			string mnemonic,
 			IEnumerable<Tuple<X86OperandSpec, String, String>> operands, TextWriter writer)
 		{
 			#region Contract
@@ -246,7 +265,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 			string operandsString = String.Join(", ", from o in operands
 													  select o.Item2 + " " + AsValidIdentifier(o.Item1.Name));
 			writer.WriteLine(T + T + "public static X86Instruction {0}({1})",
-				AsValidIdentifier(spec.Name), operandsString);
+				AsValidIdentifier(mnemonic), operandsString);
 			string argumentsString = String.Join(", ", from o in operands
 													   select String.Format(o.Item3, AsValidIdentifier(o.Item1.Name)));
 			writer.WriteLine(T + T + "{{ return X86Opcode.{0}.CreateInstruction({1}); }}",

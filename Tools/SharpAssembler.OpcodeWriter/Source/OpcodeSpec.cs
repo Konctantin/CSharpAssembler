@@ -52,6 +52,16 @@ namespace SharpAssembler.OpcodeWriter
 			set { this.name = value; }
 		}
 
+		private List<string> aka = new List<string>();
+		/// <summary>
+		/// Gets a list of names that are aliases for the opcode.
+		/// </summary>
+		/// <value>A list of strings.</value>
+		public List<string> Aka
+		{
+			get { return this.aka; }
+		}
+
 		private string shortDescription;
 		/// <summary>
 		/// Gets or sets a short description of the opcode.

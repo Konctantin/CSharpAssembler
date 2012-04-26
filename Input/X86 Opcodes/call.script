@@ -8,16 +8,16 @@ opcode x86 call
 	var `E8` (rel32off displacement);
 	
 	[FixedReg = 2] var `FF` (reg/mem16 target);
-	[FixedReg = 2] var `FF` (reg/mem32 target);
-	[FixedReg = 2] var `FF` (reg/mem64 target);
+	[ValidIn64BitMode = false, FixedReg = 2] var `FF` (reg/mem32 target);
+	[Requires64BitMode = true, FixedReg = 2] var `FF` (reg/mem64 target);
 }
 
 [ShortDescription = "Far Procedure Call"]
 opcode x86 `call far` as CallFar
 {
 	/* Far calls */
-	var `9A` (pntr16:16 target);
-	var `9A` (pntr16:32 target);
+	[ValidIn64BitMode = false] var `9A` (pntr16:16 target);
+	[ValidIn64BitMode = false] var `9A` (pntr16:32 target);
 	
 	[FixedReg = 3] var `FF` (mem16:16 target);
 	[FixedReg = 3] var `FF` (mem16:32 target);

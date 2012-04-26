@@ -43,7 +43,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class CallFarTests : OpcodeTestBase
 	{
 		[Test]
-		public void CALL_FAR_pntr16_16()
+		public void CALL_FAR_pntr1616()
 		{
 			var instruction = Instr.CallFar(new FarPointer(c => 0xF46A, c => 0x99CE, DataSize.Bit16));
 
@@ -54,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void CALL_FAR_pntr16_32()
+		public void CALL_FAR_pntr1632()
 		{
 			var instruction = Instr.CallFar(new FarPointer(c => 0xC113, c => 0x760D, DataSize.Bit32));
 

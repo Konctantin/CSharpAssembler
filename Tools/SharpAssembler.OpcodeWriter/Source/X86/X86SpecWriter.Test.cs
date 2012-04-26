@@ -60,18 +60,22 @@ namespace SharpAssembler.OpcodeWriter.X86
 								 select GetOperandStrings(spec, variant, o);
 			string operands = String.Join(", ", from o in operandStrings select o.Item1);
 
-			string instruction = String.Format("{0} {1}", spec.Mnemonic.ToUpperInvariant(),
-				String.Join(", ", from o in operandStrings select o.Item2));
+			string instruction = spec.Mnemonic.ToUpperInvariant();
+			if (operandStrings.Any())
+				instruction += " " + String.Join(", ", from o in operandStrings select o.Item2);
 
-			byte[] bytes16 = GetEncodedInstruction(DataSize.Bit16, instruction);
-			byte[] bytes32 = GetEncodedInstruction(DataSize.Bit32, instruction);
-			byte[] bytes64 = GetEncodedInstruction(DataSize.Bit64, instruction);
+			string feedback16;
+			byte[] bytes16 = GetEncodedInstruction(DataSize.Bit16, instruction, out feedback16);
+			string feedback32;
+			byte[] bytes32 = GetEncodedInstruction(DataSize.Bit32, instruction, out feedback32);
+			string feedback64;
+			byte[] bytes64 = GetEncodedInstruction(DataSize.Bit64, instruction, out feedback64);
 
 			string methodName = spec.Mnemonic.ToUpperInvariant();
 			if (variant.Operands.Any())
 			{
 				methodName += "_" + String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
-													 select GetOperandManualName(o));
+													 select IdentifierValidation.Replace(GetOperandManualName(o), ""));
 			}
 			//if (String.IsNullOrWhiteSpace(methodName))
 			//	methodName = "Variant" + (spec.Variants.IndexOf(variant) + 1).ToString();
@@ -84,18 +88,45 @@ namespace SharpAssembler.OpcodeWriter.X86
 			writer.WriteLine();
 			writer.WriteLine(T + T + T + "// " + instruction);
 			if (bytes16 != null)
-				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit16, new byte[] { " + String.Join(", ", from b in bytes16 select String.Format("0x{0:X2}", b)) + " });");
+				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit16, new byte[] { " +
+					String.Join(", ", from b in bytes16 select String.Format("0x{0:X2}", b)) + " });");
 			else
 				writer.WriteLine(T + T + T + "AssertInstructionFail(instruction, DataSize.Bit16);");
 			if (bytes32 != null)
-				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit32, new byte[] { " + String.Join(", ", from b in bytes32 select String.Format("0x{0:X2}", b)) + " });");
+				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit32, new byte[] { " +
+					String.Join(", ", from b in bytes32 select String.Format("0x{0:X2}", b)) + " });");
 			else
 				writer.WriteLine(T + T + T + "AssertInstructionFail(instruction, DataSize.Bit32);");
 			if (bytes64 != null)
-				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit64, new byte[] { " + String.Join(", ", from b in bytes64 select String.Format("0x{0:X2}", b)) + " });");
+				writer.WriteLine(T + T + T + "AssertInstruction(instruction, DataSize.Bit64, new byte[] { " +
+					String.Join(", ", from b in bytes64 select String.Format("0x{0:X2}", b)) + " });");
 			else
 				writer.WriteLine(T + T + T + "AssertInstructionFail(instruction, DataSize.Bit64);");
+
+			if (bytes16 == null && bytes32 == null && bytes64 == null)
+			{
+
+				throw new ScriptException(String.Format("Assembling {0} for the tests failed with the following messages:\n" +
+					"16-bit: {1}\n32-bit: {2}\n64-bit: {3}",
+					instruction, ProcessFeedback(feedback16), ProcessFeedback(feedback32), ProcessFeedback(feedback64)));
+			}
+
 			writer.WriteLine(T + T + "}");
+		}
+
+		/// <summary>
+		/// Removes some irrelevant information.
+		/// </summary>
+		/// <param name="fb"></param>
+		/// <returns></returns>
+		private string ProcessFeedback(string fb)
+		{
+			string errString = "error: ";
+			int from = fb.IndexOf(errString);
+			if (from < 0)
+				return fb.Trim();
+			else
+				return fb.Substring(from + errString.Length).Trim();
 		}
 
 		/// <summary>
@@ -277,8 +308,9 @@ namespace SharpAssembler.OpcodeWriter.X86
 		/// </summary>
 		/// <param name="mode">The mode.</param>
 		/// <param name="instruction">The instruction string.</param>
+		/// <param name="feedback">The feedback.</param>
 		/// <returns>The bytes; or <see langword="null"/> when it failed.</returns>
-		private byte[] GetEncodedInstruction(DataSize mode, string instruction)
+		private byte[] GetEncodedInstruction(DataSize mode, string instruction, out string feedback)
 		{
 			#region Contract
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), mode));
@@ -302,7 +334,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 					throw new NotSupportedException();
 			}
 			sb.AppendLine(instruction);
-			string feedback;
 			expected = RunAssembler(sb.ToString(), out feedback);
 			return expected;
 		}

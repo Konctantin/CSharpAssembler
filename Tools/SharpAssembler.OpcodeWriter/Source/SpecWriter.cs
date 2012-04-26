@@ -232,7 +232,7 @@ namespace SharpAssembler.OpcodeWriter
 			writer.WriteLine("#endregion");
 		}
 
-		private static readonly Regex IdentifierValidation = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]", RegexOptions.Compiled);
+		protected static readonly Regex IdentifierValidation = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]", RegexOptions.Compiled);
 
 		private static readonly System.CodeDom.Compiler.CodeDomProvider CSharpCodeCompiler = Microsoft.CSharp.CSharpCodeProvider.CreateProvider("C#");
 

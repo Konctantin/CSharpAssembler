@@ -36,16 +36,16 @@ using SharpAssembler.Architectures.X86.Operands;
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The CDW (Convert to Sign-Extended) instruction opcode.
+	/// The CMOVNS (Move if not sign) instruction opcode.
 	/// </summary>
-	public class CdwOpcode : X86Opcode
+	public class CMovNSOpcode : X86Opcode
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CdwOpcode"/> class.
+		/// Initializes a new instance of the <see cref="CMovNSOpcode"/> class.
 		/// </summary>
-		public CdwOpcode()
-			: base("cdw", 0, GetOpcodeVariants())
+		public CMovNSOpcode()
+			: base("cmovns", 2, GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -56,9 +56,21 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// CDW
+				// CMOVNS reg16, reg/mem16
 				new X86OpcodeVariant(
-					new byte[] { 0x99 }, DataSize.Bit16),
+					new byte[] { 0x0F, 0x49 },
+					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
+					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose16Bit)),
+				// CMOVNS reg32, reg/mem32
+				new X86OpcodeVariant(
+					new byte[] { 0x0F, 0x49 },
+					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
+					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
+				// CMOVNS reg64, reg/mem64
+				new X86OpcodeVariant(
+					new byte[] { 0x0F, 0x49 },
+					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose64Bit),
+					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
 			};
 		}
 	}
@@ -69,19 +81,30 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new CDW (Convert to Sign-Extended) instruction.
+		/// Creates a new CMOVNS (Move if not sign) instruction.
 		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">A register or memory operand.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Cdw()
-		{ return X86Opcode.Cdw.CreateInstruction(); }
+		public static X86Instruction CMovNS(Register destination, Register source)
+		{ return X86Opcode.CMovNS.CreateInstruction(new RegisterOperand(destination), new RegisterOperand(source)); }
+
+		/// <summary>
+		/// Creates a new CMOVNS (Move if not sign) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">A register or memory operand.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction CMovNS(Register destination, EffectiveAddress source)
+		{ return X86Opcode.CMovNS.CreateInstruction(new RegisterOperand(destination), source); }
 	}
 
 	partial class X86Opcode
 	{
 		/// <summary>
-		/// The CDW (Convert to Sign-Extended) instruction opcode.
+		/// The CMOVNS (Move if not sign) instruction opcode.
 		/// </summary>
-		public static readonly X86Opcode Cdw = new CdwOpcode();
+		public static readonly X86Opcode CMovNS = new CMovNSOpcode();
 	}
 }
 

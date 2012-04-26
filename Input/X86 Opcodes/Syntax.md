@@ -40,6 +40,14 @@ An opcode definition starts with the keyword `opcode` followed by the special pl
 
     opcode x86 mov { ... }
 
+After the opcode mnemonic, the keyword `alias` may be used to provide an alternative name for use in the generated C# code. This name is case-sensitive. For example:
+
+	opcode x86 `call far` alias CallFar { ... }
+
+After the mnemonic or alias, the keyword `aka` may be used, followed by a parenthesized list of alternative mnemonics or the opcode. These will be made available in the generated code for completeness, but won't cause new classes to be generated. When there is only one alternative mnemonic, the parentheses are optional. An example:
+
+	opcode x86 cmovae as CMovAE aka (CMovNC, CMovNB) { ... }
+
 #### Annotations ####
 To annotate an object, specification or definition, precede it with a comma-separated list of annotations inside square brackets. Each annotation is a name, an equals sign and a value. All annotations must be supported.
 

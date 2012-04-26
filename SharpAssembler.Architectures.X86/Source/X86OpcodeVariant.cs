@@ -106,7 +106,29 @@ namespace SharpAssembler.Architectures.X86
 		public bool ValidIn64BitMode
 		{
 			get { return validIn64BitMode; }
-			set { validIn64BitMode = value; }
+			set
+			{
+				validIn64BitMode = value;
+				if (value == false)
+					requires64BitMode = false;
+			}
+		}
+
+		private bool requires64BitMode = false;
+		/// <summary>
+		/// Gets or sets whether this opcode variant requires 64-bit mode. If so, no REX prefix is encoded.
+		/// </summary>
+		/// <value><see langword="true"/> when the opcode variant requires 64-bit mode;
+		/// otherwise, <see langword="false"/>.</value>
+		public bool Requires64BitMode
+		{
+			get { return requires64BitMode; }
+			set
+			{
+				requires64BitMode = value;
+				if (value == true)
+					validIn64BitMode = true;
+			}
 		}
 
 		private CpuFeatures requiredFeatures = CpuFeatures.None;
@@ -300,6 +322,10 @@ namespace SharpAssembler.Architectures.X86
 			// When the operand size has been explicitly set, set it on the encoded instruction.
 			if (operandSize != DataSize.None)
 				instr.SetOperandSize(context.Representation.Architecture.OperandSize, operandSize);
+			if (requires64BitMode)
+				// SetOperandSize() will cause the instruction to encode a REX prefix, which is not required in
+				// this particular case. So reset it back to null to encode no REX prefix.
+				instr.Use64BitOperands = null;
 
 			// We are done.
 			return instr;
@@ -311,11 +337,24 @@ namespace SharpAssembler.Architectures.X86
 		/// </summary>
 		/// <param name="operandSize">The explicitly provided operand size of the instruction to be matched,
 		/// or <see cref="DataSize.None"/>.</param>
+		/// <param name="context">The <see cref="Context"/>/</param>
 		/// <param name="operands">The array of <see cref="Operand"/> objects to test.</param>
 		/// <returns><see langword="true"/> when the operands match this
 		/// <see cref="X86Instruction.X86OpcodeVariant"/>; otherwise, <see langword="false"/>.</returns>
-		public bool Match(DataSize operandSize, IList<Operand> operands)
+		public bool Match(DataSize operandSize, Context context, IList<Operand> operands)
 		{
+			#region Contract
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
+			Contract.Requires<ArgumentNullException>(context != null);
+			Contract.Requires<ArgumentNullException>(operands != null);
+			#endregion
+
+			// Check whether the variant is valid in the current mode.
+			if (!this.validIn64BitMode && context.Representation.Architecture.OperandSize == DataSize.Bit64)
+				return false;
+			else if (this.requires64BitMode && context.Representation.Architecture.OperandSize != DataSize.Bit64)
+				return false;
+
 			DataSize variantOperandSize = DataSize.None;
 			int j = 0;
 			for (int i = 0; i < descriptors.Count; i++)

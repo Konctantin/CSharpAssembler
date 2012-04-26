@@ -43,7 +43,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 	public class BsfTests : OpcodeTestBase
 	{
 		[Test]
-		public void BSF_reg16_reg_mem16()
+		public void BSF_reg16_regmem16()
 		{
 			var instruction = Instr.Bsf(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
@@ -54,7 +54,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BSF_reg32_reg_mem32()
+		public void BSF_reg32_regmem32()
 		{
 			var instruction = Instr.Bsf(Register.ECX, new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x129F)));
 
@@ -65,7 +65,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		}
 
 		[Test]
-		public void BSF_reg64_reg_mem64()
+		public void BSF_reg64_regmem64()
 		{
 			var instruction = Instr.Bsf(Register.RCX, new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xDCD)));
 

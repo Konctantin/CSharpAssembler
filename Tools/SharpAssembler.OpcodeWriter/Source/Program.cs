@@ -239,7 +239,7 @@ Options:
 			}
 			catch (ScriptException se)
 			{
-				Console.Write(se.Message);
+				Console.WriteLine(" " + se.Message);
 				return false;
 			}
 

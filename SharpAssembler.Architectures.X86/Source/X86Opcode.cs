@@ -126,6 +126,7 @@ namespace SharpAssembler.Architectures.X86
 				instr = new LockInstruction(this, operands);
 			else
 				instr = new X86Instruction(this, operands);
+			
 			return instr;
 		}
 

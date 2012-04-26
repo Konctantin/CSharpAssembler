@@ -71,11 +71,13 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				// CALL reg/mem32
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 2,
-					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit)),
+					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit))
+					{ ValidIn64BitMode = false },
 				// CALL reg/mem64
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 2,
-					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit)),
+					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit))
+					{ Requires64BitMode = true },
 			};
 		}
 	}

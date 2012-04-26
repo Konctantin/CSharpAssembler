@@ -36,7 +36,14 @@ namespace SharpAssembler.OpcodeWriter
 
 			WriteCodeSubnamespaceStart(writer);
 			WriteCodeInstrClassStart(spec, writer);
-			WriteCodeInstrOpcodeVariantMethods(spec, writer);
+			WriteCodeInstrOpcodeVariantMethods(spec, spec.Name, writer);
+			foreach (string aka in spec.Aka)
+			{
+				writer.WriteLine();
+				writer.WriteLine();
+				writer.WriteLine();
+				WriteCodeInstrOpcodeVariantMethods(spec, aka, writer);
+			}
 			WriteCodeInstrClassEnd(writer);
 			writer.WriteLine();
 			WriteCodeOpcodeClassField(spec, writer);
@@ -271,8 +278,9 @@ namespace SharpAssembler.OpcodeWriter
 		/// Writes an opcode variant method.
 		/// </summary>
 		/// <param name="spec">The opcode specification.</param>
+		/// <param name="mnemonic">The mnemonic to use.</param>
 		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
-		protected abstract void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, TextWriter writer);
+		protected abstract void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, string mnemonic, TextWriter writer);
 
 		/// <summary>
 		/// Writes the end of the <c>Instr</c> class declaration and its namespace.
@@ -330,9 +338,10 @@ namespace SharpAssembler.OpcodeWriter
 				Contract.Requires<ArgumentNullException>(writer != null);
 			}
 
-			protected override void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, TextWriter writer)
+			protected override void WriteCodeInstrOpcodeVariantMethods(OpcodeSpec spec, string mnemonic, TextWriter writer)
 			{
 				Contract.Requires<ArgumentNullException>(spec != null);
+				Contract.Requires<ArgumentNullException>(mnemonic != null);
 				Contract.Requires<ArgumentNullException>(writer != null);
 			}
 		}

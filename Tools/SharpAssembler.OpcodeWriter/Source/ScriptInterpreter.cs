@@ -277,6 +277,20 @@ namespace SharpAssembler.OpcodeWriter
 				ExpectRead("as");
 				opcodeSpec.Name = ReadIdentifier();
 			}
+			string akaKeyword = this.reader.Peek();
+			if (akaKeyword == "aka")
+			{
+				ExpectRead("aka");
+				if (this.reader.Peek() == "(")
+				{
+					this.reader.ReadListInRegion(ScriptReader.RegionType.Parentheses, ",", () =>
+					{
+						opcodeSpec.Aka.Add(ReadIdentifier());
+					});
+				}
+				else
+					opcodeSpec.Aka.Add(ReadIdentifier());
+			}
 
 			ApplyAnnotations(opcodeSpec);
 

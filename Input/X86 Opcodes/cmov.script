@@ -1,0 +1,132 @@
+include "amdsyntax";
+
+alias dest = destination;
+alias src = source;
+
+[ShortDescription = "Move if overflow"]
+opcode x86 cmovo as CMovO
+{
+	var `0F 40` (reg16 dest, reg/mem16 src);
+	var `0F 40` (reg32 dest, reg/mem32 src);
+	var `0F 40` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if not overflow"]
+opcode x86 cmovno as CMovNO
+{
+	var `0F 41` (reg16 dest, reg/mem16 src);
+	var `0F 41` (reg32 dest, reg/mem32 src);
+	var `0F 41` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if below, not above or equal, or carry"]
+opcode x86 cmovb as CMovB aka (CMovNAE, CMovC)
+{
+	var `0F 42` (reg16 dest, reg/mem16 src);
+	var `0F 42` (reg32 dest, reg/mem32 src);
+	var `0F 42` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if above or equal, not below, or not carry"]
+opcode x86 cmovae as CMovAE aka (CMovNC, CMovNB)
+{
+	var `0F 43` (reg16 dest, reg/mem16 src);
+	var `0F 43` (reg32 dest, reg/mem32 src);
+	var `0F 43` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if equal, or zero"]
+opcode x86 cmove as CMovE aka CMovZ
+{
+	var `0F 44` (reg16 dest, reg/mem16 src);
+	var `0F 44` (reg32 dest, reg/mem32 src);
+	var `0F 44` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if not equal, or not zero"]
+opcode x86 cmovne as CMovNE aka CMovNZ
+{
+	var `0F 45` (reg16 dest, reg/mem16 src);
+	var `0F 45` (reg32 dest, reg/mem32 src);
+	var `0F 45` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if below or equal, or not above"]
+opcode x86 cmovbe as CMovBE aka CMovNA
+{
+	var `0F 46` (reg16 dest, reg/mem16 src);
+	var `0F 46` (reg32 dest, reg/mem32 src);
+	var `0F 46` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if above, or not below or equal"]
+opcode x86 cmova as CMovA aka CMovNBE
+{
+	var `0F 47` (reg16 dest, reg/mem16 src);
+	var `0F 47` (reg32 dest, reg/mem32 src);
+	var `0F 47` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if sign"]
+opcode x86 cmovs as CMovS
+{
+	var `0F 48` (reg16 dest, reg/mem16 src);
+	var `0F 48` (reg32 dest, reg/mem32 src);
+	var `0F 48` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if not sign"]
+opcode x86 cmovns as CMovNS
+{
+	var `0F 49` (reg16 dest, reg/mem16 src);
+	var `0F 49` (reg32 dest, reg/mem32 src);
+	var `0F 49` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if parity (even)"]
+opcode x86 cmovp as CMovP aka CMovPE
+{
+	var `0F 4A` (reg16 dest, reg/mem16 src);
+	var `0F 4A` (reg32 dest, reg/mem32 src);
+	var `0F 4A` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if not parity, or parity odd"]
+opcode x86 cmovnp as CMovNP aka CMovPO
+{
+	var `0F 4B` (reg16 dest, reg/mem16 src);
+	var `0F 4B` (reg32 dest, reg/mem32 src);
+	var `0F 4B` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if less, or not greater or equal"]
+opcode x86 cmovl as CMovL aka CMovNGE
+{
+	var `0F 4C` (reg16 dest, reg/mem16 src);
+	var `0F 4C` (reg32 dest, reg/mem32 src);
+	var `0F 4C` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if greater or equal, or not less"]
+opcode x86 cmovge as CMovGE aka CMovNL
+{
+	var `0F 4D` (reg16 dest, reg/mem16 src);
+	var `0F 4D` (reg32 dest, reg/mem32 src);
+	var `0F 4D` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if less or equal, or not greater"]
+opcode x86 cmovle as CMovLE aka CMovNG
+{
+	var `0F 4E` (reg16 dest, reg/mem16 src);
+	var `0F 4E` (reg32 dest, reg/mem32 src);
+	var `0F 4E` (reg64 dest, reg/mem64 src);
+}
+
+[ShortDescription = "Move if greater, or not less or equal"]
+opcode x86 cmovg as CMovG aka CMovNLE
+{
+	var `0F 4F` (reg16 dest, reg/mem16 src);
+	var `0F 4F` (reg32 dest, reg/mem32 src);
+	var `0F 4F` (reg64 dest, reg/mem64 src);
+}

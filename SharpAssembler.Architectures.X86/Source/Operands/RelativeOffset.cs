@@ -111,10 +111,26 @@ namespace SharpAssembler.Architectures.X86.Operands
 		{
 			// CONTRACT: Operand
 
+			// Determine the size of the immediate operand. Otherwise the length is not calculated correctly.
+			DataSize size = PreferredSize;
+			if (size == DataSize.None)
+				size = context.Representation.Architecture.OperandSize;
+			if (size >= DataSize.Bit64)
+				throw new AssemblerException(String.Format(CultureInfo.InvariantCulture,
+					"{0}-bit operands cannot be encoded.",
+					((int)size) << 3));
+			else if (size == DataSize.None)
+				throw new AssemblerException("The operand size is not specified.");
+			instr.SetOperandSize(context.Representation.Architecture.OperandSize, size);
+			instr.ImmediateSize = size;
+
 			// Let's evaluate the expression.
 			ReferenceOffset result = expression.Compile()(context);
 			result = new ReferenceOffset(result.Reference, result.Constant - ((Int128)context.Address + instr.GetLength()));
+			instr.Immediate = result;
 
+			// FIXME: Remove this:
+#if false
 			// Determine the size of the immediate operand.
 			DataSize size = PreferredSize;
 			if (size == DataSize.None)
@@ -133,11 +149,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 					((int)size) << 3));
 			else if (size == DataSize.None)
 				throw new AssemblerException("The operand size is not specified.");
-
-			// Set the parameters.
-			instr.Immediate = result;
-			instr.ImmediateSize = size;
-			instr.SetOperandSize(context.Representation.Architecture.OperandSize, size);
+#endif
 		}
 
 		/// <summary>

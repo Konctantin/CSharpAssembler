@@ -47,7 +47,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		{
 			var instruction = Instr.Clc();
 
-			// CLC 
+			// CLC
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0xF8 });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0xF8 });
 			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0xF8 });

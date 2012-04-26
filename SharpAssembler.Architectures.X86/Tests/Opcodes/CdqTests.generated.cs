@@ -47,7 +47,7 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		{
 			var instruction = Instr.Cdq();
 
-			// CDQ 
+			// CDQ
 			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x99 });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x99 });
 			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x99 });

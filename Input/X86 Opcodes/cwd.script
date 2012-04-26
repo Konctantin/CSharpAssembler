@@ -1,7 +1,7 @@
 include "amdsyntax";
 
 [ShortDescription = "Convert to Sign-Extended"]
-opcode x86 cdw
+opcode x86 cwd
 {
 	[OperandSize = Bit16] var `99` ();
 }

@@ -163,7 +163,7 @@ namespace SharpAssembler.Architectures.X86
 			// CONTRACT: Constructable
 
 			// THROWS: AssemblerException
-			AssertValidForContext(context);
+			AssertValidForContext(context, OperandSize);
 
 			// Get the most efficient instruction variant.
 			X86OpcodeVariant variant = GetVariant(context);
@@ -190,19 +190,23 @@ namespace SharpAssembler.Architectures.X86
 		/// Checks whether this instruction with the set operand and address size is valid
 		/// in the provided context.
 		/// </summary>
-		private void AssertValidForContext(Context context)
+		/// <param name="context">The context.</param>
+		/// <param name="operandSize">The operand size.</param>
+		private void AssertValidForContext(Context context, DataSize operandSize)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(context != null);
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
 			#endregion
+
 			var arch = context.Representation.Architecture;
 			if (!this.opcode.IsValidIn64BitMode &&
 						 (arch.AddressSize == DataSize.Bit64 ||
 						 arch.OperandSize == DataSize.Bit64 ||
-						 OperandSize == DataSize.Bit64))
+						 operandSize == DataSize.Bit64))
 				throw new AssemblerException("The instruction is not valid in 64-bit mode.");
 			else if (this.opcode.IsValidIn64BitMode &&
-				OperandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
+				operandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
 				throw new AssemblerException("The instruction is only valid in 64-bit mode.");
 		}
 
@@ -218,10 +222,15 @@ namespace SharpAssembler.Architectures.X86
 			Contract.Requires<ArgumentNullException>(context != null);
 			#endregion
 			var variants =
-				from variant in this.opcode.Variants
-				where variant.Match(operandSize, GetOperands().ToList())
-				select variant;
-			return variants.FirstOrDefault();
+				from v in this.opcode.Variants
+				where v.Match(operandSize, context, GetOperands().ToList())
+				select v;
+			var variant = variants.FirstOrDefault();
+
+			if (variant != null)
+				AssertValidForContext(context, variant.OperandSize);
+			
+			return variant;
 		}
 		#endregion
 

@@ -37,20 +37,42 @@ using SharpAssembler.Architectures.X86.Operands;
 namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 {
 	/// <summary>
-	/// Tests all variants of the CDW opcode.
+	/// Tests all variants of the CMOVNS opcode.
 	/// </summary>
 	[TestFixture]
-	public class CdwTests : OpcodeTestBase
+	public class CMovNSTests : OpcodeTestBase
 	{
 		[Test]
-		public void CDW()
+		public void CMOVNS_reg16_regmem16()
 		{
-			var instruction = Instr.Cdw();
+			var instruction = Instr.CMovNS(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
-			// CDW 
+			// CMOVNS cx, WORD [0x36C5]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x0F, 0x49, 0x0E, 0xC5, 0x36 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x0F, 0x49, 0x0D, 0xC5, 0x36, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x0F, 0x49, 0x0C, 0x25, 0xC5, 0x36, 0x00, 0x00 });
+		}
+
+		[Test]
+		public void CMOVNS_reg32_regmem32()
+		{
+			var instruction = Instr.CMovNS(Register.ECX, new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x129F)));
+
+			// CMOVNS ecx, DWORD [0x129F]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x0F, 0x49, 0x0E, 0x9F, 0x12 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x0F, 0x49, 0x0D, 0x9F, 0x12, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x0F, 0x49, 0x0C, 0x25, 0x9F, 0x12, 0x00, 0x00 });
+		}
+
+		[Test]
+		public void CMOVNS_reg64_regmem64()
+		{
+			var instruction = Instr.CMovNS(Register.RCX, new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xDCD)));
+
+			// CMOVNS rcx, QWORD [0xDCD]
 			AssertInstructionFail(instruction, DataSize.Bit16);
 			AssertInstructionFail(instruction, DataSize.Bit32);
-			AssertInstructionFail(instruction, DataSize.Bit64);
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x48, 0x0F, 0x49, 0x0C, 0x25, 0xCD, 0x0D, 0x00, 0x00 });
 		}
 	}
 }

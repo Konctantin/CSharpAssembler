@@ -828,6 +828,9 @@ namespace SharpAssembler.Architectures.X86
 				this.Prefix3 = PrefixAddressSizeOverride.None;
 		}
 
+		// Note currently used and not tested. Probably has a bug with 64-bit instructions
+		// that don't require a REX prefix.
+#if false
 		/// <summary>
 		/// Gets the operand size based on the operand size prefix and the current assembler mode.
 		/// </summary>
@@ -865,6 +868,7 @@ namespace SharpAssembler.Architectures.X86
 					throw new NotSupportedException();
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Sets the operand size prefix when needed.
