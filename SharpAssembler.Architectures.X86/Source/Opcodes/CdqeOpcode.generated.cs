@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CdqeOpcode"/> class.
 		/// </summary>
 		public CdqeOpcode()
-			: base("cdqe", 0, GetOpcodeVariants())
+			: base("cdqe", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

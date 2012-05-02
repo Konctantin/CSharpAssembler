@@ -1,0 +1,20 @@
+include "amdsyntax";
+
+[ShortDescription = "Input String"]
+opcode x86 insb
+{
+	[OperandSize = Bit8] var `6C` ();
+}
+
+[ShortDescription = "Input String"]
+opcode x86 insw
+{
+	[OperandSize = Bit16] var `6D` ();
+}
+
+[ShortDescription = "Input String"]
+opcode x86 insd
+{
+	[OperandSize = Bit32] var `6D` ();
+}
+

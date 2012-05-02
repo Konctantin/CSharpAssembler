@@ -51,7 +51,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="AddOpcode"/> class.
 		/// </summary>
 		public AddOpcode()
-			: base("add", 2, GetOpcodeVariants())
+			: base("add", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -169,7 +169,7 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new ADD (Signed or Unsigned Add) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		public static X86Instruction Add(Register destination, byte source)
@@ -178,12 +178,50 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new ADD (Signed or Unsigned Add) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		[CLSCompliant(false)]
 		public static X86Instruction Add(Register destination, sbyte source)
 		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit8)); }
+
+		/// <summary>
+		/// Creates a new ADD (Signed or Unsigned Add) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction Add(Register destination, short source)
+		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new ADD (Signed or Unsigned Add) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction Add(Register destination, ushort source)
+		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new ADD (Signed or Unsigned Add) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction Add(Register destination, int source)
+		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
+
+		/// <summary>
+		/// Creates a new ADD (Signed or Unsigned Add) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction Add(Register destination, uint source)
+		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new ADD (Signed or Unsigned Add) instruction.
@@ -210,25 +248,6 @@ namespace SharpAssembler.Architectures.X86
 		/// <param name="destination">A register or memory operand.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Add(Register destination, short source)
-		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADD (Signed or Unsigned Add) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction Add(Register destination, ushort source)
-		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADD (Signed or Unsigned Add) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
 		public static X86Instruction Add(EffectiveAddress destination, short source)
 		{ return X86Opcode.Add.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
 
@@ -241,25 +260,6 @@ namespace SharpAssembler.Architectures.X86
 		[CLSCompliant(false)]
 		public static X86Instruction Add(EffectiveAddress destination, ushort source)
 		{ return X86Opcode.Add.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADD (Signed or Unsigned Add) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction Add(Register destination, int source)
-		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
-
-		/// <summary>
-		/// Creates a new ADD (Signed or Unsigned Add) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction Add(Register destination, uint source)
-		{ return X86Opcode.Add.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new ADD (Signed or Unsigned Add) instruction.

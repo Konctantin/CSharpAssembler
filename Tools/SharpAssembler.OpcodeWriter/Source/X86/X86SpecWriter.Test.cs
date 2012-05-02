@@ -57,7 +57,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 			#endregion
 
 			var operandStrings = from o in variant.Operands.Cast<X86OperandSpec>()
-								 select GetOperandStrings(spec, variant, o);
+								 select GetOperandStrings(o.Type, o.Size, o.FixedRegister, GetRandom(variant));
 			string operands = String.Join(", ", from o in operandStrings select o.Item1);
 
 			string instruction = spec.Mnemonic.ToUpperInvariant();
@@ -77,8 +77,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 				methodName += "_" + String.Join("_", from o in variant.Operands.Cast<X86OperandSpec>()
 													 select IdentifierValidation.Replace(GetOperandManualName(o), ""));
 			}
-			//if (String.IsNullOrWhiteSpace(methodName))
-			//	methodName = "Variant" + (spec.Variants.IndexOf(variant) + 1).ToString();
 
 			writer.WriteLine(T + T + "[Test]");
 			writer.WriteLine(T + T + "public void {0}()", AsValidIdentifier(methodName));
@@ -129,6 +127,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 				return fb.Substring(from + errString.Length).Trim();
 		}
 
+#if false
 		/// <summary>
 		/// Gets the strings used for the operand.
 		/// </summary>
@@ -249,19 +248,179 @@ namespace SharpAssembler.OpcodeWriter.X86
 					else
 						throw new NotSupportedException("The operand size is not supported.");
 				case X86OperandType.RegisterOperand:
-					if (operand.Size == DataSize.Bit8)
-						return new Tuple<string, string>("Register.CL", "cl");
-					else if (operand.Size == DataSize.Bit16)
-						return new Tuple<string, string>("Register.CX", "cx");
-					else if (operand.Size == DataSize.Bit32)
-						return new Tuple<string, string>("Register.ECX", "ecx");
-					else if (operand.Size == DataSize.Bit64)
-						return new Tuple<string, string>("Register.RCX", "rcx");
-					else
-						throw new NotSupportedException("The operand size is not supported.");
+					return RandomGPRegister(operand.Size, rand);
 				default:
 					throw new NotSupportedException("The operand type is not supported.");
 			}
+		}
+#endif
+
+		/// <summary>
+		/// Gets the strings used for the operand.
+		/// </summary>
+		/// <param name="spec">The opcode spec.</param>
+		/// <param name="variant">The opcode variant.</param>
+		/// <param name="operand">The operand.</param>
+		/// <returns>A tuple with the C# code for the operand, followed by the YASM assembler code.</returns>
+		private Tuple<string, string> GetOperandStrings(X86OperandType operandType, DataSize operandSize, Register fixedRegister, Random rand)
+		{
+			switch (operandType)
+			{
+				case X86OperandType.Immediate:
+					if (operandSize == DataSize.Bit8)
+					{
+						byte value = (byte)rand.Next(0, 0x100);
+						return new Tuple<string, string>(
+							String.Format("(byte)0x{0:X2}", value),
+							String.Format("BYTE 0x{0:X2}", value));
+					}
+					else if (operandSize == DataSize.Bit16)
+					{
+						ushort value = (ushort)rand.Next(0x100, 0x10000);
+						return new Tuple<string, string>(
+							String.Format("(ushort)0x{0:X}", value),
+							String.Format("WORD 0x{0:X}", value));
+					}
+					else if (operandSize == DataSize.Bit32)
+					{
+						uint value = (uint)rand.Next(0x10000);
+						return new Tuple<string, string>(
+							String.Format("(uint)0x{0:X}", value),
+							String.Format("DWORD 0x{0:X}", value));
+					}
+					else if (operandSize == DataSize.Bit64)
+					{
+						var x = (ulong)rand.Next(0x10000);
+						var y = (ulong)rand.Next(0x10000);
+						ulong value = x | (y << 32);
+						return new Tuple<string, string>(
+							String.Format("(ulong)0x{0:X}", value),
+							String.Format("QWORD 0x{0:X}", value));
+					}
+					else
+						throw new NotSupportedException("The operand size is not supported.");
+				case X86OperandType.FixedRegister:
+					{
+						string name = Enum.GetName(typeof(Register), fixedRegister);
+						return new Tuple<string, string>(
+								String.Format("Register.{0}", name),
+								name.ToLowerInvariant());
+					}
+				case X86OperandType.MemoryOffset:
+					// TODO:
+					return new Tuple<string, string>("new MemoryOffset()", "0");
+				case X86OperandType.FarPointer:
+					{
+						if (operandSize == DataSize.Bit16)
+						{
+							ushort selector = (ushort)rand.Next(0x100, 0x10000);
+							ushort offset = (ushort)rand.Next(0x100, 0x10000);
+							return new Tuple<string, string>(
+								String.Format("new FarPointer(c => 0x{0:X}, c => 0x{1:X}, DataSize.Bit16)", selector, offset),
+								String.Format("WORD 0x{0:X}:0x{1:X}", selector, offset));
+						}
+						else if (operandSize == DataSize.Bit32)
+						{
+							uint selector = (uint)rand.Next(0x10000);
+							uint offset = (uint)rand.Next(0x10000);
+							return new Tuple<string, string>(
+								String.Format("new FarPointer(c => 0x{0:X}, c => 0x{1:X}, DataSize.Bit32)", selector, offset),
+								String.Format("DWORD 0x{0:X}:0x{1:X}", selector, offset));
+						}
+						else
+							throw new NotImplementedException();
+					}
+				case X86OperandType.MemoryOperand:
+				case X86OperandType.RegisterOrMemoryOperand:
+					{
+						ushort value = (ushort)rand.Next(0x100, 0x10000);
+						return new Tuple<string, string>(
+							String.Format("new EffectiveAddress(DataSize.Bit{1}, DataSize.None, c => new ReferenceOffset(0x{0:X}))",
+								value, operandSize.GetBitCount()),
+							String.Format("{0} [0x{1:X}]", GetNasmSizeSpecifier(operandSize), value));
+					}
+				case X86OperandType.RelativeOffset:
+					if (operandSize == DataSize.Bit8)
+					{
+						byte value = (byte)rand.Next(0, 0x100);
+						return new Tuple<string, string>(
+							String.Format("new RelativeOffset(c => 0x{0:X}, DataSize.Bit8)", value),
+							String.Format("BYTE 0x{0:X}", value));
+					}
+					else if (operandSize == DataSize.Bit16)
+					{
+						ushort value = (ushort)rand.Next(0x100, 0x10000);
+						return new Tuple<string, string>(
+							String.Format("new RelativeOffset(c => 0x{0:X}, DataSize.Bit16)", value),
+							String.Format("WORD 0x{0:X}", value));
+					}
+					else if (operandSize == DataSize.Bit32)
+					{
+						uint value = (uint)rand.Next(0x10000);
+						return new Tuple<string, string>(
+							String.Format("new RelativeOffset(c => 0x{0:X}, DataSize.Bit32)", value),
+							String.Format("DWORD 0x{0:X}", value));
+					}
+					else if (operandSize == DataSize.Bit64)
+					{
+						var x = (ulong)rand.Next(0x10000);
+						var y = (ulong)rand.Next(0x10000);
+						ulong value = x | (y << 32);
+						return new Tuple<string, string>(
+							String.Format("new RelativeOffset(c => 0x{0:X}, DataSize.Bit64)", value),
+							String.Format("QWORD 0x{0:X}", value));
+					}
+					else
+						throw new NotSupportedException("The operand size is not supported.");
+				case X86OperandType.RegisterOperand:
+					return RandomGPRegister(operandSize, rand);
+				default:
+					throw new NotSupportedException("The operand type is not supported.");
+			}
+		}
+
+		private static readonly string[] Registers = new[]{
+			"AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI",
+			"8", "9", "10", "11", "12", "13", "14", "15"
+		};
+
+		/// <summary>
+		/// Returns a random general purpose register.
+		/// </summary>
+		/// <param name="size">The size of the register.</param>
+		/// <param name="rand">The random number generator.</param>
+		/// <returns>A tuple with the full name as used in C#, and the register name as used by NASM.</returns>
+		private Tuple<string, string> RandomGPRegister(DataSize size, Random rand)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(rand != null);
+			Contract.Ensures(Contract.Result<Tuple<string, string>>() != null);
+			#endregion
+
+			// NOTE: The minimum is 1, so that AX, EAX and RAX are never possible registers.
+			// This is to prevent accidently testing a fixed register.
+			if (size == DataSize.Bit8)
+			{
+				string reg = Registers[rand.Next(1, 5)].Replace("X", "L");
+				return new Tuple<string, string>("Register." + reg.ToUpperInvariant(), reg.ToLowerInvariant());
+			}
+			else if (size == DataSize.Bit16)
+			{
+				string reg = Registers[rand.Next(1, 9)];
+				return new Tuple<string, string>("Register." + reg.ToUpperInvariant(), reg.ToLowerInvariant());
+			}
+			else if (size == DataSize.Bit32)
+			{
+				string reg = "E" + Registers[rand.Next(1, 9)];
+				return new Tuple<string, string>("Register." + reg.ToUpperInvariant(), reg.ToLowerInvariant());
+			}
+			else if (size == DataSize.Bit64)
+			{
+				string reg = "R" + Registers[rand.Next(1, 17)];
+				return new Tuple<string, string>("Register." + reg.ToUpperInvariant(), reg.ToLowerInvariant());
+			}
+			else
+				throw new NotSupportedException("The register size is not supported.");
 		}
 
 		/// <summary>
@@ -277,8 +436,8 @@ namespace SharpAssembler.OpcodeWriter.X86
 				case DataSize.Bit16: return "WORD";
 				case DataSize.Bit32: return "DWORD";
 				case DataSize.Bit64: return "QWORD";
-				case DataSize.Bit80:
-				case DataSize.Bit128:
+				case DataSize.Bit80: return "TWORD";
+				case DataSize.Bit128: return "OWORD";
 				case DataSize.Bit256:
 					throw new NotSupportedException();
 				case DataSize.None:

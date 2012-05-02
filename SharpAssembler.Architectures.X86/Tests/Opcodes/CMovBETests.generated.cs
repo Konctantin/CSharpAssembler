@@ -45,12 +45,12 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void CMOVBE_reg16_regmem16()
 		{
-			var instruction = Instr.CMovBE(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
+			var instruction = Instr.CMovBE(Register.DX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
-			// CMOVBE cx, WORD [0x36C5]
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x0F, 0x46, 0x0E, 0xC5, 0x36 });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x0F, 0x46, 0x0D, 0xC5, 0x36, 0x00, 0x00 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x0F, 0x46, 0x0C, 0x25, 0xC5, 0x36, 0x00, 0x00 });
+			// CMOVBE dx, WORD [0x36C5]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x0F, 0x46, 0x16, 0xC5, 0x36 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x0F, 0x46, 0x15, 0xC5, 0x36, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x0F, 0x46, 0x14, 0x25, 0xC5, 0x36, 0x00, 0x00 });
 		}
 
 		[Test]

@@ -33,14 +33,14 @@ namespace SharpAssembler.OpcodeWriter.X86
 			else
 			{
 				DataSize size;
-				if (type.EndsWith("8"))
+				if (type.EndsWith("128"))
 				{
-					size = DataSize.Bit8;
-					type = type.Substring(0, type.Length - 1);
+					size = DataSize.Bit128;
+					type = type.Substring(0, type.Length - 3);
 				}
-				else if (type.EndsWith("16"))
+				else if (type.EndsWith("64"))
 				{
-					size = DataSize.Bit16;
+					size = DataSize.Bit64;
 					type = type.Substring(0, type.Length - 2);
 				}
 				else if (type.EndsWith("32"))
@@ -48,10 +48,15 @@ namespace SharpAssembler.OpcodeWriter.X86
 					size = DataSize.Bit32;
 					type = type.Substring(0, type.Length - 2);
 				}
-				else if (type.EndsWith("64"))
+				else if (type.EndsWith("16"))
 				{
-					size = DataSize.Bit64;
+					size = DataSize.Bit16;
 					type = type.Substring(0, type.Length - 2);
+				}
+				else if (type.EndsWith("8"))
+				{
+					size = DataSize.Bit8;
+					type = type.Substring(0, type.Length - 1);
 				}
 				else
 					throw new ScriptException(String.Format("Malformatted type {0}", type));

@@ -42,7 +42,7 @@ namespace SharpAssembler.Architectures.X86
 			#region Contract
 			Contract.Requires<ArgumentNullException>(opcode != null);
 			Contract.Requires<ArgumentNullException>(operands != null);
-			Contract.Requires<ArgumentException>(operands.Length == opcode.OperandCount);
+			//Contract.Requires<ArgumentException>(operands.Length == opcode.OperandCount);
 			#endregion
 		}
 
@@ -57,7 +57,7 @@ namespace SharpAssembler.Architectures.X86
 			#region Contract
 			Contract.Requires<ArgumentNullException>(opcode != null);
 			Contract.Requires<ArgumentNullException>(operands != null);
-			Contract.Requires<ArgumentException>(operands.Count == opcode.OperandCount);
+			//Contract.Requires<ArgumentException>(operands.Count == opcode.OperandCount);
 			#endregion
 		}
 		#endregion

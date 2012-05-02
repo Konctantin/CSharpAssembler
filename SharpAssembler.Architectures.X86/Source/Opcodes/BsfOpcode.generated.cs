@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="BsfOpcode"/> class.
 		/// </summary>
 		public BsfOpcode()
-			: base("bsf", 2, GetOpcodeVariants())
+			: base("bsf", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

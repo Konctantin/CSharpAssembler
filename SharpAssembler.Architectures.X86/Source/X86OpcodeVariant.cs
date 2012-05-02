@@ -106,29 +106,19 @@ namespace SharpAssembler.Architectures.X86
 		public bool ValidIn64BitMode
 		{
 			get { return validIn64BitMode; }
-			set
-			{
-				validIn64BitMode = value;
-				if (value == false)
-					requires64BitMode = false;
-			}
+			set { validIn64BitMode = value; }
 		}
 
-		private bool requires64BitMode = false;
+		private bool noRexPrefix = false;
 		/// <summary>
-		/// Gets or sets whether this opcode variant requires 64-bit mode. If so, no REX prefix is encoded.
+		/// Gets or sets whether this opcode variant requires REX prefix.
 		/// </summary>
-		/// <value><see langword="true"/> when the opcode variant requires 64-bit mode;
-		/// otherwise, <see langword="false"/>.</value>
-		public bool Requires64BitMode
+		/// <value><see langword="true"/> when the opcode variant requires no REX prefix;
+		/// otherwise, <see langword="false"/>. The default is <see langword="false"/>.</value>
+		public bool NoRexPrefix
 		{
-			get { return requires64BitMode; }
-			set
-			{
-				requires64BitMode = value;
-				if (value == true)
-					validIn64BitMode = true;
-			}
+			get { return noRexPrefix; }
+			set { noRexPrefix = value; }
 		}
 
 		private CpuFeatures requiredFeatures = CpuFeatures.None;
@@ -322,7 +312,7 @@ namespace SharpAssembler.Architectures.X86
 			// When the operand size has been explicitly set, set it on the encoded instruction.
 			if (operandSize != DataSize.None)
 				instr.SetOperandSize(context.Representation.Architecture.OperandSize, operandSize);
-			if (requires64BitMode)
+			if (noRexPrefix)
 				// SetOperandSize() will cause the instruction to encode a REX prefix, which is not required in
 				// this particular case. So reset it back to null to encode no REX prefix.
 				instr.Use64BitOperands = null;
@@ -351,8 +341,6 @@ namespace SharpAssembler.Architectures.X86
 
 			// Check whether the variant is valid in the current mode.
 			if (!this.validIn64BitMode && context.Representation.Architecture.OperandSize == DataSize.Bit64)
-				return false;
-			else if (this.requires64BitMode && context.Representation.Architecture.OperandSize != DataSize.Bit64)
 				return false;
 
 			DataSize variantOperandSize = DataSize.None;
@@ -396,7 +384,7 @@ namespace SharpAssembler.Architectures.X86
 
 			if (this.operandSize != DataSize.None)
 			{
-				Contract.Assume(variantOperandSize == DataSize.None || this.operandSize == variantOperandSize);
+				//Contract.Assume(variantOperandSize == DataSize.None || this.operandSize == variantOperandSize);
 				variantOperandSize = this.operandSize;
 			}
 			// Has the operand size been specified explicitly,

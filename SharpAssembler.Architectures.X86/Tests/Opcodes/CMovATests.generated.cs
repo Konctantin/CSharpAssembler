@@ -45,12 +45,12 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void CMOVA_reg16_regmem16()
 		{
-			var instruction = Instr.CMovA(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
+			var instruction = Instr.CMovA(Register.DX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
-			// CMOVA cx, WORD [0x36C5]
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x0F, 0x47, 0x0E, 0xC5, 0x36 });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x0F, 0x47, 0x0D, 0xC5, 0x36, 0x00, 0x00 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x0F, 0x47, 0x0C, 0x25, 0xC5, 0x36, 0x00, 0x00 });
+			// CMOVA dx, WORD [0x36C5]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x0F, 0x47, 0x16, 0xC5, 0x36 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x0F, 0x47, 0x15, 0xC5, 0x36, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x0F, 0x47, 0x14, 0x25, 0xC5, 0x36, 0x00, 0x00 });
 		}
 
 		[Test]

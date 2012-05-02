@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CbwOpcode"/> class.
 		/// </summary>
 		public CbwOpcode()
-			: base("cbw", 0, GetOpcodeVariants())
+			: base("cbw", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

@@ -358,7 +358,13 @@ namespace SharpAssembler
 				context.Address = context.Address.Align(Alignment);
 
 			// Construct all emittables.
-			this.emittables = this.contents.Where(c => c != null).SelectMany(c => c.Construct(context)).Where(e => e != null);
+			var emittables = new List<IEmittable>();
+			foreach (var constructable in this.contents.WhereNotNull())
+			{
+				var result = constructable.Construct(context);
+				emittables.AddRange(result.WhereNotNull());
+			}
+			this.emittables = emittables;
 
 			long totalLength = this.emittables.Sum(e => (long)e.GetLength());
 			this.emittableLength = checked((int)(this.emittableLength + totalLength));

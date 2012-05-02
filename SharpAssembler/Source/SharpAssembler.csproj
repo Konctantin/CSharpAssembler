@@ -105,6 +105,7 @@
     <Compile Include="Constructable.cs" />
     <Compile Include="ConstructableCollection.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Extra\IEnumerableExtensions.cs" />
     <Compile Include="Languages\CommentLayout.cs" />
     <Compile Include="Languages\ICommentLayout.cs" />
     <Compile Include="StringExtensions.cs" />

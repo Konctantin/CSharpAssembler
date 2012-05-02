@@ -51,7 +51,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="MovOpcode"/> class.
 		/// </summary>
 		public MovOpcode()
-			: base("mov", 2, GetOpcodeVariants())
+			: base("mov", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

@@ -1,0 +1,25 @@
+include "amdsyntax";
+
+alias dest = destination;
+alias src = source;
+
+[ShortDescription = "Signed Multiply"]
+opcode x86 imul
+{
+	[FixedReg = 5] var `F6` (reg/mem8  src);
+	[FixedReg = 5] var `F7` (reg/mem16 src);
+	[FixedReg = 5] var `F7` (reg/mem32 src);
+	[FixedReg = 5] var `F7` (reg/mem64 src);
+	
+	var `0F AF` (reg16 dest, reg/mem16 src);
+	var `0F AF` (reg32 dest, reg/mem32 src);
+	var `0F AF` (reg64 dest, reg/mem64 src);
+	
+	var `6B` (reg16 dest, reg/mem16 left, imm8 right);
+	var `6B` (reg32 dest, reg/mem32 left, imm8 right);
+	var `6B` (reg64 dest, reg/mem64 left, imm8 right);
+	
+	var `69` (reg16 dest, reg/mem16 left, imm16 right);
+	var `69` (reg32 dest, reg/mem32 left, imm32 right);
+	var `69` (reg64 dest, reg/mem64 left, imm32 right);
+}

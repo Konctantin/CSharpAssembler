@@ -188,8 +188,6 @@ namespace SharpAssembler.OpcodeWriter
 			Contract.Requires<ArgumentNullException>(writer != null);
 			#endregion
 
-			int maxOperandCount = (from v in spec.Variants select v.Operands.Count).Max();
-
 			string className = AsValidIdentifier(spec.Name + "Opcode");
 
 			writer.WriteLine(T + T + "/// <summary>");
@@ -197,7 +195,7 @@ namespace SharpAssembler.OpcodeWriter
 				className);
 			writer.WriteLine(T + T + "/// </summary>");
 			writer.WriteLine(T + T + "public {0}()", className);
-			writer.WriteLine(T + T + T + ": base(\"{0}\", {1}, GetOpcodeVariants())", spec.Mnemonic.ToLowerInvariant(), maxOperandCount);
+			writer.WriteLine(T + T + T + ": base(\"{0}\", GetOpcodeVariants())", spec.Mnemonic.ToLowerInvariant());
 			writer.WriteLine(T + T + "{ /* Nothing to do. */ }");
 		}
 

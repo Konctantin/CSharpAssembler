@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CwdeOpcode"/> class.
 		/// </summary>
 		public CwdeOpcode()
-			: base("cwde", 0, GetOpcodeVariants())
+			: base("cwde", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

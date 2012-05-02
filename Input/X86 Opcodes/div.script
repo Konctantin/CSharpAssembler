@@ -1,0 +1,12 @@
+include "amdsyntax";
+
+alias src = source;
+
+[ShortDescription = "Unsigned Divide"]
+opcode x86 div
+{
+	[FixedReg = 6] var `F6` (reg/mem8  src);
+	[FixedReg = 6] var `F7` (reg/mem16 src);
+	[FixedReg = 6] var `F7` (reg/mem32 src);
+	[FixedReg = 6] var `F7` (reg/mem64 src);
+}

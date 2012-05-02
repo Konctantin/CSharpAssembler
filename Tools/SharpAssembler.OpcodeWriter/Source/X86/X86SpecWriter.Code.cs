@@ -117,7 +117,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 			}
 			writer.Write(")");
 
-			if (!x86variant.ValidIn64BitMode || x86variant.Requires64BitMode)
+			if (!x86variant.ValidIn64BitMode || x86variant.NoRexPrefix)
 			{
 				writer.WriteLine();
 				writer.Write(T + T + T + T + T + "{ ");
@@ -125,8 +125,8 @@ namespace SharpAssembler.OpcodeWriter.X86
 				List<string> properties = new List<string>();
 				if (!x86variant.ValidIn64BitMode)
 					properties.Add("ValidIn64BitMode = false");
-				if (x86variant.Requires64BitMode)
-					properties.Add("Requires64BitMode = true");
+				if (x86variant.NoRexPrefix)
+					properties.Add("NoRexPrefix = true");
 
 				writer.Write(String.Join(", ", properties));
 
@@ -403,7 +403,10 @@ namespace SharpAssembler.OpcodeWriter.X86
 						new Tuple<X86OperandSpec, String, String>(operand, "Register", "new RegisterOperand({0})"),
 					};
 				case X86OperandType.FixedRegister:
-					return Enumerable.Empty<Tuple<X86OperandSpec, String, String>>();
+					return new Tuple<X86OperandSpec, String, String>[]{
+						new Tuple<X86OperandSpec, String, String>(operand, "Register", "new RegisterOperand({0})"),
+					};
+					//return Enumerable.Empty<Tuple<X86OperandSpec, String, String>>();
 				default:
 					throw new NotSupportedException("The operand type is not supported.");
 			}
@@ -423,6 +426,7 @@ namespace SharpAssembler.OpcodeWriter.X86
 
 			switch (operand.Item1.Type)
 			{
+				case X86OperandType.FixedRegister:
 				case X86OperandType.RegisterOperand:
 					writer.WriteLine(T + T + "/// <param name=\"{0}\">A register.</param>",
 						operand.Item1.Name);
@@ -451,8 +455,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 					writer.WriteLine(T + T + "/// <param name=\"{0}\">A relative offset.</param>",
 						operand.Item1.Name);
 					break;
-				case X86OperandType.FixedRegister:
-					// No documentation.
 				default:
 					throw new NotSupportedException("The operand type is not supported.");
 			}

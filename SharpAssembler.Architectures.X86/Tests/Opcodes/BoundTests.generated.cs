@@ -45,22 +45,22 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void BOUND_reg16_mem16()
 		{
-			var instruction = Instr.Bound(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x786D)));
+			var instruction = Instr.Bound(Register.SP, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x786D)));
 
-			// BOUND cx, WORD [0x786D]
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x62, 0x0E, 0x6D, 0x78 });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x62, 0x0D, 0x6D, 0x78, 0x00, 0x00 });
+			// BOUND sp, WORD [0x786D]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x62, 0x26, 0x6D, 0x78 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x62, 0x25, 0x6D, 0x78, 0x00, 0x00 });
 			AssertInstructionFail(instruction, DataSize.Bit64);
 		}
 
 		[Test]
 		public void BOUND_reg32_mem32()
 		{
-			var instruction = Instr.Bound(Register.ECX, new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x7F6D)));
+			var instruction = Instr.Bound(Register.ESP, new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0x7F6D)));
 
-			// BOUND ecx, DWORD [0x7F6D]
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x62, 0x0E, 0x6D, 0x7F });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x62, 0x0D, 0x6D, 0x7F, 0x00, 0x00 });
+			// BOUND esp, DWORD [0x7F6D]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x62, 0x26, 0x6D, 0x7F });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x62, 0x25, 0x6D, 0x7F, 0x00, 0x00 });
 			AssertInstructionFail(instruction, DataSize.Bit64);
 		}
 	}

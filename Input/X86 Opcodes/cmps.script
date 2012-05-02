@@ -1,0 +1,25 @@
+include "amdsyntax";
+
+[ShortDescription = "Compare Strings"]
+opcode x86 cmpsb
+{
+	[OperandSize = Bit8] var `A6` ();
+}
+
+[ShortDescription = "Compare Strings"]
+opcode x86 cmpsw
+{
+	[OperandSize = Bit16] var `A7` ();
+}
+
+[ShortDescription = "Compare Strings"]
+opcode x86 cmpsd
+{
+	[OperandSize = Bit32] var `A7` ();
+}
+
+[ShortDescription = "Compare Strings"]
+opcode x86 cmpsq
+{
+	[OperandSize = Bit64] var `A7` ();
+}

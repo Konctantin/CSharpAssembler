@@ -62,16 +62,16 @@ namespace SharpAssembler.OpcodeWriter.X86
 			set { validIn64BitMode = value; }
 		}
 
-		private bool requires64BitMode = false;
+		private bool noRexPrefix = false;
 		/// <summary>
-		/// Gets or sets whether this opcode variant requires 64-bit mode. If so, no REX prefix is encoded.
+		/// Gets or sets whether this opcode variant requires REX prefix.
 		/// </summary>
-		/// <value><see langword="true"/> when the opcode variant requires 64-bit mode;
+		/// <value><see langword="true"/> when the opcode variant requires no REX prefix;
 		/// otherwise, <see langword="false"/>. The default is <see langword="false"/>.</value>
-		public bool Requires64BitMode
+		public bool NoRexPrefix
 		{
-			get { return requires64BitMode; }
-			set { requires64BitMode = value; }
+			get { return noRexPrefix; }
+			set { noRexPrefix = value; }
 		}
 	}
 }

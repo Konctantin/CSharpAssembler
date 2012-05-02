@@ -51,7 +51,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="AndOpcode"/> class.
 		/// </summary>
 		public AndOpcode()
-			: base("and", 2, GetOpcodeVariants())
+			: base("and", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -169,7 +169,7 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new AND (Logical AND) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		public static X86Instruction And(Register destination, byte source)
@@ -178,12 +178,50 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new AND (Logical AND) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		[CLSCompliant(false)]
 		public static X86Instruction And(Register destination, sbyte source)
 		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit8)); }
+
+		/// <summary>
+		/// Creates a new AND (Logical AND) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction And(Register destination, short source)
+		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new AND (Logical AND) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction And(Register destination, ushort source)
+		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new AND (Logical AND) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction And(Register destination, int source)
+		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
+
+		/// <summary>
+		/// Creates a new AND (Logical AND) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction And(Register destination, uint source)
+		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new AND (Logical AND) instruction.
@@ -210,25 +248,6 @@ namespace SharpAssembler.Architectures.X86
 		/// <param name="destination">A register or memory operand.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction And(Register destination, short source)
-		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new AND (Logical AND) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction And(Register destination, ushort source)
-		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new AND (Logical AND) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
 		public static X86Instruction And(EffectiveAddress destination, short source)
 		{ return X86Opcode.And.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
 
@@ -241,25 +260,6 @@ namespace SharpAssembler.Architectures.X86
 		[CLSCompliant(false)]
 		public static X86Instruction And(EffectiveAddress destination, ushort source)
 		{ return X86Opcode.And.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new AND (Logical AND) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction And(Register destination, int source)
-		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
-
-		/// <summary>
-		/// Creates a new AND (Logical AND) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction And(Register destination, uint source)
-		{ return X86Opcode.And.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new AND (Logical AND) instruction.

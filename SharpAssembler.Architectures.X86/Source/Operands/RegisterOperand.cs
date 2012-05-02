@@ -179,6 +179,7 @@ namespace SharpAssembler.Architectures.X86.Operands
 		{
 			switch (descriptor.OperandType)
 			{
+				case OperandType.RegisterOrMemoryOperand:
 				case OperandType.RegisterOperand:
 					return descriptor.RegisterType.HasFlag(this.Register.GetRegisterType());
 				case OperandType.FixedRegister:
@@ -203,6 +204,8 @@ namespace SharpAssembler.Architectures.X86.Operands
 			// When the operand needs to be added to the opcode, set it as such.
 			if (descriptor.OperandEncoding == X86.OperandEncoding.OpcodeAdd)
 				this.Encoding = OperandEncoding.AddToOpcode;
+			else if (descriptor.OperandType == OperandType.RegisterOrMemoryOperand)
+				this.encoding = OperandEncoding.ModRm;
 			else if (descriptor.OperandType == OperandType.FixedRegister)
 				this.Encoding = OperandEncoding.Ignore;
 			else

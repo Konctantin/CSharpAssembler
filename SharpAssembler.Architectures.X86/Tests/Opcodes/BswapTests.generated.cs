@@ -45,12 +45,12 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void BSWAP_reg32()
 		{
-			var instruction = Instr.Bswap(Register.ECX);
+			var instruction = Instr.Bswap(Register.EDX);
 
-			// BSWAP ecx
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x0F, 0xC9 });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x0F, 0xC9 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x0F, 0xC9 });
+			// BSWAP edx
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x0F, 0xCA });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x0F, 0xCA });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x0F, 0xCA });
 		}
 
 		[Test]

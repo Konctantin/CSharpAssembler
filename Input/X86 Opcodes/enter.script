@@ -1,0 +1,7 @@
+include "amdsyntax";
+
+[ShortDescription = "Create Procedure Stack Frame"]
+opcode x86 enter
+{
+	[FixedReg = 6] var `C8` (imm16 size, [Encoding = ExtraImmediate] imm8 nestingLevel);
+}

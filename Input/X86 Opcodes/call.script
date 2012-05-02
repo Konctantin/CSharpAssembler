@@ -7,9 +7,14 @@ opcode x86 call
 	var `E8` (rel16off displacement);
 	var `E8` (rel32off displacement);
 	
-	[FixedReg = 2] var `FF` (reg/mem16 target);
-	[ValidIn64BitMode = false, FixedReg = 2] var `FF` (reg/mem32 target);
-	[Requires64BitMode = true, FixedReg = 2] var `FF` (reg/mem64 target);
+	[FixedReg = 2]
+	var `FF` (reg/mem16 target);
+	
+	[FixedReg = 2, ValidIn64BitMode = false]
+	var `FF` (reg/mem32 target);
+	
+	[FixedReg = 2, NoRexPrefix = true]
+	var `FF` (reg/mem64 target);
 }
 
 [ShortDescription = "Far Procedure Call"]

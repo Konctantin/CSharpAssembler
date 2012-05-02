@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="BswapOpcode"/> class.
 		/// </summary>
 		public BswapOpcode()
-			: base("bswap", 1, GetOpcodeVariants())
+			: base("bswap", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

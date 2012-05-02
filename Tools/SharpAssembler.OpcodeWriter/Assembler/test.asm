@@ -1,3 +1,2 @@
-[BITS 16]
-;CALL 0x6070
-CALL 0x1000000
+[BITS 64]
+cmpxchg16b [0x12345]

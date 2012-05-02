@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CmcOpcode"/> class.
 		/// </summary>
 		public CmcOpcode()
-			: base("cmc", 0, GetOpcodeVariants())
+			: base("cmc", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

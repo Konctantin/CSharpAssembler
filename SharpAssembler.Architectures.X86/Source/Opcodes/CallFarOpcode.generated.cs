@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CallFarOpcode"/> class.
 		/// </summary>
 		public CallFarOpcode()
-			: base("call far", 1, GetOpcodeVariants())
+			: base("call far", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

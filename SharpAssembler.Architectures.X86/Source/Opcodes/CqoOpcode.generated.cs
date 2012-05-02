@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CqoOpcode"/> class.
 		/// </summary>
 		public CqoOpcode()
-			: base("cqo", 0, GetOpcodeVariants())
+			: base("cqo", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

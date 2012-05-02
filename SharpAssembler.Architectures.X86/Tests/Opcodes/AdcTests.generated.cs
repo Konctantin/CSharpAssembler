@@ -177,34 +177,34 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void ADC_regmem16_reg16()
 		{
-			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0xCEEA)), Register.CX);
+			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0xCEEA)), Register.DI);
 
-			// ADC WORD [0xCEEA], cx
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x11, 0x0E, 0xEA, 0xCE });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x11, 0x0D, 0xEA, 0xCE, 0x00, 0x00 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x11, 0x0C, 0x25, 0xEA, 0xCE, 0x00, 0x00 });
+			// ADC WORD [0xCEEA], di
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x11, 0x3E, 0xEA, 0xCE });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x11, 0x3D, 0xEA, 0xCE, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x11, 0x3C, 0x25, 0xEA, 0xCE, 0x00, 0x00 });
 		}
 
 		[Test]
 		public void ADC_regmem32_reg32()
 		{
-			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0xBFD4)), Register.ECX);
+			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit32, DataSize.None, c => new ReferenceOffset(0xBFD4)), Register.ESI);
 
-			// ADC DWORD [0xBFD4], ecx
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x11, 0x0E, 0xD4, 0xBF });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x11, 0x0D, 0xD4, 0xBF, 0x00, 0x00 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x11, 0x0C, 0x25, 0xD4, 0xBF, 0x00, 0x00 });
+			// ADC DWORD [0xBFD4], esi
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x11, 0x36, 0xD4, 0xBF });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x11, 0x35, 0xD4, 0xBF, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x11, 0x34, 0x25, 0xD4, 0xBF, 0x00, 0x00 });
 		}
 
 		[Test]
 		public void ADC_regmem64_reg64()
 		{
-			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xB992)), Register.RCX);
+			var instruction = Instr.Adc(new EffectiveAddress(DataSize.Bit64, DataSize.None, c => new ReferenceOffset(0xB992)), Register.R12);
 
-			// ADC QWORD [0xB992], rcx
+			// ADC QWORD [0xB992], r12
 			AssertInstructionFail(instruction, DataSize.Bit16);
 			AssertInstructionFail(instruction, DataSize.Bit32);
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x48, 0x11, 0x0C, 0x25, 0x92, 0xB9, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x4C, 0x11, 0x24, 0x25, 0x92, 0xB9, 0x00, 0x00 });
 		}
 
 		[Test]
@@ -221,12 +221,12 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 		[Test]
 		public void ADC_reg16_regmem16()
 		{
-			var instruction = Instr.Adc(Register.CX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
+			var instruction = Instr.Adc(Register.DX, new EffectiveAddress(DataSize.Bit16, DataSize.None, c => new ReferenceOffset(0x36C5)));
 
-			// ADC cx, WORD [0x36C5]
-			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x13, 0x0E, 0xC5, 0x36 });
-			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x13, 0x0D, 0xC5, 0x36, 0x00, 0x00 });
-			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x13, 0x0C, 0x25, 0xC5, 0x36, 0x00, 0x00 });
+			// ADC dx, WORD [0x36C5]
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x13, 0x16, 0xC5, 0x36 });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x66, 0x13, 0x15, 0xC5, 0x36, 0x00, 0x00 });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x66, 0x13, 0x14, 0x25, 0xC5, 0x36, 0x00, 0x00 });
 		}
 
 		[Test]

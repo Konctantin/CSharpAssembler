@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CMovLEOpcode"/> class.
 		/// </summary>
 		public CMovLEOpcode()
-			: base("cmovle", 2, GetOpcodeVariants())
+			: base("cmovle", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

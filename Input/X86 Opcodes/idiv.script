@@ -1,0 +1,12 @@
+include "amdsyntax";
+
+alias src = source;
+
+[ShortDescription = "Signed Divide"]
+opcode x86 idiv
+{
+	[FixedReg = 7] var `F6` (reg/mem8  src);
+	[FixedReg = 7] var `F7` (reg/mem16 src);
+	[FixedReg = 7] var `F7` (reg/mem32 src);
+	[FixedReg = 7] var `F7` (reg/mem64 src);
+}

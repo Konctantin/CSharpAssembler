@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="BtcOpcode"/> class.
 		/// </summary>
 		public BtcOpcode()
-			: base("btc", 2, GetOpcodeVariants())
+			: base("btc", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

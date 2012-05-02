@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="ClcOpcode"/> class.
 		/// </summary>
 		public ClcOpcode()
-			: base("clc", 0, GetOpcodeVariants())
+			: base("clc", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

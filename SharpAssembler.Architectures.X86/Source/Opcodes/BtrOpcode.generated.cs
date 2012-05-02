@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="BtrOpcode"/> class.
 		/// </summary>
 		public BtrOpcode()
-			: base("btr", 2, GetOpcodeVariants())
+			: base("btr", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

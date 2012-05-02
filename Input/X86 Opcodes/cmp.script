@@ -1,0 +1,28 @@
+include "amdsyntax";
+
+[ShortDescription = "Compare"]
+opcode x86 cmp
+{
+	var `3C` (void left = AL,  imm8 right);
+	var `3D` (void left = AX,  imm16 right);
+	var `3D` (void left = EAX, imm32 right);
+	var `3D` (void left = RAX, imm32 right);
+	
+	[FixedReg = 7] var `80` (reg/mem8  left, imm8 right);
+	[FixedReg = 7] var `83` (reg/mem16 left, imm8 right);
+	[FixedReg = 7] var `83` (reg/mem32 left, imm8 right);
+	[FixedReg = 7] var `83` (reg/mem64 left, imm8 right);
+	[FixedReg = 7] var `81` (reg/mem16 left, imm16 right);
+	[FixedReg = 7] var `81` (reg/mem32 left, imm32 right);
+	[FixedReg = 7] var `81` (reg/mem64 left, imm32 right);
+	
+	var `38` (reg/mem8  left, reg8  right);
+	var `39` (reg/mem16 left, reg16 right);
+	var `39` (reg/mem32 left, reg32 right);
+	var `39` (reg/mem64 left, reg64 right);
+	
+	var `3A` (reg8  left, reg/mem8  right);
+	var `3B` (reg16 left, reg/mem16 right);
+	var `3B` (reg32 left, reg/mem32 right);
+	var `3B` (reg64 left, reg/mem64 right);
+}

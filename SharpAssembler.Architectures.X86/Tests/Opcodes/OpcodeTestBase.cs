@@ -136,7 +136,8 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 				using (MemoryStream ms = new MemoryStream())
 				using (BinaryWriter writer = new BinaryWriter(ms))
 				{
-					objectFile.Format.CreateAssembler(objectFile).Assemble(writer);
+					var assembler = objectFile.Format.CreateAssembler(objectFile);
+					assembler.Assemble(writer);
 					actual = ms.ToArray();
 				}
 			}

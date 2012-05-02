@@ -1,0 +1,13 @@
+include "amdsyntax";
+
+[ShortDescription = "Input from Port"]
+opcode x86 in
+{
+	var `E4` (void dest = AL, imm8 port);
+	var `E5` (void dest = AX, imm8 port);
+	var `E5` (void dest = EAX, imm8 port);
+	
+	var `EC` (void dest = AL, void port = DX);
+	var `ED` (void dest = AX, void port = DX);
+	var `ED` (void dest = EAX, void port = DX);
+}

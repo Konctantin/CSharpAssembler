@@ -23,6 +23,8 @@
  */
 #endregion
 using NUnit.Framework;
+using System;
+using SharpAssembler.Formats.Bin;
 
 namespace SharpAssembler.Architectures.X86.Tests.Operands
 {
@@ -32,6 +34,58 @@ namespace SharpAssembler.Architectures.X86.Tests.Operands
 	[TestFixture]
 	public class OperandTests
 	{
+		[Test]
+		public void OperandSize_CorrectlyDetermined()
+		{
 
+		}
+
+#if false
+		/// <summary>
+		/// Assembles the given instruction.
+		/// </summary>
+		/// <param name="instruction">The <see cref="X86Instruction"/> instance to test.</param>
+		/// <returns>A tuple with the assembled bytes and any (error) messages.</returns>
+		private DataSize GetOperandSize(X86Instruction instruction)
+		{
+			#region Contract
+			if (instruction == null)
+				throw new ArgumentNullException("instruction");
+			#endregion
+
+			// Assemble the SharpAssembler instruction.
+			byte[] actual = null;
+			List<string> messages = new List<string>();
+
+			BinObjectFileFormat format = new BinObjectFileFormat();
+			var arch = new X86Architecture(CpuType.AmdBulldozer, DataSize.Bit32);
+			BinObjectFile objectFile = (BinObjectFile)format.CreateObjectFile(arch);
+			Section textSection = objectFile.Sections.AddNew(SectionType.Program);
+			var text = textSection.Contents;
+
+			text.Add(instruction);
+
+			var assembler = objectFile.Format.CreateAssembler(objectFile);
+			assembler.Assemble(writer);
+
+			try
+			{
+				using (MemoryStream ms = new MemoryStream())
+				using (BinaryWriter writer = new BinaryWriter(ms))
+				{
+					var assembler = objectFile.Format.CreateAssembler(objectFile);
+					assembler.Assemble(writer);
+					actual = ms.ToArray();
+				}
+			}
+			catch (AssemblerException ex)
+			{
+				messages.Add(String.Format("Error: {0}", ex.Message));
+				actual = null;
+			}
+
+			return new Tuple<byte[], IEnumerable<string>>(actual, messages);
+		}
+#endif
 	}
 }

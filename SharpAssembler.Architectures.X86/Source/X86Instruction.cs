@@ -102,7 +102,7 @@ namespace SharpAssembler.Architectures.X86
 			#region Contract
 			Contract.Requires<ArgumentNullException>(opcode != null);
 			Contract.Requires<ArgumentNullException>(operands != null);
-			Contract.Requires<ArgumentException>(operands.Length == opcode.OperandCount);
+			//Contract.Requires<ArgumentException>(operands.Length == opcode.OperandCount);
 			#endregion
 		}
 
@@ -117,11 +117,10 @@ namespace SharpAssembler.Architectures.X86
 			#region Contract
 			Contract.Requires<ArgumentNullException>(opcode != null);
 			Contract.Requires<ArgumentNullException>(operands != null);
-			Contract.Requires<ArgumentException>(operands.Count == opcode.OperandCount);
+			//Contract.Requires<ArgumentException>(operands.Count == opcode.OperandCount);
 			#endregion
 			this.opcode = opcode;
 			this.operands = operands.ToArray();
-			Contract.Assert(this.operands.Length == opcode.OperandCount);
 		}
 		#endregion
 
@@ -211,6 +210,32 @@ namespace SharpAssembler.Architectures.X86
 		}
 
 		/// <summary>
+		/// Checks whether this instruction with the set operand and address size is valid
+		/// in the provided context.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="operandSize">The operand size.</param>
+		/// <returns><see langword="true"/> when it is valid; otherwise, <see langword ="false"/>.</returns>
+		private bool IsValidForContext(Context context, DataSize operandSize)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(context != null);
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
+			#endregion
+
+			var arch = context.Representation.Architecture;
+			if (!this.opcode.IsValidIn64BitMode &&
+						 (arch.AddressSize == DataSize.Bit64 ||
+						 arch.OperandSize == DataSize.Bit64 ||
+						 operandSize == DataSize.Bit64))
+				return false;
+			else if (this.opcode.IsValidIn64BitMode &&
+				operandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
+				return false;
+			return true;
+		}
+
+		/// <summary>
 		/// Finds the most efficient variant for the instruction with the current operands.
 		/// </summary>
 		/// <param name="context">The <see cref="Context"/>.</param>
@@ -224,11 +249,9 @@ namespace SharpAssembler.Architectures.X86
 			var variants =
 				from v in this.opcode.Variants
 				where v.Match(operandSize, context, GetOperands().ToList())
+				where IsValidForContext(context, v.OperandSize)
 				select v;
 			var variant = variants.FirstOrDefault();
-
-			if (variant != null)
-				AssertValidForContext(context, variant.OperandSize);
 			
 			return variant;
 		}
@@ -243,7 +266,7 @@ namespace SharpAssembler.Architectures.X86
 		{
 			Contract.Invariant(this.opcode != null);
 			Contract.Invariant(this.operands != null);
-			Contract.Invariant(this.operands.Length == this.opcode.OperandCount);
+			//Contract.Invariant(this.operands.Length == this.opcode.OperandCount);
 		}
 		#endregion
 	}

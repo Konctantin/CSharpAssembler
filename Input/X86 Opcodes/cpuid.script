@@ -1,0 +1,7 @@
+include "amdsyntax";
+
+[ShortDescription = "Processor Identification"]
+opcode x86 cpuid
+{
+	var `0F A2` ();
+}

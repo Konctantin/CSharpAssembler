@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="ClflushOpcode"/> class.
 		/// </summary>
 		public ClflushOpcode()
-			: base("clflush", 1, GetOpcodeVariants())
+			: base("clflush", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

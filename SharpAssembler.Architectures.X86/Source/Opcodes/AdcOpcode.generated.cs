@@ -51,7 +51,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="AdcOpcode"/> class.
 		/// </summary>
 		public AdcOpcode()
-			: base("adc", 2, GetOpcodeVariants())
+			: base("adc", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -169,7 +169,7 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new ADC (Add with Carry) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		public static X86Instruction Adc(Register destination, byte source)
@@ -178,12 +178,50 @@ namespace SharpAssembler.Architectures.X86
 		/// <summary>
 		/// Creates a new ADC (Add with Carry) instruction.
 		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
+		/// <param name="destination">A register.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
 		[CLSCompliant(false)]
 		public static X86Instruction Adc(Register destination, sbyte source)
 		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit8)); }
+
+		/// <summary>
+		/// Creates a new ADC (Add with Carry) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction Adc(Register destination, short source)
+		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new ADC (Add with Carry) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction Adc(Register destination, ushort source)
+		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
+
+		/// <summary>
+		/// Creates a new ADC (Add with Carry) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		public static X86Instruction Adc(Register destination, int source)
+		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
+
+		/// <summary>
+		/// Creates a new ADC (Add with Carry) instruction.
+		/// </summary>
+		/// <param name="destination">A register.</param>
+		/// <param name="source">An immediate value.</param>
+		/// <returns>The created instruction.</returns>
+		[CLSCompliant(false)]
+		public static X86Instruction Adc(Register destination, uint source)
+		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new ADC (Add with Carry) instruction.
@@ -210,25 +248,6 @@ namespace SharpAssembler.Architectures.X86
 		/// <param name="destination">A register or memory operand.</param>
 		/// <param name="source">An immediate value.</param>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Adc(Register destination, short source)
-		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADC (Add with Carry) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction Adc(Register destination, ushort source)
-		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADC (Add with Carry) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
 		public static X86Instruction Adc(EffectiveAddress destination, short source)
 		{ return X86Opcode.Adc.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
 
@@ -241,25 +260,6 @@ namespace SharpAssembler.Architectures.X86
 		[CLSCompliant(false)]
 		public static X86Instruction Adc(EffectiveAddress destination, ushort source)
 		{ return X86Opcode.Adc.CreateInstruction(destination, new Immediate(source, DataSize.Bit16)); }
-
-		/// <summary>
-		/// Creates a new ADC (Add with Carry) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction Adc(Register destination, int source)
-		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
-
-		/// <summary>
-		/// Creates a new ADC (Add with Carry) instruction.
-		/// </summary>
-		/// <param name="destination">A register or memory operand.</param>
-		/// <param name="source">An immediate value.</param>
-		/// <returns>The created instruction.</returns>
-		[CLSCompliant(false)]
-		public static X86Instruction Adc(Register destination, uint source)
-		{ return X86Opcode.Adc.CreateInstruction(new RegisterOperand(destination), new Immediate(source, DataSize.Bit32)); }
 
 		/// <summary>
 		/// Creates a new ADC (Add with Carry) instruction.

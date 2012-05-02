@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CwdOpcode"/> class.
 		/// </summary>
 		public CwdOpcode()
-			: base("cwd", 0, GetOpcodeVariants())
+			: base("cwd", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 

@@ -45,7 +45,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="CallOpcode"/> class.
 		/// </summary>
 		public CallOpcode()
-			: base("call", 1, GetOpcodeVariants())
+			: base("call", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -77,7 +77,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 2,
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose64Bit))
-					{ Requires64BitMode = true },
+					{ NoRexPrefix = true },
 			};
 		}
 	}

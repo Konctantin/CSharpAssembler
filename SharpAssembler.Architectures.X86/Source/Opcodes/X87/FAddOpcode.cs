@@ -46,7 +46,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="FAddOpcode"/> class.
 		/// </summary>
 		public FAddOpcode()
-			: base("fadd", 2, GetOpcodeVariants())
+			: base("fadd", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 		

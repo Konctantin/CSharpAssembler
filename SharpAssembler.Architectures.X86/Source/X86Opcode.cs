@@ -21,16 +21,6 @@ namespace SharpAssembler.Architectures.X86
 			get { return this.mnemonic; }
 		}
 
-		private readonly int operandCount;
-		/// <summary>
-		/// Gets the number of operands that instructions with this opcode use.
-		/// </summary>
-		/// <value>The number of operands; or 0 when the instruction does not take any operands.</value>
-		public int OperandCount
-		{
-			get { return this.operandCount; }
-		}
-
 		private readonly ReadOnlyCollection<X86OpcodeVariant> variants;
 		/// <summary>
 		/// Gets a read-only ordered collection of opcode variants.
@@ -81,17 +71,14 @@ namespace SharpAssembler.Architectures.X86
 		/// Initializes a new instance of the <see cref="X86Opcode"/> class.
 		/// </summary>
 		/// <param name="mnemonic">The mnemonic of the opcode.</param>
-		/// <param name="operandCount">The number of operands used by the opcode.</param>
 		/// <param name="variants">The opcode variants.</param>
-		protected X86Opcode(string mnemonic, int operandCount, IEnumerable<X86OpcodeVariant> variants)
+		protected X86Opcode(string mnemonic, IEnumerable<X86OpcodeVariant> variants)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(mnemonic != null);
 			Contract.Requires<ArgumentNullException>(variants != null);
-			Contract.Requires<ArgumentOutOfRangeException>(operandCount >= 0);
 			#endregion
 			this.mnemonic = mnemonic;
-			this.operandCount = operandCount;
 			this.variants = variants.ToList().AsReadOnly();
 		}
 		#endregion
@@ -138,7 +125,6 @@ namespace SharpAssembler.Architectures.X86
 		private void ObjectInvariant()
 		{
 			Contract.Invariant(this.mnemonic != null);
-			Contract.Invariant(this.operandCount >= 0);
 			Contract.Invariant(this.variants != null);
 		}
 		#endregion
@@ -150,7 +136,7 @@ namespace SharpAssembler.Architectures.X86
 		[ContractClassFor(typeof(X86Opcode))]
 		abstract class X86OpcodeContract : X86Opcode
 		{
-			public X86OpcodeContract() : base(null, 0, null) { }
+			public X86OpcodeContract() : base(null, null) { }
 		}
 	}
 	#endregion

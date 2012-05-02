@@ -1,0 +1,30 @@
+include "amdsyntax";
+
+alias dest = destination;
+alias src = source;
+
+[ShortDescription = "Compare and Exchange"]
+[CanLock = true]
+opcode x86 cmpxchg as CmpXchg
+{
+	var `0F B0` (reg/mem8  dest, reg8  src);
+	var `0F B1` (reg/mem16 dest, reg16 src);
+	var `0F B1` (reg/mem32 dest, reg32 src);
+	var `0F B1` (reg/mem64 dest, reg64 src);
+}
+
+/*
+[ShortDescription = "Compare and Exchange Eight Bytes"]
+[CanLock = true]
+opcode x86 cmpxchg8b as CmpXchg8B
+{
+	[OperandSize = Bit32, FixedReg = 1] var `0F C7` (mem64 dest);
+}
+
+[ShortDescription = "Compare and Exchange Sixteen Bytes"]
+[CanLock = true]
+opcode x86 cmpxchg16b as CmpXchg16B
+{
+	[OperandSize = Bit64, FixedReg = 1] var `0F C7` (mem128 dest);
+}
+*/

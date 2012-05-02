@@ -51,7 +51,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		/// Initializes a new instance of the <see cref="AamOpcode"/> class.
 		/// </summary>
 		public AamOpcode()
-			: base("aam", 1, GetOpcodeVariants())
+			: base("aam", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
