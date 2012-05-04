@@ -36,16 +36,16 @@ using SharpAssembler.Architectures.X86.Operands;
 namespace SharpAssembler.Architectures.X86.Opcodes
 {
 	/// <summary>
-	/// The AAS (ASCII Adjust After Subtraction) instruction opcode.
+	/// The INSW (Input String) instruction opcode.
 	/// </summary>
-	public class AasOpcode : X86Opcode
+	public class InswOpcode : X86Opcode
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AasOpcode"/> class.
+		/// Initializes a new instance of the <see cref="InswOpcode"/> class.
 		/// </summary>
-		public AasOpcode()
-			: base("aas", GetOpcodeVariants())
+		public InswOpcode()
+			: base("insw", GetOpcodeVariants())
 		{ /* Nothing to do. */ }
 		#endregion
 
@@ -56,10 +56,9 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
 		{
 			return new X86OpcodeVariant[]{
-				// AAS
+				// INSW
 				new X86OpcodeVariant(
-					new byte[] { 0x3F })
-					{ SupportedModes = ProcessorModes.ProtectedReal },
+					new byte[] { 0x6D }, DataSize.Bit16),
 			};
 		}
 	}
@@ -70,19 +69,19 @@ namespace SharpAssembler.Architectures.X86
 	partial class Instr
 	{
 		/// <summary>
-		/// Creates a new AAS (ASCII Adjust After Subtraction) instruction.
+		/// Creates a new INSW (Input String) instruction.
 		/// </summary>
 		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aas()
-		{ return X86Opcode.Aas.CreateInstruction(); }
+		public static X86Instruction Insw()
+		{ return X86Opcode.Insw.CreateInstruction(); }
 	}
 
 	partial class X86Opcode
 	{
 		/// <summary>
-		/// The AAS (ASCII Adjust After Subtraction) instruction opcode.
+		/// The INSW (Input String) instruction opcode.
 		/// </summary>
-		public static readonly X86Opcode Aas = new AasOpcode();
+		public static readonly X86Opcode Insw = new InswOpcode();
 	}
 }
 

@@ -40,12 +40,6 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class DasOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DasOpcode"/> class.
@@ -64,7 +58,8 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 			return new X86OpcodeVariant[]{
 				// DAS
 				new X86OpcodeVariant(
-					new byte[] { 0x2F }),
+					new byte[] { 0x2F })
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 			};
 		}
 	}

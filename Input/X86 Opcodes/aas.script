@@ -1,8 +1,8 @@
 include "amdsyntax";
 
 [ShortDescription = "ASCII Adjust After Subtraction"]
-[IsValidIn64BitMode = false]
 opcode x86 aas
 {
+	[SupportedModes = ProtectedReal]
 	var `3F` ();
 }

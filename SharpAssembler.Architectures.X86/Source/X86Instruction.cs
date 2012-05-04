@@ -62,31 +62,31 @@ namespace SharpAssembler.Architectures.X86
 			get { return this.opcode; }
 		}
 
-		private DataSize operandSize = DataSize.None;
+		private DataSize explicitOperandSize = DataSize.None;
 		/// <summary>
-		/// Gets an explicit operand size for this instruction.
+		/// Gets or sets an explicit operand size for this instruction.
 		/// </summary>
 		/// <value>The explicit operand size for this instruction; or <see cref="DataSize.None"/> to determine it from
-		/// the operands.</value>
+		/// the operands. The default is <see cref="DataSize.None"/>.</value>
 		/// <remarks>
 		/// This property is intended to be used with instructions which do not have any operand from which the operand
 		/// size can be determined.
 		/// </remarks>
-		public DataSize OperandSize
+		public DataSize ExplicitOperandSize
 		{
 			get
 			{
 				#region Contract
 				Contract.Ensures(Enum.IsDefined(typeof(DataSize), Contract.Result<DataSize>()));
 				#endregion
-				return operandSize;
+				return explicitOperandSize;
 			}
-			protected set
+			set
 			{
 				#region Contract
 				Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), value));
 				#endregion
-				operandSize = value;
+				explicitOperandSize = value;
 			}
 		}
 
@@ -161,9 +161,6 @@ namespace SharpAssembler.Architectures.X86
 		{
 			// CONTRACT: Constructable
 
-			// THROWS: AssemblerException
-			AssertValidForContext(context, OperandSize);
-
 			// Get the most efficient instruction variant.
 			X86OpcodeVariant variant = GetVariant(context);
 			if (variant == null)
@@ -186,56 +183,6 @@ namespace SharpAssembler.Architectures.X86
 		}
 
 		/// <summary>
-		/// Checks whether this instruction with the set operand and address size is valid
-		/// in the provided context.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <param name="operandSize">The operand size.</param>
-		private void AssertValidForContext(Context context, DataSize operandSize)
-		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(context != null);
-			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
-			#endregion
-
-			var arch = context.Representation.Architecture;
-			if (!this.opcode.IsValidIn64BitMode &&
-						 (arch.AddressSize == DataSize.Bit64 ||
-						 arch.OperandSize == DataSize.Bit64 ||
-						 operandSize == DataSize.Bit64))
-				throw new AssemblerException("The instruction is not valid in 64-bit mode.");
-			else if (this.opcode.IsValidIn64BitMode &&
-				operandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
-				throw new AssemblerException("The instruction is only valid in 64-bit mode.");
-		}
-
-		/// <summary>
-		/// Checks whether this instruction with the set operand and address size is valid
-		/// in the provided context.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <param name="operandSize">The operand size.</param>
-		/// <returns><see langword="true"/> when it is valid; otherwise, <see langword ="false"/>.</returns>
-		private bool IsValidForContext(Context context, DataSize operandSize)
-		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(context != null);
-			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
-			#endregion
-
-			var arch = context.Representation.Architecture;
-			if (!this.opcode.IsValidIn64BitMode &&
-						 (arch.AddressSize == DataSize.Bit64 ||
-						 arch.OperandSize == DataSize.Bit64 ||
-						 operandSize == DataSize.Bit64))
-				return false;
-			else if (this.opcode.IsValidIn64BitMode &&
-				operandSize == DataSize.Bit64 && arch.OperandSize != DataSize.Bit64)
-				return false;
-			return true;
-		}
-
-		/// <summary>
 		/// Finds the most efficient variant for the instruction with the current operands.
 		/// </summary>
 		/// <param name="context">The <see cref="Context"/>.</param>
@@ -246,10 +193,10 @@ namespace SharpAssembler.Architectures.X86
 			#region Contract
 			Contract.Requires<ArgumentNullException>(context != null);
 			#endregion
+
 			var variants =
 				from v in this.opcode.Variants
-				where v.Match(operandSize, context, GetOperands().ToList())
-				where IsValidForContext(context, v.OperandSize)
+				where v.Match(explicitOperandSize, context, GetOperands().ToList())
 				select v;
 			var variant = variants.FirstOrDefault();
 			

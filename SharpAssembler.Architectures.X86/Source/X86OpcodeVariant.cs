@@ -97,16 +97,16 @@ namespace SharpAssembler.Architectures.X86
 			}
 		}
 
-		private bool validIn64BitMode = true;
+		private ProcessorModes supportedModes = ProcessorModes.LongProtectedReal;
 		/// <summary>
-		/// Gets or sets whether this opcode variant is valid in 64-bit mode.
+		/// Gets or sets the processor modes in which this opcode variant is supported.
 		/// </summary>
-		/// <value><see langword="true"/> when the opcode variant is valid in 64-bit mode;
-		/// otherwise, <see langword="false"/>.</value>
-		public bool ValidIn64BitMode
+		/// <value>A bitwise combination of members of the <see cref="ProcessorModes"/> enumeration.
+		/// The default is <see cref="SharpAssembler.Architectures.X86.ProcessorModes.LongProtectedReal"/>.</value>
+		public ProcessorModes SupportedModes
 		{
-			get { return validIn64BitMode; }
-			set { validIn64BitMode = value; }
+			get { return this.supportedModes; }
+			set { this.supportedModes = value; }
 		}
 
 		private bool noRexPrefix = false;
@@ -325,23 +325,32 @@ namespace SharpAssembler.Architectures.X86
 		/// Checks whether the specified array of operands would provide a match to this
 		/// <see cref="X86Instruction.X86OpcodeVariant"/>.
 		/// </summary>
-		/// <param name="operandSize">The explicitly provided operand size of the instruction to be matched,
+		/// <param name="explicitOperandSize">The explicitly provided operand size of the instruction to be matched,
 		/// or <see cref="DataSize.None"/>.</param>
 		/// <param name="context">The <see cref="Context"/>/</param>
 		/// <param name="operands">The array of <see cref="Operand"/> objects to test.</param>
 		/// <returns><see langword="true"/> when the operands match this
 		/// <see cref="X86Instruction.X86OpcodeVariant"/>; otherwise, <see langword="false"/>.</returns>
-		public bool Match(DataSize operandSize, Context context, IList<Operand> operands)
+		public bool Match(DataSize explicitOperandSize, Context context, IList<Operand> operands)
 		{
 			#region Contract
-			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), operandSize));
+			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(DataSize), explicitOperandSize));
 			Contract.Requires<ArgumentNullException>(context != null);
 			Contract.Requires<ArgumentNullException>(operands != null);
 			#endregion
 
 			// Check whether the variant is valid in the current mode.
-			if (!this.validIn64BitMode && context.Representation.Architecture.OperandSize == DataSize.Bit64)
+			if (!this.supportedModes.HasFlag(ProcessorModes.Long) && context.Representation.Architecture.OperandSize == DataSize.Bit64)
 				return false;
+			//if (this.operandSize != DataSize.None && this.operandSize != operandSize)
+			//    return false;
+
+			//var zipped = descriptors.Zip(operands, (d, o) => new Tuple<OperandDescriptor, Operand>(d, o));
+
+			//// The operand descriptors that were not included in the zipped list must all be None.
+			//if (descriptors.Skip(zipped.Count()).Any(d => d.OperandType != OperandType.None))
+			//    return false;
+
 
 			DataSize variantOperandSize = DataSize.None;
 			int j = 0;
@@ -389,7 +398,7 @@ namespace SharpAssembler.Architectures.X86
 			}
 			// Has the operand size been specified explicitly,
 			// then test wheter it matches the operand size of this variant.
-			if (operandSize != DataSize.None && operandSize != variantOperandSize)
+			if (explicitOperandSize != DataSize.None && explicitOperandSize != variantOperandSize)
 				return false;
 
 			// All tests passed. It's a match.

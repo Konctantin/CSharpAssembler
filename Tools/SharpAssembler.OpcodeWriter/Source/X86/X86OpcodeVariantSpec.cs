@@ -50,16 +50,16 @@ namespace SharpAssembler.OpcodeWriter.X86
 			set { this.operandSize = value; }
 		}
 
-		private bool validIn64BitMode = true;
+		private ProcessorModes supportedModes = ProcessorModes.LongProtectedReal;
 		/// <summary>
-		/// Gets or sets whether this opcode variant is valid in 64-bit mode.
+		/// Gets or sets the processor modes in which this opcode variant is supported.
 		/// </summary>
-		/// <value><see langword="true"/> when the opcode variant is valid in 64-bit mode;
-		/// otherwise, <see langword="false"/>. The default is <see langword="true"/>.</value>
-		public bool ValidIn64BitMode
+		/// <value>A bitwise combination of members of the <see cref="ProcessorModes"/> enumeration.
+		/// The default is <see cref="SharpAssembler.Architectures.X86.ProcessorModes.LongProtectedReal"/>.</value>
+		public ProcessorModes SupportedModes
 		{
-			get { return validIn64BitMode; }
-			set { validIn64BitMode = value; }
+			get { return this.supportedModes; }
+			set { this.supportedModes = value; }
 		}
 
 		private bool noRexPrefix = false;

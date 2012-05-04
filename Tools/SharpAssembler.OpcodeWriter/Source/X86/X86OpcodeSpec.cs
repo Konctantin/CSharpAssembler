@@ -27,17 +27,5 @@ namespace SharpAssembler.OpcodeWriter.X86
 			get { return this.canLock; }
 			set { this.canLock = value; }
 		}
-
-		private bool isValidIn64BitMode = true;
-		/// <summary>
-		/// Gets or sets whether the instruction is valid in 64-bit mode.
-		/// </summary>
-		/// <value><see langword="true"/> when the instruction is valid in 64-bit mode;
-		/// otherwise, <see langword="true"/>.</value>
-		public bool IsValidIn64BitMode
-		{
-			get { return this.isValidIn64BitMode; }
-			set { this.isValidIn64BitMode = value; }
-		}
 	}
 }

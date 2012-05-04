@@ -1,8 +1,8 @@
 include "amdsyntax";
 
 [ShortDescription = "Decimal Adjust after Addition"]
-[IsValidIn64BitMode = false]
 opcode x86 daa
 {
+	[SupportedModes = ProtectedReal]
 	var `27` ();
 }

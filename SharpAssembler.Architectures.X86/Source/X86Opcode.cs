@@ -51,21 +51,6 @@ namespace SharpAssembler.Architectures.X86
 			get { return false; }
 		}
 
-		/// <summary>
-		/// Gets whether this opcode is valid in 64-bit mode.
-		/// </summary>
-		/// <value><see langword="true"/> when the opcode is valid in 64-bit mode;
-		/// otherwise, <see langword="false"/>.</value>
-		/// <remarks>
-		/// <para>Even when an opcode is valid in 64-bit mode,
-		/// it may be that certain opcode variants are not valid in 64-bit mode.</para>
-		/// <para>The default implementation returns <see langword="true"/>.</para>
-		/// </remarks>
-		public virtual bool IsValidIn64BitMode
-		{
-			get { return true; }
-		}
-
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="X86Opcode"/> class.

@@ -48,9 +48,9 @@ namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 			var instruction = Instr.Enter((ushort)0x2E2F, (byte)0x2D);
 
 			// ENTER WORD 0x2E2F, BYTE 0x2D
-			//AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0xC8, 0x2F, 0x2E, 0x2D });
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0xC8, 0x2F, 0x2E, 0x2D });
 			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0xC8, 0x2F, 0x2E, 0x2D });
-			//AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0xC8, 0x2F, 0x2E, 0x2D });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0xC8, 0x2F, 0x2E, 0x2D });
 		}
 	}
 }

@@ -1,8 +1,8 @@
 include "amdsyntax";
 
 [ShortDescription = "Decimal Adjust after Subtraction"]
-[IsValidIn64BitMode = false]
 opcode x86 das
 {
+	[SupportedModes = ProtectedReal]
 	var `2F` ();
 }

@@ -173,11 +173,23 @@ namespace SharpAssembler.Symbols
 		}
 
 		#region Operations
+		/// <summary>
+		/// Adds a constant offset to the value of the referenced symbol.
+		/// </summary>
+		/// <param name="left">The offset.</param>
+		/// <param name="right">The referenced symbol.</param>
+		/// <returns>The resulting <see cref="ReferenceOffset"/> value.</returns>
 		public static ReferenceOffset operator +(long left, Reference right)
 		{
 			return new ReferenceOffset(right, left);
 		}
 
+		/// <summary>
+		/// Adds a constant offset to the value of the referenced symbol.
+		/// </summary>
+		/// <param name="left">The referenced symbol.</param>
+		/// <param name="right">The offset.</param>
+		/// <returns>The resulting <see cref="ReferenceOffset"/> value.</returns>
 		public static ReferenceOffset operator +(Reference left, long right)
 		{
 			return new ReferenceOffset(left, right);

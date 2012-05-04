@@ -40,12 +40,6 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class AamOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AamOpcode"/> class.
@@ -65,7 +59,8 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				// AAM imm8
 				new X86OpcodeVariant(
 					new byte[] { 0xD4 },
-					new OperandDescriptor(OperandType.Immediate, DataSize.Bit8)),
+					new OperandDescriptor(OperandType.Immediate, DataSize.Bit8))
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 			};
 		}
 	}

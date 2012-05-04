@@ -30,59 +30,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpAssembler.Architectures.X86.Opcodes;
+using Moq;
+using NUnit.Framework;
 using SharpAssembler.Architectures.X86.Operands;
 
-namespace SharpAssembler.Architectures.X86.Opcodes
+namespace SharpAssembler.Architectures.X86.Tests.Opcodes
 {
 	/// <summary>
-	/// The AAS (ASCII Adjust After Subtraction) instruction opcode.
+	/// Tests all variants of the INSD opcode.
 	/// </summary>
-	public class AasOpcode : X86Opcode
+	[TestFixture]
+	public class InsdTests : OpcodeTestBase
 	{
-		#region Constructors
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AasOpcode"/> class.
-		/// </summary>
-		public AasOpcode()
-			: base("aas", GetOpcodeVariants())
-		{ /* Nothing to do. */ }
-		#endregion
-
-		/// <summary>
-		/// Returns the opcode variants of this opcode.
-		/// </summary>
-		/// <returns>An enumerable collection of <see cref="X86OpcodeVariant"/> objects.</returns>
-		private static IEnumerable<X86OpcodeVariant> GetOpcodeVariants()
+		[Test]
+		public void INSD()
 		{
-			return new X86OpcodeVariant[]{
-				// AAS
-				new X86OpcodeVariant(
-					new byte[] { 0x3F })
-					{ SupportedModes = ProcessorModes.ProtectedReal },
-			};
+			var instruction = Instr.Insd();
+
+			// INSD
+			AssertInstruction(instruction, DataSize.Bit16, new byte[] { 0x66, 0x6D });
+			AssertInstruction(instruction, DataSize.Bit32, new byte[] { 0x6D });
+			AssertInstruction(instruction, DataSize.Bit64, new byte[] { 0x6D });
 		}
-	}
-}
-
-namespace SharpAssembler.Architectures.X86
-{
-	partial class Instr
-	{
-		/// <summary>
-		/// Creates a new AAS (ASCII Adjust After Subtraction) instruction.
-		/// </summary>
-		/// <returns>The created instruction.</returns>
-		public static X86Instruction Aas()
-		{ return X86Opcode.Aas.CreateInstruction(); }
-	}
-
-	partial class X86Opcode
-	{
-		/// <summary>
-		/// The AAS (ASCII Adjust After Subtraction) instruction opcode.
-		/// </summary>
-		public static readonly X86Opcode Aas = new AasOpcode();
 	}
 }
 

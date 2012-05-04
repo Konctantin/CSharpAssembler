@@ -162,6 +162,7 @@
     <Compile Include="Opcodes\InOpcode.generated.cs" />
     <Compile Include="Opcodes\MovOpcode.generated.cs" />
     <Compile Include="Opcodes\X87\FAddOpcode.cs" />
+    <Compile Include="ProcessorModes.cs" />
     <Compile Include="TypeSwitch.cs" />
     <Compile Include="X86Opcode.cs" />
     <Compile Include="X86OpcodeVariant.cs" />

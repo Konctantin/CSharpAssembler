@@ -17,7 +17,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 			X86OpcodeSpec x86spec = (X86OpcodeSpec)spec;
 
 			WriteCanLock(x86spec, writer);
-			WriteIsValidIn64BitMode(x86spec, writer);
 
 			base.WriteCodeOpcodeClassProperties(spec, writer);
 		}
@@ -50,29 +49,6 @@ namespace SharpAssembler.OpcodeWriter.X86
 			writer.WriteLine(T + T + "public override bool CanLock");
 			writer.WriteLine(T + T + "{");
 			writer.WriteLine(T + T + T + "get { return true; }");
-			writer.WriteLine(T + T + "}");
-			writer.WriteLine();
-		}
-
-		/// <summary>
-		/// Writes the <c>CanLock</c> property.
-		/// </summary>
-		/// <param name="spec">The opcode specification.</param>
-		/// <param name="writer">The <see cref="TextWriter"/> to write to.</param>
-		protected void WriteIsValidIn64BitMode(X86OpcodeSpec spec, TextWriter writer)
-		{
-			#region Contract
-			Contract.Requires<ArgumentNullException>(spec != null);
-			Contract.Requires<ArgumentNullException>(writer != null);
-			#endregion
-
-			if (spec.IsValidIn64BitMode)
-				return;
-
-			writer.WriteLine(T + T + "/// <inheritdoc />");
-			writer.WriteLine(T + T + "public override bool IsValidIn64BitMode");
-			writer.WriteLine(T + T + "{");
-			writer.WriteLine(T + T + T + "get { return false; }");
 			writer.WriteLine(T + T + "}");
 			writer.WriteLine();
 		}
@@ -117,16 +93,16 @@ namespace SharpAssembler.OpcodeWriter.X86
 			}
 			writer.Write(")");
 
-			if (!x86variant.ValidIn64BitMode || x86variant.NoRexPrefix)
+			if (x86variant.NoRexPrefix || x86variant.SupportedModes != ProcessorModes.LongProtectedReal)
 			{
 				writer.WriteLine();
 				writer.Write(T + T + T + T + T + "{ ");
 
 				List<string> properties = new List<string>();
-				if (!x86variant.ValidIn64BitMode)
-					properties.Add("ValidIn64BitMode = false");
 				if (x86variant.NoRexPrefix)
 					properties.Add("NoRexPrefix = true");
+				if (x86variant.SupportedModes != ProcessorModes.LongProtectedReal)
+					properties.Add("SupportedModes = ProcessorModes." + Enum.GetName(typeof(ProcessorModes), x86variant.SupportedModes));
 
 				writer.Write(String.Join(", ", properties));
 

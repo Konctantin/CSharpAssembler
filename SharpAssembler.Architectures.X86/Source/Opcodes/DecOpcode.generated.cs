@@ -66,12 +66,12 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				new X86OpcodeVariant(
 					new byte[] { 0x48 },
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit, OperandEncoding.OpcodeAdd))
-					{ ValidIn64BitMode = false },
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// DEC reg32
 				new X86OpcodeVariant(
 					new byte[] { 0x48 },
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit, OperandEncoding.OpcodeAdd))
-					{ ValidIn64BitMode = false },
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// DEC reg/mem8
 				new X86OpcodeVariant(
 					new byte[] { 0xFE }, 1,

@@ -22,8 +22,7 @@ namespace SharpAssembler.OpcodeWriter.Tests
 alias d = destination;
 alias s = source;
 [
-ShortDescription = ""Move"",
-IsValidIn64BitMode = true
+ShortDescription = ""Move""
 ]
 [CanLock = true]
 opcode x86 mov
@@ -55,8 +54,7 @@ opcode x86 mov
 alias d = destination;
 alias s = source;
 [
-ShortDescription = ""Move"",
-IsValidIn64BitMode = true
+ShortDescription = ""Move""
 ]
 [CanLock = true]
 opcode x86 mov
@@ -76,7 +74,6 @@ opcode x86 mov
 			// Then
 			Assert.That(opcodeSpec.Mnemonic, Is.EqualTo("mov"));
 			Assert.That(opcodeSpec.ShortDescription, Is.EqualTo("Move"));
-			Assert.That(opcodeSpec.IsValidIn64BitMode, Is.True);
 			Assert.That(opcodeSpec.CanLock, Is.True);
 
 			Assert.That(opcodeSpec.Variants.Count, Is.EqualTo(4));

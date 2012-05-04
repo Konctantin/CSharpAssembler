@@ -40,12 +40,6 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 	/// </summary>
 	public class BoundOpcode : X86Opcode
 	{
-		/// <inheritdoc />
-		public override bool IsValidIn64BitMode
-		{
-			get { return false; }
-		}
-
 		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BoundOpcode"/> class.
@@ -66,12 +60,14 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				new X86OpcodeVariant(
 					new byte[] { 0x62 },
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose16Bit),
-					new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit16)),
+					new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit16))
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// BOUND reg32, mem32
 				new X86OpcodeVariant(
 					new byte[] { 0x62 },
 					new OperandDescriptor(OperandType.RegisterOperand, RegisterType.GeneralPurpose32Bit),
-					new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit32)),
+					new OperandDescriptor(OperandType.MemoryOperand, DataSize.Bit32))
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 			};
 		}
 	}

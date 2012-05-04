@@ -60,12 +60,12 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				new X86OpcodeVariant(
 					new byte[] { 0x9A },
 					new OperandDescriptor(OperandType.FarPointer, DataSize.Bit16))
-					{ ValidIn64BitMode = false },
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// CALL FAR pntr16:32
 				new X86OpcodeVariant(
 					new byte[] { 0x9A },
 					new OperandDescriptor(OperandType.FarPointer, DataSize.Bit32))
-					{ ValidIn64BitMode = false },
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// CALL FAR mem16
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 3,

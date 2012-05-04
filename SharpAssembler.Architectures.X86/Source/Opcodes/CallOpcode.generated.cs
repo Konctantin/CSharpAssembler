@@ -72,7 +72,7 @@ namespace SharpAssembler.Architectures.X86.Opcodes
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 2,
 					new OperandDescriptor(OperandType.RegisterOrMemoryOperand, RegisterType.GeneralPurpose32Bit))
-					{ ValidIn64BitMode = false },
+					{ SupportedModes = ProcessorModes.ProtectedReal },
 				// CALL reg/mem64
 				new X86OpcodeVariant(
 					new byte[] { 0xFF }, 2,

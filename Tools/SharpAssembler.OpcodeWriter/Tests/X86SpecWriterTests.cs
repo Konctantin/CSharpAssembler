@@ -19,7 +19,6 @@ namespace SharpAssembler.OpcodeWriter.Tests
 			{
 				Mnemonic = "mov",
 				CanLock = true,
-				IsValidIn64BitMode = true,
 				ShortDescription = "Move",
 			};
 
@@ -92,25 +91,25 @@ namespace SharpAssembler.OpcodeWriter.Tests
 
 
 
-			variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA2 } };
-			spec.Variants.Add(variant);
-			variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit8 });
-			variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.AL });
+			//variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA2 } };
+			//spec.Variants.Add(variant);
+			//variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit8 });
+			//variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.AL });
 
-			variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
-			spec.Variants.Add(variant);
-			variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit16 });
-			variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.AX });
+			//variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
+			//spec.Variants.Add(variant);
+			//variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit16 });
+			//variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.AX });
 
-			variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
-			spec.Variants.Add(variant);
-			variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit32 });
-			variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.EAX });
+			//variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
+			//spec.Variants.Add(variant);
+			//variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit32 });
+			//variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.EAX });
 
-			variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
-			spec.Variants.Add(variant);
-			variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit64 });
-			variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.RAX });
+			//variant = new X86OpcodeVariantSpec() { OpcodeBytes = new byte[] { 0xA3 } };
+			//spec.Variants.Add(variant);
+			//variant.Operands.Add(new X86OperandSpec() { Name = "destination", Type = X86OperandType.MemoryOffset, Size = DataSize.Bit64 });
+			//variant.Operands.Add(new X86OperandSpec() { Name = "source", Type = X86OperandType.FixedRegister, FixedRegister = Register.RAX });
 
 
 
@@ -159,7 +158,7 @@ namespace SharpAssembler.OpcodeWriter.Tests
 			string codeFile = Path.GetTempFileName();
 			string testFile = Path.GetTempFileName();
 
-			X86SpecWriter writer = new X86SpecWriter(@"..\..\..\Assembler\yasm");
+			X86SpecWriter writer = new X86SpecWriter(@"..\..\..\Assembler\yasm64");
 			writer.Write(spec, codeFile, testFile);
 
 			Assert.That(File.ReadAllText(codeFile), Is.StringStarting("//////////////////////////////////////////////////////"));

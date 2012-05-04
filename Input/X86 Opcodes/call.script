@@ -10,7 +10,7 @@ opcode x86 call
 	[FixedReg = 2]
 	var `FF` (reg/mem16 target);
 	
-	[FixedReg = 2, ValidIn64BitMode = false]
+	[FixedReg = 2, SupportedModes = ProtectedReal]
 	var `FF` (reg/mem32 target);
 	
 	[FixedReg = 2, NoRexPrefix = true]
@@ -21,8 +21,8 @@ opcode x86 call
 opcode x86 `call far` as CallFar
 {
 	/* Far calls */
-	[ValidIn64BitMode = false] var `9A` (pntr16:16 target);
-	[ValidIn64BitMode = false] var `9A` (pntr16:32 target);
+	[SupportedModes = ProtectedReal] var `9A` (pntr16:16 target);
+	[SupportedModes = ProtectedReal] var `9A` (pntr16:32 target);
 	
 	[FixedReg = 3] var `FF` (mem16:16 target);
 	[FixedReg = 3] var `FF` (mem16:32 target);

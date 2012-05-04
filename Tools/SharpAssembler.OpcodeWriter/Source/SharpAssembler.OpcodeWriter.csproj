@@ -130,6 +130,7 @@
     <Compile Include="OpcodeVariantSpec.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="X86\ProcessorModes.cs" />
     <Compile Include="X86\X86OperandEncoding.cs" />
     <Compile Include="X86\X86SpecFactory.cs" />
     <Compile Include="X86\X86SpecWriter.cs" />

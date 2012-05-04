@@ -6,8 +6,8 @@ alias dest = destination;
 [CanLock = true]
 opcode x86 dec
 {
-	[ValidIn64BitMode = false] var `48` ([Encoding = OpcodeAdd] reg16 dest);
-	[ValidIn64BitMode = false] var `48` ([Encoding = OpcodeAdd] reg32 dest);
+	[SupportedModes = ProtectedReal] var `48` ([Encoding = OpcodeAdd] reg16 dest);
+	[SupportedModes = ProtectedReal] var `48` ([Encoding = OpcodeAdd] reg32 dest);
 	
 	[FixedReg = 1] var `FE` (reg/mem8  dest);
 	[FixedReg = 1] var `FF` (reg/mem16 dest);
